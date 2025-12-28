@@ -10,14 +10,14 @@ namespace HopeSDH
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
     public class SDH_JoinExit : UdonSharpBehaviour
     {
-        public int MAX_PLAYER = 4;
+        [HideInInspector] public int MAX_PLAYER = 4;
         public const int PLAYER_NONE = -1;
         [UdonSynced] public int[] player_list_syn;
         private int[] player_list_loc;
 
-        [SerializeField] private GameObject[] but_join_list;
-        [SerializeField] private GameObject[] but_exit_list;
-        [SerializeField] private Text[] text_name_list;
+        private GameObject[] but_join_list;
+        private GameObject[] but_exit_list;
+        private Text[] text_name_list;
 
         void Start()
         {
@@ -30,6 +30,7 @@ namespace HopeSDH
             // 如果已经初始化，则直接返回
             if (this._is_init)
                 return;
+            this._is_init = true;
 
             MAX_PLAYER = this.transform.childCount;
 
