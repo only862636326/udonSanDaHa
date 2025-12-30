@@ -36,15 +36,7 @@ namespace HopeSDH
                 return;
             this._is_init = true;
 
-            var prt = this.transform.parent;
-            for (int i = 0; i < prt.childCount; i++)
-            {
-                if (prt.GetChild(i) == this.transform)
-                {
-                    this._player_index = i;
-                    break;
-                }
-            }
+            this._player_index = this.transform.GetSiblingIndex();
 
             var _tile = handGrabCardPrt.GetChild(this._player_index);
             foreach (Transform child in _tile)

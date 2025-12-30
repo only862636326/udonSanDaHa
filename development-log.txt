@@ -11,6 +11,8 @@ v251228
 v251229
     - 完善叫庄功能
     - 添加 active player 提示
+v251230
+	- card tile init
 
 
 

@@ -4,7 +4,7 @@ using UnityEngine;
 using VRC.SDKBase;
 using VRC.Udon;
 
-namespace SanDaHa
+namespace HopeSDH
 {
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class SDH_Input : UdonSharpBehaviour
@@ -15,6 +15,10 @@ namespace SanDaHa
         }
 
         // end no idx
+
+
+        // start method
+
 
 		// end method
 
