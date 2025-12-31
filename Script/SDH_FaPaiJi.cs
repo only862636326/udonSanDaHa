@@ -140,7 +140,7 @@ namespace HopeSDH
         }
         public override void OnPreSerialization()
         {
-            for(int i = 0; i < this.CARD_NUM; i++)
+            for (int i = 0; i < this.CARD_NUM; i++)
             {
                 card_list_syn[i] = card_list[i];
             }
@@ -193,7 +193,7 @@ namespace HopeSDH
         public void SetNullShow(int _chird, int icon, int num, bool is_null)
         {
             {
-                _renderer = this.transform.GetChild(_chird).GetComponent<Renderer>();
+                _renderer = this.transform.GetChild(_chird).GetChild(0).GetComponent<Renderer>();
                 this._block = new MaterialPropertyBlock();
                 _renderer.GetPropertyBlock(_block);
             }

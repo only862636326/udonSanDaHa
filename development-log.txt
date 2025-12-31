@@ -13,7 +13,8 @@ v251229
     - 添加 active player 提示
 v251230
 	- card tile init
-
+v251231
+	- card tile 鼠标点击
 
 
 

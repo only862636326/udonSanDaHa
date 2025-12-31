@@ -1,6 +1,8 @@
 ﻿
+using Cysharp.Threading.Tasks.Triggers;
 using UdonSharp;
 using UnityEngine;
+using UnityEngine.InputSystem.LowLevel;
 using VRC.SDKBase;
 using VRC.Udon;
 
@@ -47,14 +49,56 @@ namespace HopeSDH
             }
         }
 
+        private int _card_p1;
+
+        private Transform _child_tf;
+        private Vector3 _org_p;
+
+        private void OnMouseDown()
+        {
+            if (_card_p1 == 0)
+            {
+                _card_p1 = 2;
+            }
+            else if (_card_p1 == 2)
+            {
+                _card_p1 = 0;
+            }
+            UpdateCardPosition(_card_p1);
+        }
+
+        private void OnMouseDrag()
+        {
+            
+        }
+
+        private void UpdateCardPosition(int _p)
+        {
+            if (_child_tf == null)
+            {
+                _child_tf = transform.GetChild(0);
+            }
+            var p = this._child_tf.up * 0.005f * _p;
+            _child_tf.position = this._org_p + p;
+        }
+
         private void OnMouseEnter()
         {
-            // hugf.Log($"SDH_CardTile: OnMouseEnter: 鼠标进入{transform.name}");
+            if (_child_tf == null)
+            {
+                _child_tf = transform.GetChild(0);
+            }
+
+            if (_card_p1 == 0)
+            {
+                this._org_p = this._child_tf.position;
+                UpdateCardPosition(1);
+            }
         }
 
         public void OnMouseExit()
         {
-            // hugf.Log($"SDH_CardTile: OnMouseExit: 鼠标退出{transform.name}");
+            UpdateCardPosition(_card_p1);
         }
     }
 }

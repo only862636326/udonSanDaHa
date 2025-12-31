@@ -15,19 +15,18 @@ namespace HopeSDH
         [UdonSynced] public int[] player_list_syn;
         private int[] player_list_loc;
 
-        private GameObject[] but_join_list;
-        private GameObject[] but_exit_list;
-        private Text[] text_name_list;
+       [SerializeField]  private GameObject[] but_join_list;
+        [SerializeField] private GameObject[] but_exit_list;
+        [SerializeField] private Text[] text_name_list;
 
         void Start()
         {
-            Init();
         }
 
         private bool _is_init = false;
         public void Init()
         {
-            // »Áπ˚“—æ≠≥ı ºªØ£¨‘Ú÷±Ω”∑µªÿ
+            // Â¶ÇÊûúÂ∑≤ÁªèÂàùÂßãÂåñÔºåÂàôÁõ¥Êé•ËøîÂõû
             if (this._is_init)
                 return;
             this._is_init = true;
@@ -48,29 +47,25 @@ namespace HopeSDH
             text_name_list = new Text[MAX_PLAYER];
 
             var n = this.transform.childCount;
+
             for (int i = 0; i < n; i++)
             {
-                var c = this.transform.GetChild(i);
-                var toggles = c.GetComponentsInChildren<Toggle>();
-
-                foreach (var g in toggles)
+                var tf = this.transform.GetChild(i);
+                foreach (Transform child in tf)
                 {
-                    if (g.name.Contains("JoinBut") && g.name.Contains("Toggle"))
-                    {
-                        but_join_list[i] = g.gameObject;
-                    }
-                    else if (g.name.Contains("ExitBut") && g.name.Contains("Toggle"))
-                    {
-                        but_exit_list[i] = g.gameObject;
-                    }
-                }
+                    var _low = child.name.ToLower();
 
-                var texts = c.GetComponentsInChildren<Text>();
-                foreach (var t in texts)
-                {
-                    if (t.name.Contains("Name") && t.name.Contains("Text"))
+                    if (_low.Contains("joinbut") && _low.Contains("toggle"))
                     {
-                        text_name_list[i] = t;
+                        but_join_list[i] = child.gameObject;
+                    }
+                    else if (_low.Contains("exitbut") && _low.Contains("toggle"))
+                    {
+                        but_exit_list[i] = child.gameObject;
+                    }
+                    else if (_low.Contains("name") && _low.Contains("text"))
+                    {
+                        text_name_list[i] = child.GetComponent<Text>();
                     }
                 }
             }
@@ -78,10 +73,24 @@ namespace HopeSDH
         }
 
 
-        private void Update()
+        private HopeTools.HopeUdonFramework hugf;
+        public object eventData;
+        public void HugfInit()
         {
-            ;
+            if (hugf == null)
+            {
+                hugf = GameObject.Find(SDH_GameManager.CONST_SDH_HUGF_STRING).GetComponent<HopeTools.HopeUdonFramework>();
+                if (hugf == null)
+                {
+                    Debug.LogError("HugfInit failed, hugf is null!");
+                    return;
+                }
+
+                hugf.Init();
+                return;
+            }
         }
+
 
         public void ToggleEvn_JoinBut(int idx)
         {
@@ -147,6 +156,9 @@ namespace HopeSDH
             var n = this.transform.childCount;
             var loc_id = Networking.LocalPlayer.playerId;
             var loc_name = Networking.LocalPlayer.displayName;
+
+            if (hugf != null)
+                hugf.TriggerEventWithData(nameof(SDH_GameManager.SetPlayerVrcIdCall), this.player_list_loc);
 
             for (int i = 0; i < n; i++)
             {

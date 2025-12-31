@@ -13,9 +13,15 @@ namespace HopeSDH
     public class SDH_OutCartFsm : UdonSharpBehaviour
     {
         #region init code
+
+        public const int CONST_MAX_OUT_CARD = 23;
         private bool _is_init = false;
 
         private int config_zhuang_icon;
+        private int config_zhuang_player;
+
+        private int _active_player;
+
         public int[] out_card_list;
 
         public void Init()
@@ -38,6 +44,7 @@ namespace HopeSDH
                     }
                 }
             }
+            out_card_list = new int[CONST_MAX_OUT_CARD];
         }
 
         private HopeTools.HopeUdonFramework hugf;
@@ -58,6 +65,8 @@ namespace HopeSDH
             }
         }
 
+
+
         public void HugfInitAfter()
         {
             // user code after hugf init here
@@ -77,6 +86,8 @@ namespace HopeSDH
         #endregion end init code
 
         #region syn
+
+        [UdonSynced] int[] syn_list;
 
         void RequestSyn()
         {
