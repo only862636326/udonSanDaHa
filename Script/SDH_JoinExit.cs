@@ -15,9 +15,9 @@ namespace HopeSDH
         [UdonSynced] public int[] player_list_syn;
         private int[] player_list_loc;
 
-       [SerializeField]  private GameObject[] but_join_list;
-        [SerializeField] private GameObject[] but_exit_list;
-        [SerializeField] private Text[] text_name_list;
+         private GameObject[] but_join_list;
+         private GameObject[] but_exit_list;
+         private Text[] text_name_list;
 
         void Start()
         {

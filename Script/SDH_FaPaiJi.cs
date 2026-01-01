@@ -11,10 +11,11 @@ namespace HopeSDH
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
     public class SDH_FaPaiJi : UdonSharpBehaviour
     {
-        private int CARD_NUM;
-
+        private int CHILD_CARD_NUM;
+        //public const int SYN_EVN_FAPAI = 1;
+        //private int _syn_evn;
         [UdonSynced] private int[] card_list_syn;
-        public int[] card_list;
+        public int[] card_id_list;
 
         public Transform player_manager_prt;
 
@@ -42,19 +43,45 @@ namespace HopeSDH
                 return;
             this._is_init = true;
 
-            this.CARD_NUM = this.transform.childCount;
-
-
-            card_list = new int[this.CARD_NUM];
-            card_list_syn = new int[this.CARD_NUM];
-
-            this.card_tf_list = new Transform[this.CARD_NUM];
-            for (int i = 0; i < this.CARD_NUM; i++)
+            this.CHILD_CARD_NUM = this.transform.childCount;
+            this.card_tf_list = new Transform[this.CHILD_CARD_NUM];
+            for (int i = 0; i < card_tf_list.Length; i++)
             {
-                card_list[i] = i;
-                card_list_syn[i] = i;
                 this.card_tf_list[i] = this.transform.GetChild(i);
             }
+
+
+            card_list_syn = new int[SDH_GameManager.CONST_SDH_TOTAL_CARD_NUM + 10];
+
+            InitCardIdList();
+        }
+
+
+        private void InitCardIdList()
+        {
+            this.card_id_list = new int[SDH_GameManager.CONST_SDH_TOTAL_CARD_NUM];
+            int _idx = 0;
+            int card_id = 0;
+
+            for (int icon = 0; icon < 4; icon++)
+            {
+                for (int i = 0; i < 13; i++)
+                {
+                    card_id += 2;
+                    if (i == 2 || i == 3)
+                    {
+                        this.card_tf_list[card_id - 1].gameObject.SetActive(false);
+                        this.card_tf_list[card_id - 2].gameObject.SetActive(false);
+                        continue;
+                    }
+                    card_id_list[_idx++] = card_id - 1;
+                    card_id_list[_idx++] = card_id - 2;
+                }
+            }
+            card_id_list[_idx++] = card_id++;
+            card_id_list[_idx++] = card_id++;
+            card_id_list[_idx++] = card_id++;
+            card_id_list[_idx++] = card_id++;
         }
 
 
@@ -93,15 +120,24 @@ namespace HopeSDH
         {
             int seed = System.DateTime.Now.Ticks.GetHashCode();
             FisherYatesShuffle(seed);
-            hugf.TriggerEventWithData(nameof(SDH_DiPaiManager.FaPaiCall), this.card_list);
+            hugf.TriggerEventWithData(nameof(SDH_DiPaiManager.FaPaiCall), this.card_id_list);
             RequestSyn();
+        }
+
+        private void ClearCardSelect()
+        {
+            foreach (var card in card_tf_list)
+            {
+                var udon = card.GetComponent<SDH_CardTile>();
+                udon.SetCardP_x(0);
+            }
         }
 
         public void ResetCardList()
         {
-            for (int i = 0; i < this.CARD_NUM; i++)
+            for (int i = 0; i < card_id_list.Length; i++)
             {
-                card_list[i] = i;
+                card_id_list[i] = i;
             }
         }
 
@@ -114,12 +150,12 @@ namespace HopeSDH
             Random.InitState(seed);
 
             // Fisher-Yates 洗牌算法
-            for (int i = 0; i < this.CARD_NUM; i++)
+            for (int i = 0; i < card_id_list.Length; i++)
             {
-                int r = Random.Range(0, this.CARD_NUM);
-                int temp = card_list[i];
-                card_list[i] = card_list[r];
-                card_list[r] = temp;
+                int r = Random.Range(0, card_id_list.Length);
+                int temp = card_id_list[i];
+                card_id_list[i] = card_id_list[r];
+                card_id_list[r] = temp;
             }
         }
 
@@ -140,23 +176,26 @@ namespace HopeSDH
         }
         public override void OnPreSerialization()
         {
-            for (int i = 0; i < this.CARD_NUM; i++)
+            for (int i = 0; i < card_id_list.Length; i++)
             {
-                card_list_syn[i] = card_list[i];
+                card_list_syn[i] = card_id_list[i];
             }
         }
 
         public override void OnDeserialization()
         {
-            for (int i = 0; i < this.CARD_NUM; i++)
+            for (int i = 0; i < card_id_list.Length; i++)
             {
-                card_list[i] = card_list_syn[i];
+                card_id_list[i] = card_list_syn[i];
             }
         }
+
         #endregion end syn_code
 
 
         #region reander tool
+
+
         public const int ICON_MEI = 0;
         public const int ICON_FANG = 1;
         public const int ICON_HONG = 2;
@@ -171,21 +210,19 @@ namespace HopeSDH
 
             var _card_id = 0;
 
-            SetNullShow(_card_id++, ICON_JOKER, 0, false);
-            SetNullShow(_card_id++, ICON_JOKER, 0, false);
-            SetNullShow(_card_id++, ICON_JOKER, 1, false);
-            SetNullShow(_card_id++, ICON_JOKER, 1, false);
-
             for (int icon = 0; icon < 4; icon++)
             {
                 for (int i = 0; i < 13; i++)
                 {
-                    if (i == 3 || i == 4)
-                        continue;
                     SetNullShow(_card_id++, icon, i, false);
                     SetNullShow(_card_id++, icon, i, false);
                 }
             }
+
+            SetNullShow(_card_id++, ICON_JOKER, 0, false);
+            SetNullShow(_card_id++, ICON_JOKER, 0, false);
+            SetNullShow(_card_id++, ICON_JOKER, 1, false);
+            SetNullShow(_card_id++, ICON_JOKER, 1, false);
         }
 
         private Renderer _renderer;

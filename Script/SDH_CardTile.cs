@@ -54,15 +54,22 @@ namespace HopeSDH
         private Transform _child_tf;
         private Vector3 _org_p;
 
+        public void SetCardP_x(int x)
+        {
+            this._card_p1 = x;
+        }
+
         private void OnMouseDown()
         {
             if (_card_p1 == 0)
             {
                 _card_p1 = 2;
+                hugf.TriggerEventWithData(nameof(SDH_OutCartFsm.SelecCardCall), this.card_id);
             }
             else if (_card_p1 == 2)
             {
                 _card_p1 = 0;
+                hugf.TriggerEventWithData(nameof(SDH_OutCartFsm.UnselecCardCall), this.card_id);
             }
             UpdateCardPosition(_card_p1);
         }
@@ -95,7 +102,6 @@ namespace HopeSDH
                 UpdateCardPosition(1);
             }
         }
-
         public void OnMouseExit()
         {
             UpdateCardPosition(_card_p1);

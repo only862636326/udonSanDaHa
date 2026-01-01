@@ -1,5 +1,6 @@
 ﻿
 using HopeTools;
+using System;
 using UdonSharp;
 using UnityEngine;
 using VRC.SDKBase;
@@ -12,6 +13,7 @@ namespace HopeSDH
 
     public class SDH_PlayerManager : UdonSharpBehaviour
     {
+        private int[] sort_id_list;
         [UdonSynced] int[] syn_data_list;
 
         public int[] hand_card_list;
@@ -53,6 +55,8 @@ namespace HopeSDH
             this.syn_data_list = new int[SDH_GameManager.CONST_PLAYER_HAND_CARD_MAX + 10];
         }
 
+
+
         private HopeTools.HopeUdonFramework hugf;
         public object eventData;
         public void HugfInit()
@@ -87,20 +91,108 @@ namespace HopeSDH
                 hugf.udondebug.LogWarning("SDH_DiPaiManager FaPaiCall data is null or empty!");
                 return;
             }
+
             GrabHandCard(dat);
+            ConfigSortIdList(-1);
             SortCard();
             RequestSyn();
         }
 
+
         private int[] _sort_temp_list;
+
+        private void ConfigSortIdList(int _icon)
+        {
+            if (sort_id_list == null)
+            {
+                this.sort_id_list = new int[SDH_GameManager.CONST_SHOW_CARD_NUM];
+            }
+
+            var _all_num = sort_id_list.Length;
+
+            var _sort_idx = 0;
+            sort_id_list[_sort_idx++] = _all_num - 1;
+            sort_id_list[_sort_idx++] = _all_num - 2;
+            sort_id_list[_sort_idx++] = _all_num - 3;
+            sort_id_list[_sort_idx++] = _all_num - 4;
+
+            int _num;
+            _num = 7;
+            if (_icon >= 0 && _icon < 4)
+            {
+                sort_id_list[_sort_idx++] = _icon * 26 + (_num * 2 - 1);
+                sort_id_list[_sort_idx++] = _icon * 26 + (_num * 2 - 2);
+            }
+
+            for (var _t = 0; _t < 4; _t++)
+            {
+                if (_t == _icon)
+                    continue;
+                sort_id_list[_sort_idx++] = _t * 26 + (_num * 2 - 1);
+                sort_id_list[_sort_idx++] = _t * 26 + (_num * 2 - 2);
+            }
+
+            _num = 2;
+            if (_icon >= 0 && _icon < 4)
+            {
+                sort_id_list[_sort_idx++] = _icon * 26 + (_num * 2 - 1);
+                sort_id_list[_sort_idx++] = _icon * 26 + (_num * 2 - 2);
+            }
+
+            for (var _t = 0; _t < 4; _t++)
+            {
+                if (_t == _icon)
+                    continue;
+                sort_id_list[_sort_idx++] = _t * 26 + (_num * 2 - 1);
+                sort_id_list[_sort_idx++] = _t * 26 + (_num * 2 - 2);
+            }
+
+            // 
+            if (_icon >= 0 && _icon < 4)
+            {
+                _num = 1;
+                sort_id_list[_sort_idx++] = _icon * 26 + (_num * 2 - 1);
+                sort_id_list[_sort_idx++] = _icon * 26 + (_num * 2 - 2);
+
+                for (int i = 13; i >= 3; i--)
+                {
+                    if (i == 7)
+                        continue;
+                    _num = i;
+                    sort_id_list[_sort_idx++] = _icon * 26 + (_num * 2 - 1);
+                    sort_id_list[_sort_idx++] = _icon * 26 + (_num * 2 - 2);
+                }
+            }
+
+            for (var _t = 0; _t < 4; _t++)
+            {
+                if (_t == _icon)
+                    continue;
+
+                _num = 1;
+
+                sort_id_list[_sort_idx++] = _t * 26 + (_num * 2 - 1);
+                sort_id_list[_sort_idx++] = _t * 26 + (_num * 2 - 2);
+
+                for (int i = 13; i >= 3; i--)
+                {
+                    if(i == 7)
+                        continue;
+                    _num = i;
+                    sort_id_list[_sort_idx++] = _t * 26 + (_num * 2 - 1);
+                    sort_id_list[_sort_idx++] = _t * 26 + (_num * 2 - 2);
+                }
+            }
+        }
+
         public void SortCard()
         {
             if (_sort_temp_list == null)
             {
-                _sort_temp_list = new int[SDH_GameManager.CONST_TOTAL_CARD_NUM];
+                _sort_temp_list = new int[SDH_GameManager.CONST_SHOW_CARD_NUM];
             }
 
-            for (int i = 0; i < SDH_GameManager.CONST_TOTAL_CARD_NUM; i++)
+            for (int i = 0; i < _sort_temp_list.Length; i++)
             {
                 _sort_temp_list[i] = -1;
             }
@@ -114,20 +206,21 @@ namespace HopeSDH
             }
 
             int _n = 0;
-            for (int i = 0; i < SDH_GameManager.CONST_TOTAL_CARD_NUM; i++)
+            for (int i = 0; i < sort_id_list.Length; i++)
             {
-                if (_sort_temp_list[i] >= 0)
+                int card_id = this.sort_id_list[i];
+                if (card_id >= 0 && _sort_temp_list[card_id] >= 0)
                 {
-                    this.hand_card_list[_n++] = i;
+                    this.hand_card_list[_n++] = card_id;
                 }
             }
+
             if (_n != this._hand_card_num)
             {
-                hugf.udondebug.LogError($"SortCard failed, _n != this._hand_card_num, _n = {_n}, this._hand_card_num = {this._hand_card_num}");
+                hugf.udondebug.LogWarning($"SortCard failed, _n != this._hand_card_num, _n = {_n}, this._hand_card_num = {this._hand_card_num}");
                 return;
             }
         }
-
 
         public void GrabHandCard(int[] cards)
         {
@@ -151,6 +244,8 @@ namespace HopeSDH
                 var pos = GetCardPosition(i, _hand_card_num);
                 tf_cards[idx].position = pos;
                 tf_cards[idx].rotation = rot;
+
+                tf_cards[idx].GetComponent<SDH_CardTile>().SetCardP_x(0);
             }
         }
 
@@ -258,7 +353,7 @@ namespace HopeSDH
             }
             syn_data_list[SDH_GameManager.CONST_PLAYER_HAND_CARD_MAX] = this._hand_card_num;
             SetHandCardPosition(this.card_tf_list);
-            //DebugSynData();
+            // DebugSynData();
         }
 
         public override void OnDeserialization()
@@ -269,7 +364,7 @@ namespace HopeSDH
             }
             this._hand_card_num = syn_data_list[SDH_GameManager.CONST_PLAYER_HAND_CARD_MAX];
             SetHandCardPosition(this.card_tf_list);
-            //DebugSynData();
+            // DebugSynData();
         }
 
         public void DebugSynData()

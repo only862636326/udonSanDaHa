@@ -1,4 +1,4 @@
-﻿
+
 using HopeSDH;
 using UdonSharp;
 using UnityEngine;
@@ -8,13 +8,12 @@ using VRC.Udon;
 
 
 namespace HopeSDH
-{ 
+{
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
     public class SDH_OutCartFsm : UdonSharpBehaviour
     {
         #region init code
 
-        public const int CONST_MAX_OUT_CARD = 23;
         private bool _is_init = false;
 
         private int config_zhuang_icon;
@@ -22,7 +21,10 @@ namespace HopeSDH
 
         private int _active_player;
 
-        public int[] out_card_list;
+        [SerializeField] public int[] out_card_list;
+        [SerializeField] private int out_card_num;
+        [SerializeField] private int[] select_card_list;
+        [SerializeField] private int select_card_num;
 
         public void Init()
         {
@@ -44,7 +46,9 @@ namespace HopeSDH
                     }
                 }
             }
-            out_card_list = new int[CONST_MAX_OUT_CARD];
+            out_card_list = new int[SDH_GameManager.CONST_PLAYER_HAND_CARD_MAX];
+            select_card_list = new int[SDH_GameManager.CONST_PLAYER_HAND_CARD_MAX];
+            this.select_card_num = 0;
         }
 
         private HopeTools.HopeUdonFramework hugf;
@@ -71,6 +75,8 @@ namespace HopeSDH
         {
             // user code after hugf init here
             //hugf.udonEvn.RegisterListener(nameof(this.DemeFunCall), this);
+            hugf.udonEvn.RegisterListener(nameof(this.SelecCardCall), this);
+            hugf.udonEvn.RegisterListener(nameof(this.UnselecCardCall), this);
         }
 
 
@@ -122,8 +128,65 @@ namespace HopeSDH
         #endregion end syn
 
 
+        public void ResetOutCardState()
+        {
+            this.out_card_num = 0;
+            this.select_card_num = 0;
+            this._active_player = -1;
+        }
+
+        public void ToggleEvn_OutBut(int x)
+        {
+            hugf.Log($"ToggleEvn_OutBut: {x}");
+            for (int i = 0; i < this.select_card_num; i++)
+            {
+                this.out_card_list[i] = this.select_card_list[i];
+            }
+            this.out_card_num = this.select_card_num;
+        }
+        public void ToggleEvn_TipsBut(int x)
+        {
+            hugf.Log($"ToggleEvn_TipsBut: {x}");
+        }
+
+        public void ToggleEvn_MaiDi(int x)
+        {
+            hugf.Log($"ToggleEvn_MaiDi: {x}");
+        }
+        public void SelecCardCall()
+        {
+            var _id = (int)this.eventData;
+            for (int i = 0; i < this.select_card_num; i++)
+            {
+                if (this.select_card_list[i] == _id)
+                    return;
+            }
+            this.select_card_list[this.select_card_num++] = _id;
+        }
+
+        public void UnselecCardCall()
+        {
+            var _id = (int)this.eventData;
+
+            var _has = false;
+            for (int i = 0; i < this.select_card_num; i++)
+            {
+                if (this.select_card_list[i] == _id)
+                {
+                    _has = true;
+                }
+                if (_has)
+                {
+                    this.select_card_list[i] = this.select_card_list[this.select_card_num - 1];
+                }
+            }
+            this.select_card_num--;
+        }
         // start method
 
+        public void ToggleEvn_OutBut_0() { ToggleEvn_OutBut(0); }
+        public void ToggleEvn_TipsBut_0() { ToggleEvn_TipsBut(0); }
+        public void ToggleEvn_MaiDi_0() { ToggleEvn_MaiDi(0); }
         // end method
     }
 }
