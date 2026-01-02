@@ -21,7 +21,6 @@ namespace HopeSDH
 
         [HideInInspector] public Transform[] card_tf_list;
 
-        public string hufg_init_string = "Init|";
         void Start()
         {
             InitRender();
@@ -87,6 +86,8 @@ namespace HopeSDH
 
         private HopeTools.HopeUdonFramework hugf;
         public object eventData;
+        public object eventData1;
+        public object eventData2;
         public void HugfInit()
         {
             if (hugf == null)
@@ -111,8 +112,10 @@ namespace HopeSDH
                 return;
             }
             // user code after hugf init here
-            hugf.udonEvn.RegisterListener(nameof(SDH_DiPaiManager.FaPaiCall), this);
             hugf.udonIoc.RegisterSingleton(nameof(this.card_tf_list), this, this.card_tf_list);
+
+            hugf.udonEvn.RegisterListener(nameof(this.EnCardTileClickCall), this);
+            hugf.udonEvn.RegisterListener(nameof(this.DisCardTileClickCall), this);
         }
 
         // 发牌
@@ -120,9 +123,22 @@ namespace HopeSDH
         {
             int seed = System.DateTime.Now.Ticks.GetHashCode();
             FisherYatesShuffle(seed);
-            hugf.TriggerEventWithData(nameof(SDH_DiPaiManager.FaPaiCall), this.card_id_list);
+
+            this.eventData = this.card_id_list;
+            this.eventData2 = this.card_id_list.Length;
+            ResetTileChildCall();
+            if (true)
+            {
+                hugf.TriggerEventWithData(nameof(SDH_DiPaiManager.FaPaiCall), this.card_id_list);
+            }
+            else
+            {
+                hugf.TriggerEventWithData(nameof(SDH_PlayerManager.FaPaiCall), this.card_id_list);
+            }
             RequestSyn();
         }
+
+        
 
         private void ClearCardSelect()
         {
@@ -133,6 +149,38 @@ namespace HopeSDH
             }
         }
 
+        public void SetCardTileClick(bool b)
+        {
+            var _card_id_list = (int[])(this.eventData);
+            var _card_num = (int)this.eventData2;
+            for (int i = 0; i < _card_num; i++)
+            {
+                var _id = _card_id_list[i];
+                this.card_tf_list[_id].GetComponent<SDH_CardTile>().IsSelectable = b;
+
+            }
+        }
+
+        public void ResetTileChildCall()
+        {
+            var _card_id_list = (int[])(this.eventData);
+            var _card_num = (int)this.eventData2;
+
+            for (int i = 0; i < _card_num; i++)
+            {
+                var _id = _card_id_list[i];
+                this.card_tf_list[_id].GetChild(0).localPosition = Vector3.zero;
+            }
+        }
+
+        public void DisCardTileClickCall()
+        {
+            SetCardTileClick(false);
+        }
+        public void EnCardTileClickCall()
+        {
+            SetCardTileClick(true);
+        }
         public void ResetCardList()
         {
             for (int i = 0; i < card_id_list.Length; i++)

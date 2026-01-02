@@ -19,6 +19,8 @@ namespace HopeSDH
         private int hand_idx = -1;
         private bool _is_init = false;
 
+        private bool is_clickable = false;
+
         public void Init()
         {
             if (this._is_init)
@@ -49,6 +51,22 @@ namespace HopeSDH
             }
         }
 
+        private BoxCollider _box;
+        public bool IsSelectable
+        {
+            get { return is_clickable; }
+            set
+            {
+                is_clickable = value;
+                this.transform.GetChild(0).localPosition = Vector3.zero;
+                if (_box == null)
+                {
+                    _box = GetComponent<BoxCollider>();
+                    _box.enabled = is_clickable;
+                }
+            }
+        }
+
         private int _card_p1;
 
         private Transform _child_tf;
@@ -61,6 +79,8 @@ namespace HopeSDH
 
         private void OnMouseDown()
         {
+            if (!IsSelectable)
+                return;
             if (_card_p1 == 0)
             {
                 _card_p1 = 2;
@@ -79,7 +99,7 @@ namespace HopeSDH
             
         }
 
-        private void UpdateCardPosition(int _p)
+        public void UpdateCardPosition(int _p)
         {
             if (_child_tf == null)
             {
@@ -90,7 +110,10 @@ namespace HopeSDH
         }
 
         private void OnMouseEnter()
-        {
+        {   
+            if (!IsSelectable)
+                return;
+
             if (_child_tf == null)
             {
                 _child_tf = transform.GetChild(0);
@@ -104,6 +127,8 @@ namespace HopeSDH
         }
         public void OnMouseExit()
         {
+            if (!IsSelectable)
+                return;
             UpdateCardPosition(_card_p1);
         }
     }

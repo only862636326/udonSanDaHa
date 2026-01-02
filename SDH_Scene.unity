@@ -6038,6 +6038,10 @@ MonoBehaviour:
     ID: 303
     SerializedTypeNames:
     - VRC.Udon.UdonBehaviour
+  - gameObject: {fileID: 469550459}
+    ID: 304
+    SerializedTypeNames:
+    - VRC.Udon.UdonBehaviour
   portraitCameraPositionOffset: {x: 0, y: 0, z: 0}
   portraitCameraRotationOffset: {x: 0, y: 1, z: 0, w: -0.00000004371139}
   PlayerPersistence: []
@@ -8268,6 +8272,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: TableCardTile (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1855804607299137006, guid: 29eba1511b3850347a8ee3f80f29f1f3,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3700993503579332023, guid: 29eba1511b3850347a8ee3f80f29f1f3,
         type: 3}
@@ -14609,6 +14618,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: TableCardTile (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 1855804607299137006, guid: 29eba1511b3850347a8ee3f80f29f1f3,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3700993503579332023, guid: 29eba1511b3850347a8ee3f80f29f1f3,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -15595,6 +15609,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: TableCardTile (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1855804607299137006, guid: 29eba1511b3850347a8ee3f80f29f1f3,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3700993503579332023, guid: 29eba1511b3850347a8ee3f80f29f1f3,
         type: 3}
@@ -19585,6 +19604,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: TableCardTile
+      objectReference: {fileID: 0}
+    - target: {fileID: 1855804607299137006, guid: 29eba1511b3850347a8ee3f80f29f1f3,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3700993503579332023, guid: 29eba1511b3850347a8ee3f80f29f1f3,
         type: 3}

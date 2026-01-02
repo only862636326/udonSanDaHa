@@ -17,9 +17,10 @@ namespace HopeSDH
         [UdonSynced] int[] syn_data_list;
 
         public int[] hand_card_list;
+        public int hand_card_num;
+
         private int _player_vrc_id;
         private int _player_index;
-        private int _hand_card_num;
 
         [SerializeField] private Transform[] card_tf_list;
 
@@ -55,10 +56,10 @@ namespace HopeSDH
             this.syn_data_list = new int[SDH_GameManager.CONST_PLAYER_HAND_CARD_MAX + 10];
         }
 
-
-
         private HopeTools.HopeUdonFramework hugf;
         public object eventData;
+        public object eventData1;
+        public object eventData2;
         public void HugfInit()
         {
             if (hugf == null)
@@ -71,12 +72,15 @@ namespace HopeSDH
                 }
 
                 hugf.Init();
-                hugf.udonEvn.RegisterListener(nameof(this.FaPaiCall), this);
                 return;
             }
         }
 
-
+        public void HugfInitAfter()
+        {
+            hugf.udonEvn.RegisterListener(nameof(this.FaPaiCall), this);
+            hugf.udonEvn.RegisterListener(nameof(this.SetHandCardPositionCall), this);
+        }
         public void HufgIocGet()
         {
             card_tf_list = (Transform[])hugf.udonIoc.GetServiceObj(nameof(SDH_FaPaiJi.card_tf_list));
@@ -88,13 +92,16 @@ namespace HopeSDH
             var dat = (int[])this.eventData;
             if (dat == null || dat.Length == 0)
             {
-                hugf.udondebug.LogWarning("SDH_DiPaiManager FaPaiCall data is null or empty!");
+                hugf.udondebug.LogError("SDH_DiPaiManager FaPaiCall data is null or empty!");
                 return;
             }
 
             GrabHandCard(dat);
             ConfigSortIdList(-1);
             SortCard();
+
+            hugf.TriggerEventWith2Data(nameof(SDH_FaPaiJi.EnCardTileClickCall), this.hand_card_list, this.hand_card_num);
+
             RequestSyn();
         }
 
@@ -197,7 +204,7 @@ namespace HopeSDH
                 _sort_temp_list[i] = -1;
             }
 
-            for (int i = 0; i < this._hand_card_num; i++)
+            for (int i = 0; i < this.hand_card_num; i++)
             {
                 int card_index = this.hand_card_list[i];
                 if (card_index < 0)
@@ -215,9 +222,9 @@ namespace HopeSDH
                 }
             }
 
-            if (_n != this._hand_card_num)
+            if (_n != this.hand_card_num)
             {
-                hugf.udondebug.LogWarning($"SortCard failed, _n != this._hand_card_num, _n = {_n}, this._hand_card_num = {this._hand_card_num}");
+                hugf.udondebug.LogWarning($"SortCard failed, _n != this._hand_card_num, _n = {_n}, this._hand_card_num = {this.hand_card_num}");
                 return;
             }
         }
@@ -232,20 +239,44 @@ namespace HopeSDH
             {
                 this.hand_card_list[i] = SDH_GameManager.CONST_CARD_NULL;
             }
-            _hand_card_num = SDH_GameManager.CONST_PLAYER_GRAB_CARD_NUM;
+            hand_card_num = SDH_GameManager.CONST_PLAYER_GRAB_CARD_NUM;
         }
 
         public void SetHandCardPosition(Transform[] tf_cards)
         {
-            var rot = this.GetQuaternion(0, _hand_card_num);
-            for (int i = 0; i < _hand_card_num; i++)
+            var rot = this.GetCardRotation(this._hand_card_positon_prt, 0, hand_card_num);
+            for (int i = 0; i < hand_card_num; i++)
             {
                 var idx = this.hand_card_list[i];
-                var pos = GetCardPosition(i, _hand_card_num);
+                var pos = GetCardPosition(this._hand_card_positon_prt, i, hand_card_num);
                 tf_cards[idx].position = pos;
                 tf_cards[idx].rotation = rot;
 
                 tf_cards[idx].GetComponent<SDH_CardTile>().SetCardP_x(0);
+            }
+        }
+
+
+        public void SetHandCardPositionCall()
+        {
+            var _card_id_list = (int[])(this.eventData);
+            var _card_num = (int)this.eventData2;
+
+            var _r = GetCardRotation(this._hand_card_positon_prt, 0, _card_num);
+            for (int i = 0; i < _card_num; i++)
+            {
+                var card_id = _card_id_list[i];
+
+                var pos = GetCardPosition(this._hand_card_positon_prt, i, _card_num);
+                if (pos == Vector3.zero)
+                    continue;
+
+                var tf = this.card_tf_list[card_id];
+                if (tf == null)
+                    continue;
+                tf.position = pos;
+                tf.rotation = _r;
+                tf.gameObject.SetActive(true);
             }
         }
 
@@ -258,7 +289,7 @@ namespace HopeSDH
             Debug.Log($"-------------TestSetCardPosition, {test_card_num}");
             if (test_tf_card_prt == null || test_card_num <= 0)
                 return;
-            _hand_card_num = test_card_num;
+            hand_card_num = test_card_num;
 
             for (int i = 0; i < SDH_GameManager.CONST_PLAYER_HAND_CARD_MAX; i++)
             {
@@ -277,7 +308,7 @@ namespace HopeSDH
             }
             SetHandCardPosition(tf_cards);
 
-            if (_hand_card_num < SDH_GameManager.CONST_PLAYER_HAND_CARD_MAX)
+            if (hand_card_num < SDH_GameManager.CONST_PLAYER_HAND_CARD_MAX)
             {
                 test_card_num++;
                 this.SendCustomEventDelayedSeconds(nameof(this.TestSetCardPosition), 0.2f);
@@ -285,26 +316,32 @@ namespace HopeSDH
         }
 #endif
 
-        public Quaternion GetQuaternion(int card_index, int card_num)
+        private Quaternion GetCardRotation(Transform tf, int card_index, int card_num)
         {
-            return this._hand_card_positon_prt.GetChild(0).rotation;
+            if (tf == null)
+                return Quaternion.identity;
+            return tf.GetChild(0).rotation;
         }
 
-        public Vector3 GetCardPosition(int card_index, int card_num)
+
+        private Vector3 GetCardPosition(Transform tf, int card_index, int card_num)
         {
             if (card_num <= 0)
                 return Vector3.zero;
 
-            var first_pos = this._hand_card_positon_prt.GetChild(0).position;
-            var second_pos = this._hand_card_positon_prt.GetChild(1).position;
-            var last_pos = this._hand_card_positon_prt.GetChild(this._hand_card_positon_prt.childCount - 1).position;
+            if (tf == null)
+                return Vector3.zero;
+
+            var first_pos = tf.GetChild(0).position;
+            var second_pos = tf.GetChild(1).position;
+            var last_pos = tf.GetChild(tf.childCount - 1).position;
             var center_pos = (first_pos + last_pos) / 2;
             var offset = (second_pos - first_pos); // 使用相邻两个位置点的间距作为标准偏移量
 
-            if(card_num <= this._hand_card_positon_prt.childCount)
+            if (card_num <= tf.childCount)
             {
                 // 卡牌数量小于等于位置点数量时，以center_pos为中心向两侧分布
-                if(card_num % 2 == 0)
+                if (card_num % 2 == 0)
                 {
                     // 偶数张卡牌时，中心在中间两张之间，向两侧对称分布
                     int half = card_num / 2;
@@ -326,8 +363,9 @@ namespace HopeSDH
                 var newOffset = (last_pos - first_pos) / (card_num - 1);
                 return center_pos + newOffset * (card_index - card_num / 2);
             }
-        }
 
+            return Vector3.zero;
+        }
 
         #region syn
 
@@ -351,7 +389,7 @@ namespace HopeSDH
             {
                 syn_data_list[i] = hand_card_list[i];
             }
-            syn_data_list[SDH_GameManager.CONST_PLAYER_HAND_CARD_MAX] = this._hand_card_num;
+            syn_data_list[SDH_GameManager.CONST_PLAYER_HAND_CARD_MAX] = this.hand_card_num;
             SetHandCardPosition(this.card_tf_list);
             // DebugSynData();
         }
@@ -362,7 +400,7 @@ namespace HopeSDH
             {
                 hand_card_list[i] = syn_data_list[i];
             }
-            this._hand_card_num = syn_data_list[SDH_GameManager.CONST_PLAYER_HAND_CARD_MAX];
+            this.hand_card_num = syn_data_list[SDH_GameManager.CONST_PLAYER_HAND_CARD_MAX];
             SetHandCardPosition(this.card_tf_list);
             // DebugSynData();
         }
@@ -374,7 +412,7 @@ namespace HopeSDH
             {
                 s += syn_data_list[i] + ", ";
             }
-            s += $" HandCardNum: {this._hand_card_num}";
+            s += $" HandCardNum: {this.hand_card_num}";
             Debug.Log(s);
         }
 

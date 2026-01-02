@@ -1,5 +1,6 @@
 
 using HopeSDH;
+using HopeTools;
 using UdonSharp;
 using UnityEngine;
 using VRC.SDKBase;
@@ -21,11 +22,12 @@ namespace HopeSDH
 
         private int _active_player;
 
-        [SerializeField] public int[] out_card_list;
-        [SerializeField] private int out_card_num;
-        [SerializeField] private int[] select_card_list;
+        [SerializeField] public int[] out_card_id_list;
+        [SerializeField] public int out_card_num;
+        [SerializeField] private int[] select_card_id_list;
         [SerializeField] private int select_card_num;
 
+        private SDH_Config sdh_config;
         public void Init()
         {
             if (this._is_init)
@@ -46,8 +48,8 @@ namespace HopeSDH
                     }
                 }
             }
-            out_card_list = new int[SDH_GameManager.CONST_PLAYER_HAND_CARD_MAX];
-            select_card_list = new int[SDH_GameManager.CONST_PLAYER_HAND_CARD_MAX];
+            out_card_id_list = new int[SDH_GameManager.CONST_PLAYER_HAND_CARD_MAX];
+            select_card_id_list = new int[SDH_GameManager.CONST_PLAYER_HAND_CARD_MAX];
             this.select_card_num = 0;
         }
 
@@ -83,6 +85,7 @@ namespace HopeSDH
         public void HufgIocGet()
         {
             //var p = (Transform[])hugf.udonIoc.GetServiceObj(nameof(SDH_FaPaiJi.card_tf_list));
+            sdh_config = (SDH_Config)hugf.udonIoc.GetServiceObj(SDH_Config.SDH_CONFIG_Singleton_String);
         }
 
         //public void DemeFunCall()
@@ -140,9 +143,12 @@ namespace HopeSDH
             hugf.Log($"ToggleEvn_OutBut: {x}");
             for (int i = 0; i < this.select_card_num; i++)
             {
-                this.out_card_list[i] = this.select_card_list[i];
+                this.out_card_id_list[i] = this.select_card_id_list[i];
             }
             this.out_card_num = this.select_card_num;
+
+            hugf.TriggerEventWith2Data(nameof(SDH_OutCartP.SetOutCardP0Call), this.out_card_id_list, this.out_card_num);
+            hugf.TriggerEventWith2Data(nameof(SDH_FaPaiJi.DisCardTileClickCall), this.out_card_id_list, this.out_card_num);
         }
         public void ToggleEvn_TipsBut(int x)
         {
@@ -158,10 +164,10 @@ namespace HopeSDH
             var _id = (int)this.eventData;
             for (int i = 0; i < this.select_card_num; i++)
             {
-                if (this.select_card_list[i] == _id)
+                if (this.select_card_id_list[i] == _id)
                     return;
             }
-            this.select_card_list[this.select_card_num++] = _id;
+            this.select_card_id_list[this.select_card_num++] = _id;
         }
 
         public void UnselecCardCall()
@@ -171,13 +177,13 @@ namespace HopeSDH
             var _has = false;
             for (int i = 0; i < this.select_card_num; i++)
             {
-                if (this.select_card_list[i] == _id)
+                if (this.select_card_id_list[i] == _id)
                 {
                     _has = true;
                 }
                 if (_has)
                 {
-                    this.select_card_list[i] = this.select_card_list[this.select_card_num - 1];
+                    this.select_card_id_list[i] = this.select_card_id_list[this.select_card_num - 1];
                 }
             }
             this.select_card_num--;
@@ -188,5 +194,68 @@ namespace HopeSDH
         public void ToggleEvn_TipsBut_0() { ToggleEvn_TipsBut(0); }
         public void ToggleEvn_MaiDi_0() { ToggleEvn_MaiDi(0); }
         // end method
+
+
+
+
+        #region 出牌判定
+
+        private int _current_player;
+        private int _zhu_icon;
+        private int _first_palyer;
+        private int _zhuang_palayer;
+
+        private int[] _p1_out_list;
+        private int[] _p2_out_list;
+        private int[] _p3_out_list;
+        private int[] _p4_out_list;
+
+        private int[] _p1_hand_list;
+        private int[] _p2_hand_list;
+        private int[] _p3_hand_list;
+        private int[] _p4_hand_list;
+        
+        private int[] _jipaiqi_list;
+
+        private bool CheckIsOutUser(int idx)
+        {
+            return idx == _current_player;
+        }
+
+
+
+        private bool CheckOutEn()
+        {
+            if (select_card_num == 1)
+            {
+                return true;
+            }
+
+            // 不支持甩牌
+            if ((select_card_num & 0x01) > 0)
+            {
+                return false;
+            }
+            
+
+            return false;
+        }
+        
+        
+        public void ChuPaiFirst()
+        {
+            ;
+        }
+
+        public void ChuPaiNext()
+        {
+            ;
+        }
+
+
+
+        #endregion   出牌判定
+
+
     }
 }
