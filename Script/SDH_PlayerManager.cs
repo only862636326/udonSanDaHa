@@ -13,7 +13,6 @@ namespace HopeSDH
 
     public class SDH_PlayerManager : UdonSharpBehaviour
     {
-        private int[] sort_id_list;
         [UdonSynced] int[] syn_data_list;
 
         public int[] hand_card_list;
@@ -26,6 +25,7 @@ namespace HopeSDH
 
         public Transform handGrabCardPrt;
         private Transform _hand_card_positon_prt;
+        [SerializeField] private SDH_GameManager sDH_GameManager;
 
         void Start()
         {
@@ -84,6 +84,7 @@ namespace HopeSDH
         public void HufgIocGet()
         {
             card_tf_list = (Transform[])hugf.udonIoc.GetServiceObj(nameof(SDH_FaPaiJi.card_tf_list));
+            sDH_GameManager = (SDH_GameManager)hugf.udonIoc.GetServiceUdon(SDH_GameManager.SDH_CONFIG_Singleton_String);
         }
 
 
@@ -97,137 +98,10 @@ namespace HopeSDH
             }
 
             GrabHandCard(dat);
-            ConfigSortIdList(-1);
-            SortCard();
-
-            hugf.TriggerEventWith2Data(nameof(SDH_FaPaiJi.EnCardTileClickCall), this.hand_card_list, this.hand_card_num);
-
+            sDH_GameManager.SortListByIdxCard(this.hand_card_list, this.hand_card_num);
+            hugf.TriggerEventWith2Data(nameof(SDH_FaPaiJi.EnCardTileClickCall), this.hand_card_list, this.hand_card_num);            
             RequestSyn();
-        }
-
-
-        private int[] _sort_temp_list;
-
-        private void ConfigSortIdList(int _icon)
-        {
-            if (sort_id_list == null)
-            {
-                this.sort_id_list = new int[SDH_GameManager.CONST_SHOW_CARD_NUM];
-            }
-
-            var _all_num = sort_id_list.Length;
-
-            var _sort_idx = 0;
-            sort_id_list[_sort_idx++] = _all_num - 1;
-            sort_id_list[_sort_idx++] = _all_num - 2;
-            sort_id_list[_sort_idx++] = _all_num - 3;
-            sort_id_list[_sort_idx++] = _all_num - 4;
-
-            int _num;
-            _num = 7;
-            if (_icon >= 0 && _icon < 4)
-            {
-                sort_id_list[_sort_idx++] = _icon * 26 + (_num * 2 - 1);
-                sort_id_list[_sort_idx++] = _icon * 26 + (_num * 2 - 2);
-            }
-
-            for (var _t = 0; _t < 4; _t++)
-            {
-                if (_t == _icon)
-                    continue;
-                sort_id_list[_sort_idx++] = _t * 26 + (_num * 2 - 1);
-                sort_id_list[_sort_idx++] = _t * 26 + (_num * 2 - 2);
-            }
-
-            _num = 2;
-            if (_icon >= 0 && _icon < 4)
-            {
-                sort_id_list[_sort_idx++] = _icon * 26 + (_num * 2 - 1);
-                sort_id_list[_sort_idx++] = _icon * 26 + (_num * 2 - 2);
-            }
-
-            for (var _t = 0; _t < 4; _t++)
-            {
-                if (_t == _icon)
-                    continue;
-                sort_id_list[_sort_idx++] = _t * 26 + (_num * 2 - 1);
-                sort_id_list[_sort_idx++] = _t * 26 + (_num * 2 - 2);
-            }
-
-            // 
-            if (_icon >= 0 && _icon < 4)
-            {
-                _num = 1;
-                sort_id_list[_sort_idx++] = _icon * 26 + (_num * 2 - 1);
-                sort_id_list[_sort_idx++] = _icon * 26 + (_num * 2 - 2);
-
-                for (int i = 13; i >= 3; i--)
-                {
-                    if (i == 7)
-                        continue;
-                    _num = i;
-                    sort_id_list[_sort_idx++] = _icon * 26 + (_num * 2 - 1);
-                    sort_id_list[_sort_idx++] = _icon * 26 + (_num * 2 - 2);
-                }
-            }
-
-            for (var _t = 0; _t < 4; _t++)
-            {
-                if (_t == _icon)
-                    continue;
-
-                _num = 1;
-
-                sort_id_list[_sort_idx++] = _t * 26 + (_num * 2 - 1);
-                sort_id_list[_sort_idx++] = _t * 26 + (_num * 2 - 2);
-
-                for (int i = 13; i >= 3; i--)
-                {
-                    if(i == 7)
-                        continue;
-                    _num = i;
-                    sort_id_list[_sort_idx++] = _t * 26 + (_num * 2 - 1);
-                    sort_id_list[_sort_idx++] = _t * 26 + (_num * 2 - 2);
-                }
-            }
-        }
-
-        public void SortCard()
-        {
-            if (_sort_temp_list == null)
-            {
-                _sort_temp_list = new int[SDH_GameManager.CONST_SHOW_CARD_NUM];
-            }
-
-            for (int i = 0; i < _sort_temp_list.Length; i++)
-            {
-                _sort_temp_list[i] = -1;
-            }
-
-            for (int i = 0; i < this.hand_card_num; i++)
-            {
-                int card_index = this.hand_card_list[i];
-                if (card_index < 0)
-                    continue;
-                _sort_temp_list[card_index] = i;
-            }
-
-            int _n = 0;
-            for (int i = 0; i < sort_id_list.Length; i++)
-            {
-                int card_id = this.sort_id_list[i];
-                if (card_id >= 0 && _sort_temp_list[card_id] >= 0)
-                {
-                    this.hand_card_list[_n++] = card_id;
-                }
-            }
-
-            if (_n != this.hand_card_num)
-            {
-                hugf.udondebug.LogWarning($"SortCard failed, _n != this._hand_card_num, _n = {_n}, this._hand_card_num = {this.hand_card_num}");
-                return;
-            }
-        }
+        }       
 
         public void GrabHandCard(int[] cards)
         {
@@ -322,7 +196,6 @@ namespace HopeSDH
                 return Quaternion.identity;
             return tf.GetChild(0).rotation;
         }
-
 
         private Vector3 GetCardPosition(Transform tf, int card_index, int card_num)
         {

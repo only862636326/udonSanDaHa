@@ -27,7 +27,7 @@ namespace HopeSDH
         [SerializeField] private int[] select_card_id_list;
         [SerializeField] private int select_card_num;
 
-        private SDH_Config sdh_config;
+        [SerializeField]  private SDH_GameManager sDH_GameManager;
         public void Init()
         {
             if (this._is_init)
@@ -79,13 +79,14 @@ namespace HopeSDH
             //hugf.udonEvn.RegisterListener(nameof(this.DemeFunCall), this);
             hugf.udonEvn.RegisterListener(nameof(this.SelecCardCall), this);
             hugf.udonEvn.RegisterListener(nameof(this.UnselecCardCall), this);
+            hugf.udonEvn.RegisterListener(nameof(this.StartChuPaiCall), this);
         }
 
 
         public void HufgIocGet()
         {
             //var p = (Transform[])hugf.udonIoc.GetServiceObj(nameof(SDH_FaPaiJi.card_tf_list));
-            sdh_config = (SDH_Config)hugf.udonIoc.GetServiceObj(SDH_Config.SDH_CONFIG_Singleton_String);
+            sDH_GameManager = (SDH_GameManager)hugf.udonIoc.GetServiceUdon(SDH_GameManager.SDH_CONFIG_Singleton_String);
         }
 
         //public void DemeFunCall()
@@ -140,19 +141,30 @@ namespace HopeSDH
 
         public void ToggleEvn_OutBut(int x)
         {
-            hugf.Log($"ToggleEvn_OutBut: {x}");
+
+            var b =  CheckOutEn();            
+            if(!b)
+            {
+                hugf.Log($"CheckOutEn failed, select_card_num: {this.select_card_num}");
+                return;
+            }
+
             for (int i = 0; i < this.select_card_num; i++)
             {
                 this.out_card_id_list[i] = this.select_card_id_list[i];
             }
             this.out_card_num = this.select_card_num;
 
+            sDH_GameManager.SortListByIdxCard(this.out_card_id_list, this.out_card_num);
             hugf.TriggerEventWith2Data(nameof(SDH_OutCartP.SetOutCardP0Call), this.out_card_id_list, this.out_card_num);
             hugf.TriggerEventWith2Data(nameof(SDH_FaPaiJi.DisCardTileClickCall), this.out_card_id_list, this.out_card_num);
         }
+
         public void ToggleEvn_TipsBut(int x)
         {
             hugf.Log($"ToggleEvn_TipsBut: {x}");
+            // test 
+            StartChuPaiCall();
         }
 
         public void ToggleEvn_MaiDi(int x)
@@ -161,6 +173,7 @@ namespace HopeSDH
         }
         public void SelecCardCall()
         {
+            if (select_card_num >= select_card_id_list.Length) return;
             var _id = (int)this.eventData;
             for (int i = 0; i < this.select_card_num; i++)
             {
@@ -172,6 +185,8 @@ namespace HopeSDH
 
         public void UnselecCardCall()
         {
+            if (select_card_num <= 0) return;
+
             var _id = (int)this.eventData;
 
             var _has = false;
@@ -186,6 +201,11 @@ namespace HopeSDH
                     this.select_card_id_list[i] = this.select_card_id_list[this.select_card_num - 1];
                 }
             }
+            if(this.select_card_num >= this.select_card_id_list.Length)
+            {
+                hugf.udondebug.LogWarning($"UnselecCardCall: {_id}, select_card_num: {this.select_card_num}");
+                return;
+            }
             this.select_card_num--;
         }
         // start method
@@ -196,14 +216,10 @@ namespace HopeSDH
         // end method
 
 
-
-
         #region 出牌判定
 
         private int _current_player;
         private int _zhu_icon;
-        private int _first_palyer;
-        private int _zhuang_palayer;
 
         private int[] _p1_out_list;
         private int[] _p2_out_list;
@@ -222,25 +238,45 @@ namespace HopeSDH
             return idx == _current_player;
         }
 
-
+        private int[] _sort_temp_list;
 
         private bool CheckOutEn()
         {
+
             if (select_card_num == 1)
             {
                 return true;
             }
 
-            // 不支持甩牌
+            if (select_card_num == 2)
+            {
+                var x = select_card_id_list[0] / 2;
+                var y = select_card_id_list[1] / 2;
+                return x == y;
+            }
+
+            // 单数， 暂时不支持甩牌
             if ((select_card_num & 0x01) > 0)
             {
                 return false;
             }
-            
-
-            return false;
+            // 最高到五连拖
+            if (select_card_num > 10)
+            {
+                return false;
+            }
+             
+            var b = sDH_GameManager.CheckIsTuoLaJi(this.select_card_id_list, this.select_card_num);
+            return b;
         }
-        
+
+        public void StartChuPaiCall()
+        {
+            this._current_player = sDH_GameManager.config_zhuang_player;
+            this._zhu_icon = sDH_GameManager.config_zhu_icon;
+            this.select_card_num = 0;
+        }
+
         
         public void ChuPaiFirst()
         {
@@ -252,10 +288,6 @@ namespace HopeSDH
             ;
         }
 
-
-
         #endregion   出牌判定
-
-
     }
 }

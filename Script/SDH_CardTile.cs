@@ -58,12 +58,13 @@ namespace HopeSDH
             set
             {
                 is_clickable = value;
-                this.transform.GetChild(0).localPosition = Vector3.zero;
+                _card_p1 = 0;
+                UpdateCardPosition(0);
                 if (_box == null)
                 {
                     _box = GetComponent<BoxCollider>();
-                    _box.enabled = is_clickable;
                 }
+                _box.enabled = is_clickable;
             }
         }
 
@@ -81,16 +82,16 @@ namespace HopeSDH
         {
             if (!IsSelectable)
                 return;
+
             if (_card_p1 == 0)
             {
-                _card_p1 = 2;
                 hugf.TriggerEventWithData(nameof(SDH_OutCartFsm.SelecCardCall), this.card_id);
             }
             else if (_card_p1 == 2)
             {
-                _card_p1 = 0;
                 hugf.TriggerEventWithData(nameof(SDH_OutCartFsm.UnselecCardCall), this.card_id);
             }
+            _card_p1 = _card_p1 == 0 ? 2 : 0;
             UpdateCardPosition(_card_p1);
         }
 
@@ -105,23 +106,18 @@ namespace HopeSDH
             {
                 _child_tf = transform.GetChild(0);
             }
-            var p = this._child_tf.up * 0.005f * _p;
-            _child_tf.position = this._org_p + p;
+            var p = this.transform.position + this.transform.up * 0.005f * _p;
+            _child_tf.position = p;
         }
 
         private void OnMouseEnter()
-        {   
+        {
             if (!IsSelectable)
                 return;
 
-            if (_child_tf == null)
-            {
-                _child_tf = transform.GetChild(0);
-            }
 
             if (_card_p1 == 0)
             {
-                this._org_p = this._child_tf.position;
                 UpdateCardPosition(1);
             }
         }

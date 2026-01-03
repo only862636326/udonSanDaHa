@@ -105,6 +105,8 @@ namespace HopeSDH
                 return;
             }
             GrabHandCard(dat);
+            hugf.TriggerEventWith2Data(nameof(SDH_FaPaiJi.DisCardTileClickCall), this._dipai_list, this._dipai_count);
+
             RequestSyn();
         }
 

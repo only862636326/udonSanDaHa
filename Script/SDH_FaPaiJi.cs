@@ -113,20 +113,17 @@ namespace HopeSDH
             }
             // user code after hugf init here
             hugf.udonIoc.RegisterSingleton(nameof(this.card_tf_list), this, this.card_tf_list);
-
             hugf.udonEvn.RegisterListener(nameof(this.EnCardTileClickCall), this);
             hugf.udonEvn.RegisterListener(nameof(this.DisCardTileClickCall), this);
         }
 
+      
         // 发牌
         public void FaPai()
         {
             int seed = System.DateTime.Now.Ticks.GetHashCode();
             FisherYatesShuffle(seed);
 
-            this.eventData = this.card_id_list;
-            this.eventData2 = this.card_id_list.Length;
-            ResetTileChildCall();
             if (true)
             {
                 hugf.TriggerEventWithData(nameof(SDH_DiPaiManager.FaPaiCall), this.card_id_list);
@@ -137,8 +134,6 @@ namespace HopeSDH
             }
             RequestSyn();
         }
-
-        
 
         private void ClearCardSelect()
         {
@@ -157,18 +152,14 @@ namespace HopeSDH
             {
                 var _id = _card_id_list[i];
                 this.card_tf_list[_id].GetComponent<SDH_CardTile>().IsSelectable = b;
-
             }
         }
 
-        public void ResetTileChildCall()
+        public void ResetAllTileChildCall()
         {
-            var _card_id_list = (int[])(this.eventData);
-            var _card_num = (int)this.eventData2;
-
-            for (int i = 0; i < _card_num; i++)
+            for (int i = 0; i < card_tf_list.Length; i++)
             {
-                var _id = _card_id_list[i];
+                var _id = i;
                 this.card_tf_list[_id].GetChild(0).localPosition = Vector3.zero;
             }
         }
