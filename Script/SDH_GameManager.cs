@@ -1,7 +1,9 @@
 ﻿
 using System;
 using UdonSharp;
+using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.InputSystem.HID;
 using VRC.SDKBase;
 using VRC.Udon;
 
@@ -29,6 +31,8 @@ namespace HopeSDH
         public const int CONST_ICON_HONG = 2;
         public const int CONST_ICON_HEI = 3;
         public const int CONST_ICON_JOKER = 4;
+        public const int CONST_ICON_ZHU = CONST_ICON_JOKER;
+        public const int CONST_ICON_TYPE_MAST = 0x0f00;
 
         public int config_zhuang_player = -1;
         public int config_zhuang_score = 0;
@@ -252,7 +256,7 @@ namespace HopeSDH
 
         #endregion end sortd list
         // zhu;
-        public const int CONST_TYPE_Zheng5 = 100;
+        public const int CONST_TYPE_Zheng5 = 0x0400; // 0x1000 = 4096
         public const int CONST_TYPE_Zheng6 = CONST_TYPE_Zheng5 + 1;
         public const int CONST_TYPE_Zheng8 = CONST_TYPE_Zheng6 + 1;
         public const int CONST_TYPE_Zheng9 = CONST_TYPE_Zheng8 + 1;
@@ -279,7 +283,7 @@ namespace HopeSDH
         public const int CONST_TYPE_FuK = CONST_TYPE_FuQ + 1;
         public const int CONST_TYPE_FuA = CONST_TYPE_FuK + 1;
 
-        public const int CONST_TYPE_UNKNOWN = 999;
+        public const int CONST_TYPE_UNKNOWN = 0xffff;
         public const int CONST_TYPE_Zheng3 = CONST_TYPE_UNKNOWN;
         public const int CONST_TYPE_Zheng4 = CONST_TYPE_UNKNOWN;
         public const int CONST_TYPE_Fu3 = CONST_TYPE_UNKNOWN;
@@ -362,15 +366,16 @@ namespace HopeSDH
                     }
                     else
                     {
+                        var _base = icon << 8;
                         switch (i)
                         {
                             case 0:
-                                config_type_id_list[card_id - 1] = CONST_TYPE_FuA;
-                                config_type_id_list[card_id - 2] = CONST_TYPE_FuA;
+                                config_type_id_list[card_id - 1] = CONST_TYPE_FuA + _base;
+                                config_type_id_list[card_id - 2] = CONST_TYPE_FuA + _base;
                                 break;
                             case 1:
-                                config_type_id_list[card_id - 1] = CONST_TYPE_Fu2;
-                                config_type_id_list[card_id - 2] = CONST_TYPE_Fu2;
+                                config_type_id_list[card_id - 1] = CONST_TYPE_Fu2 + _base;
+                                config_type_id_list[card_id - 2] = CONST_TYPE_Fu2 + _base;
                                 if (zhu == CONST_ICON_JOKER)
                                 {
                                     config_type_id_list[card_id - 1] = CONST_TYPE_Zheng2;
@@ -378,24 +383,24 @@ namespace HopeSDH
                                 }
                                 break;
                             case 2:
-                                config_type_id_list[card_id - 1] = CONST_TYPE_Fu3;
-                                config_type_id_list[card_id - 2] = CONST_TYPE_Fu3;
+                                config_type_id_list[card_id - 1] = CONST_TYPE_Fu3 + _base;
+                                config_type_id_list[card_id - 2] = CONST_TYPE_Fu3 + _base;
                                 break;
                             case 3:
-                                config_type_id_list[card_id - 1] = CONST_TYPE_Fu4;
-                                config_type_id_list[card_id - 2] = CONST_TYPE_Fu4;
+                                config_type_id_list[card_id - 1] = CONST_TYPE_Fu4 + _base;
+                                config_type_id_list[card_id - 2] = CONST_TYPE_Fu4 + _base;
                                 break;
                             case 4:
-                                config_type_id_list[card_id - 1] = CONST_TYPE_Fu5;
-                                config_type_id_list[card_id - 2] = CONST_TYPE_Fu5;
+                                config_type_id_list[card_id - 1] = CONST_TYPE_Fu5 + _base;
+                                config_type_id_list[card_id - 2] = CONST_TYPE_Fu5 + _base;
                                 break;
                             case 5:
-                                config_type_id_list[card_id - 1] = CONST_TYPE_Fu6;
-                                config_type_id_list[card_id - 2] = CONST_TYPE_Fu6;
+                                config_type_id_list[card_id - 1] = CONST_TYPE_Fu6 + _base;
+                                config_type_id_list[card_id - 2] = CONST_TYPE_Fu6 + _base;
                                 break;
                             case 6:
-                                config_type_id_list[card_id - 1] = CONST_TYPE_Fu7;
-                                config_type_id_list[card_id - 2] = CONST_TYPE_Fu7;
+                                config_type_id_list[card_id - 1] = CONST_TYPE_Fu7 + _base;
+                                config_type_id_list[card_id - 2] = CONST_TYPE_Fu7 + _base;
                                 if (zhu == CONST_ICON_JOKER)
                                 {
                                     config_type_id_list[card_id - 1] = CONST_TYPE_Zheng7;
@@ -403,33 +408,34 @@ namespace HopeSDH
                                 }
                                 break;
                             case 7:
-                                config_type_id_list[card_id - 1] = CONST_TYPE_Fu8;
-                                config_type_id_list[card_id - 2] = CONST_TYPE_Fu8;
+                                config_type_id_list[card_id - 1] = CONST_TYPE_Fu8 + _base;
+                                config_type_id_list[card_id - 2] = CONST_TYPE_Fu8 + _base;
                                 break;
                             case 8:
-                                config_type_id_list[card_id - 1] = CONST_TYPE_Fu9;
-                                config_type_id_list[card_id - 2] = CONST_TYPE_Fu9;
+                                config_type_id_list[card_id - 1] = CONST_TYPE_Fu9 + _base;
+                                config_type_id_list[card_id - 2] = CONST_TYPE_Fu9 + _base;
                                 break;
                             case 9:
-                                config_type_id_list[card_id - 1] = CONST_TYPE_Fu10;
-                                config_type_id_list[card_id - 2] = CONST_TYPE_Fu10;
+                                config_type_id_list[card_id - 1] = CONST_TYPE_Fu10 + _base;
+                                config_type_id_list[card_id - 2] = CONST_TYPE_Fu10 + _base;
                                 break;
                             case 10:
-                                config_type_id_list[card_id - 1] = CONST_TYPE_FuJ;
-                                config_type_id_list[card_id - 2] = CONST_TYPE_FuJ;
+                                config_type_id_list[card_id - 1] = CONST_TYPE_FuJ + _base;
+                                config_type_id_list[card_id - 2] = CONST_TYPE_FuJ + _base;
                                 break;
                             case 11:
-                                config_type_id_list[card_id - 1] = CONST_TYPE_FuQ;
-                                config_type_id_list[card_id - 2] = CONST_TYPE_FuQ;
+                                config_type_id_list[card_id - 1] = CONST_TYPE_FuQ + _base;
+                                config_type_id_list[card_id - 2] = CONST_TYPE_FuQ + _base;
                                 break;
                             case 12:
-                                config_type_id_list[card_id - 1] = CONST_TYPE_FuK;
-                                config_type_id_list[card_id - 2] = CONST_TYPE_FuK;
+                                config_type_id_list[card_id - 1] = CONST_TYPE_FuK + _base;
+                                config_type_id_list[card_id - 2] = CONST_TYPE_FuK + _base;
                                 break;
                         }
                     }
                 }
             }
+
             config_type_id_list[card_id++] = CONST_TYPE_SmallJoker;
             config_type_id_list[card_id++] = CONST_TYPE_SmallJoker;
             config_type_id_list[card_id++] = CONST_TYPE_BigJoker;
@@ -488,6 +494,107 @@ namespace HopeSDH
                 }
             }
             return true;
+        }
+
+        // 无需排序
+        public int CheckIconNum(int[] id_list, int num, int icon)
+        {
+            var icon_num = 0;
+            for (int i = 0; i < num; i++)
+            {
+                var typ = GetTypeById(id_list[i]);
+                if ((typ & CONST_ICON_TYPE_MAST) == (icon << 8))
+                {
+                    icon_num++;
+                }
+            }
+            return icon_num;
+        }
+
+        // 需排序
+        public int CheckIconNum2(int[] id_list, int num, int icon)
+        {
+            var icon_num = 0;
+            for (int i = 0; i < num; i++)
+            {
+                var typ = GetTypeById(id_list[i]);
+                if ((typ & CONST_ICON_TYPE_MAST) == (icon << 8))
+                {
+                    this._sort_temp_list[icon_num++] = id_list[i];
+                }
+                else
+                {
+                    if(icon_num > 0)
+                    {
+                        break;
+                    }
+                }
+            }
+            for (int i = 0; i < icon_num - 1; i++)
+            {
+                var dx = this._sort_temp_list[i] - this._sort_temp_list[i + 1];
+                this._sort_temp_list[i] = dx;
+            }
+            var _pair_num = 0;
+            for (int i = 0; i < icon_num - 1; i++)
+            {
+                if (this._sort_temp_list[i] == 0)
+                {
+                    _pair_num++;
+                }
+            }
+            return _pair_num;
+        }
+
+        public bool CheckHasTuoLaji(int[] id_list, int num, int icon, int l)
+        {
+            var icon_num = 0;
+            // 取出有效部分
+            for (int i = 0; i < num; i++)
+            {
+                var typ = GetTypeById(id_list[i]);
+                if ((typ & CONST_ICON_TYPE_MAST) == (icon << 8))
+                {
+                    this._sort_temp_list[icon_num++] = id_list[i];
+                }
+                else
+                {
+                    if (icon_num > 0)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            // 求导
+            for (int i = 0; i < icon_num - 1; i++)
+            {
+                var dx = this._sort_temp_list[i] - this._sort_temp_list[i + 1];
+                this._sort_temp_list[i] = dx;
+            }
+
+            // 求和，快速数1
+            var sum_num = l * 2 - 1;
+            for (int i = 0; i < icon_num - 1; i++)
+            {
+                var _sum = 0;
+                for (int j = 0; j < sum_num; j++)
+                {
+                    // 越界，返回
+                    if (i + j >= icon_num)
+                        return false;
+
+                    if (Math.Abs(_sort_temp_list[i + j]) > 1)
+                        break;
+                    _sum += _sort_temp_list[i + j];
+                }
+                // 
+                if (Math.Abs(_sum) == l - 1)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         /// <summary>

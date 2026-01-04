@@ -65,7 +65,7 @@ namespace HopeSDH
             if (hugf == null)
             {
                 hugf = GameObject.Find(SDH_GameManager.CONST_SDH_HUGF_STRING).GetComponent<HopeUdonFramework>();
-                if(hugf == null)
+                if (hugf == null)
                 {
                     Debug.LogError("HugfInit failed, hugf is null!");
                     return;
@@ -78,9 +78,14 @@ namespace HopeSDH
 
         public void HugfInitAfter()
         {
-            hugf.udonEvn.RegisterListener(nameof(this.FaPaiCall), this);
+            // hugf.udonEvn.RegisterListener(nameof(this.FaPaiCall), this);
             hugf.udonEvn.RegisterListener(nameof(this.SetHandCardPositionCall), this);
+            hugf.udonEvn.RegisterListener(nameof(this.SetHandCardP0Call), this);
+            hugf.udonEvn.RegisterListener(nameof(this.SetHandCardP1Call), this);
+            hugf.udonEvn.RegisterListener(nameof(this.SetHandCardP2Call), this);
+            hugf.udonEvn.RegisterListener(nameof(this.SetHandCardP3Call), this);
         }
+        
         public void HufgIocGet()
         {
             card_tf_list = (Transform[])hugf.udonIoc.GetServiceObj(nameof(SDH_FaPaiJi.card_tf_list));
@@ -99,9 +104,9 @@ namespace HopeSDH
 
             GrabHandCard(dat);
             sDH_GameManager.SortListByIdxCard(this.hand_card_list, this.hand_card_num);
-            hugf.TriggerEventWith2Data(nameof(SDH_FaPaiJi.EnCardTileClickCall), this.hand_card_list, this.hand_card_num);            
-            RequestSyn();
-        }       
+            hugf.TriggerEventWith2Data(nameof(SDH_FaPaiJi.EnCardTileClickCall), this.hand_card_list, this.hand_card_num);
+            //RequestSyn();
+        }
 
         public void GrabHandCard(int[] cards)
         {
@@ -130,7 +135,6 @@ namespace HopeSDH
             }
         }
 
-
         public void SetHandCardPositionCall()
         {
             var _card_id_list = (int[])(this.eventData);
@@ -140,7 +144,7 @@ namespace HopeSDH
             for (int i = 0; i < _card_num; i++)
             {
                 var card_id = _card_id_list[i];
-
+                this.hand_card_list[i] = card_id;
                 var pos = GetCardPosition(this._hand_card_positon_prt, i, _card_num);
                 if (pos == Vector3.zero)
                     continue;
@@ -153,6 +157,11 @@ namespace HopeSDH
                 tf.gameObject.SetActive(true);
             }
         }
+
+        public void SetHandCardP0Call() { if (this._player_index == 0) SetHandCardPositionCall(); }
+        public void SetHandCardP1Call() { if (this._player_index == 1) SetHandCardPositionCall(); }
+        public void SetHandCardP2Call() { if (this._player_index == 2) SetHandCardPositionCall(); }
+        public void SetHandCardP3Call() { if (this._player_index == 3) SetHandCardPositionCall(); }
 
 #if UNITY_EDITOR       
         [Header("测试用，运行时无效")]
@@ -288,7 +297,6 @@ namespace HopeSDH
             s += $" HandCardNum: {this.hand_card_num}";
             Debug.Log(s);
         }
-
         #endregion end syn
     }
 }

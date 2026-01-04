@@ -48,6 +48,8 @@ namespace HopeSDH
                     }
                 }
             }
+            _init_chupai_1412();
+
             out_card_id_list = new int[SDH_GameManager.CONST_PLAYER_HAND_CARD_MAX];
             select_card_id_list = new int[SDH_GameManager.CONST_PLAYER_HAND_CARD_MAX];
             this.select_card_num = 0;
@@ -80,6 +82,7 @@ namespace HopeSDH
             hugf.udonEvn.RegisterListener(nameof(this.SelecCardCall), this);
             hugf.udonEvn.RegisterListener(nameof(this.UnselecCardCall), this);
             hugf.udonEvn.RegisterListener(nameof(this.StartChuPaiCall), this);
+            hugf.udonEvn.RegisterListener(nameof(this.FaPaiCall), this);
         }
 
 
@@ -142,22 +145,8 @@ namespace HopeSDH
         public void ToggleEvn_OutBut(int x)
         {
 
-            var b =  CheckOutEn();            
-            if(!b)
-            {
-                hugf.Log($"CheckOutEn failed, select_card_num: {this.select_card_num}");
-                return;
-            }
-
-            for (int i = 0; i < this.select_card_num; i++)
-            {
-                this.out_card_id_list[i] = this.select_card_id_list[i];
-            }
-            this.out_card_num = this.select_card_num;
-
-            sDH_GameManager.SortListByIdxCard(this.out_card_id_list, this.out_card_num);
-            hugf.TriggerEventWith2Data(nameof(SDH_OutCartP.SetOutCardP0Call), this.out_card_id_list, this.out_card_num);
-            hugf.TriggerEventWith2Data(nameof(SDH_FaPaiJi.DisCardTileClickCall), this.out_card_id_list, this.out_card_num);
+            FirstOutFun();
+            AfterOutFun();
         }
 
         public void ToggleEvn_TipsBut(int x)
@@ -219,19 +208,91 @@ namespace HopeSDH
         #region 出牌判定
 
         private int _current_player;
+        private int _first_out_player;
         private int _zhu_icon;
 
+
+        private int[] _p0_out_list;
         private int[] _p1_out_list;
         private int[] _p2_out_list;
         private int[] _p3_out_list;
-        private int[] _p4_out_list;
 
+        private int[] _p0_hand_list;
         private int[] _p1_hand_list;
         private int[] _p2_hand_list;
         private int[] _p3_hand_list;
-        private int[] _p4_hand_list;
         
+        private int _pre_hand_card_num;
         private int[] _jipaiqi_list;
+
+        private int[] fitrt_out_card_type_list;
+        private int[] first_out_card_list;
+        private int first_out_card_num;
+        private bool _is_init_chupai_1412 = false;
+        private void _init_chupai_1412()
+        {
+            if (_is_init_chupai_1412)
+                return;
+            _is_init_chupai_1412 = true;
+
+            _p0_out_list = new int[SDH_GameManager.CONST_PLAYER_HAND_CARD_MAX];
+            _p1_out_list = new int[SDH_GameManager.CONST_PLAYER_HAND_CARD_MAX];
+            _p2_out_list = new int[SDH_GameManager.CONST_PLAYER_HAND_CARD_MAX];
+            _p3_out_list = new int[SDH_GameManager.CONST_PLAYER_HAND_CARD_MAX];
+
+            _p0_hand_list = new int[SDH_GameManager.CONST_PLAYER_HAND_CARD_MAX];
+            _p1_hand_list = new int[SDH_GameManager.CONST_PLAYER_HAND_CARD_MAX];
+            _p2_hand_list = new int[SDH_GameManager.CONST_PLAYER_HAND_CARD_MAX];
+            _p3_hand_list = new int[SDH_GameManager.CONST_PLAYER_HAND_CARD_MAX];
+
+
+            fitrt_out_card_type_list = new int[SDH_GameManager.CONST_PLAYER_HAND_CARD_MAX];
+            first_out_card_list = new int[SDH_GameManager.CONST_PLAYER_HAND_CARD_MAX];
+
+            for (int i = 0; i < SDH_GameManager.CONST_PLAYER_HAND_CARD_MAX; i++)
+            {
+                _p0_hand_list[i] = SDH_GameManager.CONST_CARD_NULL;
+                _p1_hand_list[i] = SDH_GameManager.CONST_CARD_NULL;
+                _p2_hand_list[i] = SDH_GameManager.CONST_CARD_NULL;
+                _p3_hand_list[i] = SDH_GameManager.CONST_CARD_NULL;
+
+                _p0_out_list[i] = SDH_GameManager.CONST_CARD_NULL;
+                _p1_out_list[i] = SDH_GameManager.CONST_CARD_NULL;
+                _p2_out_list[i] = SDH_GameManager.CONST_CARD_NULL   ;
+                _p3_out_list[i] = SDH_GameManager.CONST_CARD_NULL;  
+            }
+        }
+
+        public void FaPaiCall()
+        {
+            var dat = (int[])this.eventData;
+            if (dat == null || dat.Length == 0)
+            {
+                hugf.udondebug.LogWarning("SDH_DiPaiManager FaPaiCall data is null or empty!");
+                return;
+            }
+
+            for (int i = 0; i < SDH_GameManager.CONST_PLAYER_GRAB_CARD_NUM; i++)
+            {
+                this._p0_hand_list[i] = dat[i * 4 + 0];
+                this._p1_hand_list[i] = dat[i * 4 + 1];
+                this._p2_hand_list[i] = dat[i * 4 + 2];
+                this._p3_hand_list[i] = dat[i * 4 + 3];
+            }
+            _pre_hand_card_num = SDH_GameManager.CONST_PLAYER_GRAB_CARD_NUM;
+
+            sDH_GameManager.SortListByIdxCard(this._p0_hand_list, _pre_hand_card_num);
+            sDH_GameManager.SortListByIdxCard(this._p1_hand_list, _pre_hand_card_num);
+            sDH_GameManager.SortListByIdxCard(this._p2_hand_list, _pre_hand_card_num);
+            sDH_GameManager.SortListByIdxCard(this._p3_hand_list, _pre_hand_card_num);
+
+            hugf.TriggerEventWith2Data(nameof(SDH_PlayerManager.SetHandCardP0Call), this._p0_hand_list, _pre_hand_card_num);
+            hugf.TriggerEventWith2Data(nameof(SDH_PlayerManager.SetHandCardP1Call), this._p1_hand_list, _pre_hand_card_num);
+            hugf.TriggerEventWith2Data(nameof(SDH_PlayerManager.SetHandCardP2Call), this._p2_hand_list, _pre_hand_card_num);
+            hugf.TriggerEventWith2Data(nameof(SDH_PlayerManager.SetHandCardP3Call), this._p3_hand_list, _pre_hand_card_num);
+
+            hugf.TriggerEventWith2Data(nameof(SDH_FaPaiJi.EnCardTileClickCall), dat, _pre_hand_card_num * 4);
+        }
 
         private bool CheckIsOutUser(int idx)
         {
@@ -240,9 +301,43 @@ namespace HopeSDH
 
         private int[] _sort_temp_list;
 
-        private bool CheckOutEn()
-        {
 
+        private void FirstOutFun()
+        {
+            if (this._current_player != this._first_out_player)
+            {
+                return;
+            }
+            var b = CheckFirstOutEn();
+            if (!b)
+            {
+                hugf.Log($"CheckOutEn failed, select_card_num: {this.select_card_num}");
+                return;
+            }
+
+            for (int i = 0; i < this.select_card_num; i++)
+            {
+                this.out_card_id_list[i] = this.select_card_id_list[i];
+                this.first_out_card_list[i] = this.select_card_id_list[i];
+                this.fitrt_out_card_type_list[i] = sDH_GameManager.GetTypeById(this.select_card_id_list[i]);
+            }
+
+            this.out_card_num = this.select_card_num;
+            this.first_out_card_num = this.select_card_num;
+            
+            sDH_GameManager.SortListByIdxCard(this.out_card_id_list, this.out_card_num);
+            hugf.TriggerEventWith2Data(nameof(SDH_OutCartP.SetOutCardP0Call), this.out_card_id_list, this.out_card_num);
+            hugf.TriggerEventWith2Data(nameof(SDH_FaPaiJi.DisCardTileClickCall), this.out_card_id_list, this.out_card_num);
+        }
+
+
+        private void AfterOutFun()
+        {
+            ;
+        }
+
+        private bool CheckFirstOutEn()
+        {            
             if (select_card_num == 1)
             {
                 return true;
@@ -255,7 +350,7 @@ namespace HopeSDH
                 return x == y;
             }
 
-            // 单数， 暂时不支持甩牌
+            // 单数， 暂时不支持甩牌, err
             if ((select_card_num & 0x01) > 0)
             {
                 return false;
@@ -270,13 +365,31 @@ namespace HopeSDH
             return b;
         }
 
+
+
+        private bool CheckAfterOutEn()
+        {
+            if (this.select_card_num != this.first_out_card_num)
+            {
+                return false;
+            }
+
+            if(this.first_out_card_num == 1)
+            {
+                var typ = sDH_GameManager.GetTypeById(this.select_card_id_list[0]);
+                
+            }
+
+
+            return false;
+        }
+
         public void StartChuPaiCall()
         {
             this._current_player = sDH_GameManager.config_zhuang_player;
             this._zhu_icon = sDH_GameManager.config_zhu_icon;
             this.select_card_num = 0;
         }
-
         
         public void ChuPaiFirst()
         {

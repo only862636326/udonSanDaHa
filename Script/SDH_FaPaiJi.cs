@@ -130,7 +130,7 @@ namespace HopeSDH
             }
             else
             {
-                hugf.TriggerEventWithData(nameof(SDH_PlayerManager.FaPaiCall), this.card_id_list);
+                hugf.TriggerEventWithData(nameof(SDH_OutCartFsm.FaPaiCall), this.card_id_list);
             }
             RequestSyn();
         }
@@ -172,6 +172,7 @@ namespace HopeSDH
         {
             SetCardTileClick(true);
         }
+
         public void ResetCardList()
         {
             for (int i = 0; i < card_id_list.Length; i++)
@@ -197,7 +198,6 @@ namespace HopeSDH
                 card_id_list[r] = temp;
             }
         }
-
 
         #region syn_code
         void RequestSyn()
@@ -233,7 +233,6 @@ namespace HopeSDH
 
 
         #region reander tool
-
 
         public const int ICON_MEI = 0;
         public const int ICON_FANG = 1;
