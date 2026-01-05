@@ -110,7 +110,6 @@ namespace HopeSDH
             RequestSyn();
         }
 
-
         #region syn
 
         void RequestSyn()

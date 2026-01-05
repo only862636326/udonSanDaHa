@@ -39,6 +39,13 @@ namespace HopeSDH
         public int config_zhu_icon = -1;
         public int[] config_player_vrcid_list;
 
+        public const int GAME_STA_IDLE = 0;
+        public const int GAME_STA_JOIN_EXIT = 1;
+        public const int GAME_STA_JIAO_ZHUANG = 2;
+        public const int GAME_STA_JIAO_ZHU = 3;
+        public const int GAME_STA_PLAY = 4;
+        public const int GAME_STA_OVER = 5;
+
         public int info_game_sta = 0;
         public int info_acitve_layer = 0;
         public int[] info_out_card;
@@ -85,8 +92,10 @@ namespace HopeSDH
         public void HugfInitAfter()
         {
             // user code after hugf init here
-            hugf.udonEvn.RegisterListener(nameof(this.SetPlayerVrcIdCall), this);
             hugf.udonIoc.RegisterSingleton(nameof(SDH_CONFIG_Singleton_String), this, this);
+
+            hugf.udonEvn.RegisterListener(nameof(this.SetPlayerVrcIdCall), this);
+            hugf.udonEvn.RegisterListener(nameof(this.ToggleEvn_StartOneCall), this);
         }
 
 
@@ -112,11 +121,20 @@ namespace HopeSDH
             }
         }
 
-        public void StartGameCall()
+        /// <summary>
+        /// 开一居
+        /// </summary>
+        public void ToggleEvn_StartOneCall()
         {
-            ;
+            var seed = (int)this.eventData;
+            hugf.TriggerEventWithData(nameof(SDH_FaPaiJi.StartShuffleCall), seed);
         }
 
+        public void JiaoZhuangFinishCall()
+        {
+            var zhuang = (int) this.eventData;
+            this.config_zhuang_player = zhuang;
+        }
 
         #region syn
 
@@ -157,6 +175,7 @@ namespace HopeSDH
 
         // end method
 
+        #region fun for others
         #region sort list
         public int[] sort_id_list = null;
         public int[] id_in_sorted_list = null;
@@ -256,7 +275,7 @@ namespace HopeSDH
 
         #endregion end sortd list
         // zhu;
-        public const int CONST_TYPE_Zheng5 = 0x0400; // 0x1000 = 4096
+        public const int CONST_TYPE_Zheng5 = 0x1000; // 0x1000 = 4096
         public const int CONST_TYPE_Zheng6 = CONST_TYPE_Zheng5 + 1;
         public const int CONST_TYPE_Zheng8 = CONST_TYPE_Zheng6 + 1;
         public const int CONST_TYPE_Zheng9 = CONST_TYPE_Zheng8 + 1;
@@ -291,6 +310,7 @@ namespace HopeSDH
 
         public int[] config_type_id_list;
         private bool _is_config_typ_init = false;
+
         public void ConfigTypeIdList(int zhu)
         {
             if (_is_config_typ_init == false)
@@ -308,62 +328,65 @@ namespace HopeSDH
                     // 0 -> A, 1->2,
                     if (config_zhu_icon == icon)
                     {
+                        var _base = icon << 8;
+
                         switch (i)
                         {
                             case 0:
-                                config_type_id_list[card_id - 1] = CONST_TYPE_ZhengA;
-                                config_type_id_list[card_id - 2] = CONST_TYPE_ZhengA;
+                                config_type_id_list[card_id - 1] = CONST_TYPE_ZhengA | _base;
+                                config_type_id_list[card_id - 2] = CONST_TYPE_ZhengA | _base;
                                 break;
                             case 1:
-                                config_type_id_list[card_id - 1] = CONST_TYPE_Zheng2;
-                                config_type_id_list[card_id - 2] = CONST_TYPE_Zheng2;
+                                config_type_id_list[card_id - 1] = CONST_TYPE_Zheng2 | _base;
+                                config_type_id_list[card_id - 2] = CONST_TYPE_Zheng2 | _base;
                                 break;
                             case 2:
-                                config_type_id_list[card_id - 1] = CONST_TYPE_Zheng3;
-                                config_type_id_list[card_id - 2] = CONST_TYPE_Zheng3;
+                                config_type_id_list[card_id - 1] = CONST_TYPE_Zheng3 | _base;
+                                config_type_id_list[card_id - 2] = CONST_TYPE_Zheng3 | _base;
                                 break;
                             case 3:
-                                config_type_id_list[card_id - 1] = CONST_TYPE_Zheng4;
-                                config_type_id_list[card_id - 2] = CONST_TYPE_Zheng4;
+                                config_type_id_list[card_id - 1] = CONST_TYPE_Zheng4 | _base;
+                                config_type_id_list[card_id - 2] = CONST_TYPE_Zheng4 | _base;
                                 break;
                             case 4:
-                                config_type_id_list[card_id - 1] = CONST_TYPE_Zheng5;
-                                config_type_id_list[card_id - 2] = CONST_TYPE_Zheng5;
+                                config_type_id_list[card_id - 1] = CONST_TYPE_Zheng5 | _base;
+                                config_type_id_list[card_id - 2] = CONST_TYPE_Zheng5 | _base;
                                 break;
                             case 5:
-                                config_type_id_list[card_id - 1] = CONST_TYPE_Zheng6;
-                                config_type_id_list[card_id - 2] = CONST_TYPE_Zheng6;
+                                config_type_id_list[card_id - 1] = CONST_TYPE_Zheng6 | _base;
+                                config_type_id_list[card_id - 2] = CONST_TYPE_Zheng6 | _base;
                                 break;
                             case 6:
-                                config_type_id_list[card_id - 1] = CONST_TYPE_Zheng7;
-                                config_type_id_list[card_id - 2] = CONST_TYPE_Zheng7;
+                                config_type_id_list[card_id - 1] = CONST_TYPE_Zheng7 | _base;
+                                config_type_id_list[card_id - 2] = CONST_TYPE_Zheng7 | _base;
                                 break;
                             case 7:
-                                config_type_id_list[card_id - 1] = CONST_TYPE_Zheng8;
-                                config_type_id_list[card_id - 2] = CONST_TYPE_Zheng8;
+                                config_type_id_list[card_id - 1] = CONST_TYPE_Zheng8 | _base;
+                                config_type_id_list[card_id - 2] = CONST_TYPE_Zheng8 | _base;
                                 break;
                             case 8:
-                                config_type_id_list[card_id - 1] = CONST_TYPE_Zheng9;
-                                config_type_id_list[card_id - 2] = CONST_TYPE_Zheng9;
+                                config_type_id_list[card_id - 1] = CONST_TYPE_Zheng9 | _base;
+                                config_type_id_list[card_id - 2] = CONST_TYPE_Zheng9 | _base;
                                 break;
                             case 9:
-                                config_type_id_list[card_id - 1] = CONST_TYPE_Zheng10;
-                                config_type_id_list[card_id - 2] = CONST_TYPE_Zheng10;
+                                config_type_id_list[card_id - 1] = CONST_TYPE_Zheng10 | _base;
+                                config_type_id_list[card_id - 2] = CONST_TYPE_Zheng10 | _base;
                                 break;
                             case 10:
-                                config_type_id_list[card_id - 1] = CONST_TYPE_ZhengJ;
-                                config_type_id_list[card_id - 2] = CONST_TYPE_ZhengJ;
+                                config_type_id_list[card_id - 1] = CONST_TYPE_ZhengJ | _base;
+                                config_type_id_list[card_id - 2] = CONST_TYPE_ZhengJ | _base;
                                 break;
                             case 11:
-                                config_type_id_list[card_id - 1] = CONST_TYPE_ZhengQ;
-                                config_type_id_list[card_id - 2] = CONST_TYPE_ZhengQ;
+                                config_type_id_list[card_id - 1] = CONST_TYPE_ZhengQ | _base;
+                                config_type_id_list[card_id - 2] = CONST_TYPE_ZhengQ | _base;
                                 break;
                             case 12:
-                                config_type_id_list[card_id - 1] = CONST_TYPE_ZhengK;
-                                config_type_id_list[card_id - 2] = CONST_TYPE_ZhengK;
+                                config_type_id_list[card_id - 1] = CONST_TYPE_ZhengK | _base;
+                                config_type_id_list[card_id - 2] = CONST_TYPE_ZhengK | _base;
                                 break;
                         }
                     }
+
                     else
                     {
                         var _base = icon << 8;
@@ -378,8 +401,8 @@ namespace HopeSDH
                                 config_type_id_list[card_id - 2] = CONST_TYPE_Fu2 + _base;
                                 if (zhu == CONST_ICON_JOKER)
                                 {
-                                    config_type_id_list[card_id - 1] = CONST_TYPE_Zheng2;
-                                    config_type_id_list[card_id - 2] = CONST_TYPE_Zheng2;
+                                    config_type_id_list[card_id - 1] = CONST_TYPE_Zheng2 + _base;
+                                    config_type_id_list[card_id - 2] = CONST_TYPE_Zheng2 + _base;
                                 }
                                 break;
                             case 2:
@@ -436,65 +459,23 @@ namespace HopeSDH
                 }
             }
 
-            config_type_id_list[card_id++] = CONST_TYPE_SmallJoker;
-            config_type_id_list[card_id++] = CONST_TYPE_SmallJoker;
-            config_type_id_list[card_id++] = CONST_TYPE_BigJoker;
-            config_type_id_list[card_id++] = CONST_TYPE_BigJoker;
+            config_type_id_list[card_id++] = CONST_TYPE_SmallJoker | 0x400;
+            config_type_id_list[card_id++] = CONST_TYPE_SmallJoker | 0x400;
+            config_type_id_list[card_id++] = CONST_TYPE_BigJoker | 0x400;
+            config_type_id_list[card_id++] = CONST_TYPE_BigJoker | 0x400;
         }
 
+
+        public void ConfigTuolajLIst()
+        {
+            ;
+        }
         public int GetTypeById(int id)
         {
             return config_type_id_list[id];
         }
 
         [SerializeField] private int[] _sort_temp_list = new int[CONST_SHOW_CARD_NUM];
-        public bool CheckIsTuoLaJi(int[] id_list, int num)
-        {
-            if (num <= 0)
-            {
-                return false;
-            }
-            // 单数, 
-            if ((num & 0x01) > 0)
-            {
-                return false;
-            }
-
-            // 双数， 检查是否是五连拖
-            for (int i = 0; i < num; i++)
-            {
-                _sort_temp_list[i] = GetTypeById(id_list[i]);
-            }
-
-            // 手动排序， 选择排序
-            for (int i = 0; i < num; i++)
-            {
-                for (int j = i + 1; j < num; j++)
-                {
-                    if (_sort_temp_list[i] > _sort_temp_list[j])
-                    {
-                        int t = _sort_temp_list[i];
-                        _sort_temp_list[i] = _sort_temp_list[j];
-                        _sort_temp_list[j] = t;
-                    }
-                }
-            }
-            _sort_temp_list[num] = _sort_temp_list[num - 1] + 1;
-
-            // 相等，[i] = [i + 1], [i + 1] + 1 = [i + 2]
-            for (int i = 0; i < num; i += 2)
-            {
-                if (_sort_temp_list[i] != _sort_temp_list[i + 1])
-                {
-                    return false;
-                }
-                if (_sort_temp_list[i + 1] + 1 != _sort_temp_list[i + 2])
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
 
         // 无需排序
         public int CheckIconNum(int[] id_list, int num, int icon)
@@ -511,91 +492,23 @@ namespace HopeSDH
             return icon_num;
         }
 
-        // 需排序
-        public int CheckIconNum2(int[] id_list, int num, int icon)
+        public int GetPaiList(int[] id_list, int[] out_pair_list, int num)
         {
-            var icon_num = 0;
-            for (int i = 0; i < num; i++)
+            var _num = 0;
+            for (int i = 0; i < num - 1; i++)
             {
-                var typ = GetTypeById(id_list[i]);
-                if ((typ & CONST_ICON_TYPE_MAST) == (icon << 8))
+                if (id_list[i] / 2 == id_list[i + 1] / 2)
                 {
-                    this._sort_temp_list[icon_num++] = id_list[i];
-                }
-                else
-                {
-                    if(icon_num > 0)
-                    {
-                        break;
-                    }
+                    out_pair_list[i] = id_list[i];
+                    _num++;
                 }
             }
-            for (int i = 0; i < icon_num - 1; i++)
-            {
-                var dx = this._sort_temp_list[i] - this._sort_temp_list[i + 1];
-                this._sort_temp_list[i] = dx;
-            }
-            var _pair_num = 0;
-            for (int i = 0; i < icon_num - 1; i++)
-            {
-                if (this._sort_temp_list[i] == 0)
-                {
-                    _pair_num++;
-                }
-            }
-            return _pair_num;
+            out_pair_list[_num] = -1;
+            return _num;
         }
 
-        public bool CheckHasTuoLaji(int[] id_list, int num, int icon, int l)
-        {
-            var icon_num = 0;
-            // 取出有效部分
-            for (int i = 0; i < num; i++)
-            {
-                var typ = GetTypeById(id_list[i]);
-                if ((typ & CONST_ICON_TYPE_MAST) == (icon << 8))
-                {
-                    this._sort_temp_list[icon_num++] = id_list[i];
-                }
-                else
-                {
-                    if (icon_num > 0)
-                    {
-                        break;
-                    }
-                }
-            }
 
-            // 求导
-            for (int i = 0; i < icon_num - 1; i++)
-            {
-                var dx = this._sort_temp_list[i] - this._sort_temp_list[i + 1];
-                this._sort_temp_list[i] = dx;
-            }
-
-            // 求和，快速数1
-            var sum_num = l * 2 - 1;
-            for (int i = 0; i < icon_num - 1; i++)
-            {
-                var _sum = 0;
-                for (int j = 0; j < sum_num; j++)
-                {
-                    // 越界，返回
-                    if (i + j >= icon_num)
-                        return false;
-
-                    if (Math.Abs(_sort_temp_list[i + j]) > 1)
-                        break;
-                    _sum += _sort_temp_list[i + j];
-                }
-                // 
-                if (Math.Abs(_sum) == l - 1)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
+        
 
         /// <summary>
         /// 排序大小
@@ -639,5 +552,7 @@ namespace HopeSDH
                 return;
             }
         }
+
+        #endregion function for others
     }
 }

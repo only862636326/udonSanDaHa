@@ -91,6 +91,15 @@ namespace HopeSDH
             }
         }
 
+        public void HugfInitAfter()
+        {
+            // user code after hugf init here
+            //hugf.udonEvn.RegisterListener(nameof(this.DemeFunCall), this);
+            hugf.udonEvn.RegisterListener(nameof(this.ToggleEvn_ExitButCall), this);
+            hugf.udonEvn.RegisterListener(nameof(this.ToggleEvn_JoinButCall), this);
+        }
+
+
 
         public void ToggleEvn_JoinBut(int idx)
         {
@@ -190,15 +199,17 @@ namespace HopeSDH
             }
         }
 
+        public void ToggleEvn_JoinButCall()
+        {
+            var idx = (int)this.eventData;
+            ToggleEvn_JoinBut(idx);
+        }
 
-        public void ToggleEvn_JoinBut_0() { ToggleEvn_JoinBut(0); }
-        public void ToggleEvn_ExitBut_0() { ToggleEvn_ExitBut(0); }
-        public void ToggleEvn_JoinBut_1() { ToggleEvn_JoinBut(1); }
-        public void ToggleEvn_ExitBut_1() { ToggleEvn_ExitBut(1); }
-        public void ToggleEvn_JoinBut_2() { ToggleEvn_JoinBut(2); }
-        public void ToggleEvn_ExitBut_2() { ToggleEvn_ExitBut(2); }
-        public void ToggleEvn_JoinBut_3() { ToggleEvn_JoinBut(3); }
-        public void ToggleEvn_ExitBut_3() { ToggleEvn_ExitBut(3); }
+        public void ToggleEvn_ExitButCall()
+        {
+            var idx = (int)this.eventData;
+            ToggleEvn_ExitBut(idx);
+        }
         // end method
     }
 }

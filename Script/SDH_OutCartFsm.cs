@@ -331,13 +331,21 @@ namespace HopeSDH
         }
 
 
+        private void JiaoZhuangFinishCall()
+        {
+            ;
+        }
+
+
         private void AfterOutFun()
         {
             ;
         }
 
+       
+
         private bool CheckFirstOutEn()
-        {            
+        {
             if (select_card_num == 1)
             {
                 return true;
@@ -360,9 +368,8 @@ namespace HopeSDH
             {
                 return false;
             }
-             
-            var b = sDH_GameManager.CheckIsTuoLaJi(this.select_card_id_list, this.select_card_num);
-            return b;
+
+            return false;
         }
 
 

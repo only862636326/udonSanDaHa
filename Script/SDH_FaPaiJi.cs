@@ -28,10 +28,7 @@ namespace HopeSDH
 
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.P))
-            {
-                FaPai();
-            }
+            ;
         }
 
         private bool _is_init = false;
@@ -117,11 +114,11 @@ namespace HopeSDH
             hugf.udonEvn.RegisterListener(nameof(this.DisCardTileClickCall), this);
         }
 
-      
+
         // 发牌
-        public void FaPai()
+        public void StartShuffleCall()
         {
-            int seed = System.DateTime.Now.Ticks.GetHashCode();
+            int seed = (int)this.eventData;
             FisherYatesShuffle(seed);
 
             if (true)

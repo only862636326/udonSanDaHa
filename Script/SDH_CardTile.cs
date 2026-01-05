@@ -97,7 +97,7 @@ namespace HopeSDH
 
         private void OnMouseDrag()
         {
-            
+            ;
         }
 
         public void UpdateCardPosition(int _p)
