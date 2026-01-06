@@ -24,10 +24,10 @@ namespace HopeSDH
 
         [SerializeField] public int[] out_card_id_list;
         [SerializeField] public int out_card_num;
-        [SerializeField] private int[] select_card_id_list;
-        [SerializeField] private int select_card_num;
+        [SerializeField] private int[] _select_card_id_list;
+        [SerializeField] private int _select_card_num;
 
-        [SerializeField]  private SDH_GameManager sDH_GameManager;
+        [SerializeField] private SDH_GameManager sDH_GameManager;
         public void Init()
         {
             if (this._is_init)
@@ -51,8 +51,8 @@ namespace HopeSDH
             _init_chupai_1412();
 
             out_card_id_list = new int[SDH_GameManager.CONST_PLAYER_HAND_CARD_MAX];
-            select_card_id_list = new int[SDH_GameManager.CONST_PLAYER_HAND_CARD_MAX];
-            this.select_card_num = 0;
+            _select_card_id_list = new int[SDH_GameManager.CONST_PLAYER_HAND_CARD_MAX];
+            this._select_card_num = 0;
         }
 
         private HopeTools.HopeUdonFramework hugf;
@@ -81,8 +81,12 @@ namespace HopeSDH
             //hugf.udonEvn.RegisterListener(nameof(this.DemeFunCall), this);
             hugf.udonEvn.RegisterListener(nameof(this.SelecCardCall), this);
             hugf.udonEvn.RegisterListener(nameof(this.UnselecCardCall), this);
-            hugf.udonEvn.RegisterListener(nameof(this.StartChuPaiCall), this);
             hugf.udonEvn.RegisterListener(nameof(this.FaPaiCall), this);
+            hugf.udonEvn.RegisterListener(nameof(this.StartChuPaiCall), this);
+
+            hugf.udonEvn.RegisterListener(nameof(this.ToggleEvn_OutButCall), this);
+            hugf.udonEvn.RegisterListener(nameof(this.ToggleEvn_MaiDiCall), this);
+            hugf.udonEvn.RegisterListener(nameof(this.ToggleEvn_TipsButCall), this);
         }
 
 
@@ -138,22 +142,20 @@ namespace HopeSDH
         public void ResetOutCardState()
         {
             this.out_card_num = 0;
-            this.select_card_num = 0;
+            this._select_card_num = 0;
             this._active_player = -1;
         }
 
         public void ToggleEvn_OutBut(int x)
         {
-
-            FirstOutFun();
-            AfterOutFun();
+            if (x == this._current_player)
+                OutFun();
         }
 
         public void ToggleEvn_TipsBut(int x)
         {
             hugf.Log($"ToggleEvn_TipsBut: {x}");
             // test 
-            StartChuPaiCall();
         }
 
         public void ToggleEvn_MaiDi(int x)
@@ -162,48 +164,59 @@ namespace HopeSDH
         }
         public void SelecCardCall()
         {
-            if (select_card_num >= select_card_id_list.Length) return;
+            if (_select_card_num >= _select_card_id_list.Length) return;
             var _id = (int)this.eventData;
-            for (int i = 0; i < this.select_card_num; i++)
+            for (int i = 0; i < this._select_card_num; i++)
             {
-                if (this.select_card_id_list[i] == _id)
+                if (this._select_card_id_list[i] == _id)
                     return;
             }
-            this.select_card_id_list[this.select_card_num++] = _id;
+            this._select_card_id_list[this._select_card_num++] = _id;
         }
 
         public void UnselecCardCall()
         {
-            if (select_card_num <= 0) return;
+            if (_select_card_num <= 0) return;
 
             var _id = (int)this.eventData;
 
             var _has = false;
-            for (int i = 0; i < this.select_card_num; i++)
+            for (int i = 0; i < this._select_card_num; i++)
             {
-                if (this.select_card_id_list[i] == _id)
+                if (this._select_card_id_list[i] == _id)
                 {
                     _has = true;
                 }
                 if (_has)
                 {
-                    this.select_card_id_list[i] = this.select_card_id_list[this.select_card_num - 1];
+                    this._select_card_id_list[i] = this._select_card_id_list[this._select_card_num - 1];
                 }
             }
-            if(this.select_card_num >= this.select_card_id_list.Length)
+            if (this._select_card_num >= this._select_card_id_list.Length)
             {
-                hugf.udondebug.LogWarning($"UnselecCardCall: {_id}, select_card_num: {this.select_card_num}");
+                hugf.udondebug.LogWarning($"UnselecCardCall: {_id}, select_card_num: {this._select_card_num}");
                 return;
             }
-            this.select_card_num--;
+            this._select_card_num--;
         }
         // start method
 
-        public void ToggleEvn_OutBut_0() { ToggleEvn_OutBut(0); }
-        public void ToggleEvn_TipsBut_0() { ToggleEvn_TipsBut(0); }
-        public void ToggleEvn_MaiDi_0() { ToggleEvn_MaiDi(0); }
+        public void ToggleEvn_OutButCall()
+        {
+            var idx = (int)this.eventData;
+            ToggleEvn_OutBut(idx);
+        }
+        public void ToggleEvn_TipsButCall()
+        {
+            var idx = (int)this.eventData;
+            ToggleEvn_TipsBut(idx);
+        }
+        public void ToggleEvn_MaiDiCall()
+        {
+            var idx = (int)this.eventData;
+            ToggleEvn_MaiDi(idx);
+        }
         // end method
-
 
         #region 出牌判定
 
@@ -221,7 +234,7 @@ namespace HopeSDH
         private int[] _p1_hand_list;
         private int[] _p2_hand_list;
         private int[] _p3_hand_list;
-        
+
         private int _pre_hand_card_num;
         private int[] _jipaiqi_list;
 
@@ -258,8 +271,8 @@ namespace HopeSDH
 
                 _p0_out_list[i] = SDH_GameManager.CONST_CARD_NULL;
                 _p1_out_list[i] = SDH_GameManager.CONST_CARD_NULL;
-                _p2_out_list[i] = SDH_GameManager.CONST_CARD_NULL   ;
-                _p3_out_list[i] = SDH_GameManager.CONST_CARD_NULL;  
+                _p2_out_list[i] = SDH_GameManager.CONST_CARD_NULL;
+                _p3_out_list[i] = SDH_GameManager.CONST_CARD_NULL;
             }
         }
 
@@ -302,69 +315,179 @@ namespace HopeSDH
         private int[] _sort_temp_list;
 
 
-        private void FirstOutFun()
+        private void OutFun()
         {
-            if (this._current_player != this._first_out_player)
+            var _out_en = false;
+
+            if (_select_card_num >= 3)
             {
-                return;
+                sDH_GameManager.SortListByIdxCard(this._select_card_id_list, this._select_card_num);
             }
-            var b = CheckFirstOutEn();
-            if (!b)
+
+            if (this._current_player == this._first_out_player)
             {
-                hugf.Log($"CheckOutEn failed, select_card_num: {this.select_card_num}");
+                _out_en = CheckFirstOutEn();
+            }
+            else
+            {
+                _out_en = CheckAfterOutEn();
+            }
+
+            // 出牌不合法
+            if (!_out_en)
+            {
+                hugf.Log($"CheckOutEn failed, select_card_num: {this._select_card_num}");
                 return;
             }
 
-            for (int i = 0; i < this.select_card_num; i++)
+            if (_old_card_show_num > 0)
             {
-                this.out_card_id_list[i] = this.select_card_id_list[i];
-                this.first_out_card_list[i] = this.select_card_id_list[i];
-                this.fitrt_out_card_type_list[i] = sDH_GameManager.GetTypeById(this.select_card_id_list[i]);
+                hugf.TriggerEventWith2Data(nameof(SDH_FaPaiJi.SetCardTileDisCall), this._p0_out_list, this._old_card_show_num);
+                hugf.TriggerEventWith2Data(nameof(SDH_FaPaiJi.SetCardTileDisCall), this._p1_out_list, this._old_card_show_num);
+                hugf.TriggerEventWith2Data(nameof(SDH_FaPaiJi.SetCardTileDisCall), this._p2_out_list, this._old_card_show_num);
+                hugf.TriggerEventWith2Data(nameof(SDH_FaPaiJi.SetCardTileDisCall), this._p3_out_list, this._old_card_show_num);
+                _old_card_show_num = 0;
             }
 
-            this.out_card_num = this.select_card_num;
-            this.first_out_card_num = this.select_card_num;
+            if (this._current_player == this._first_out_player)
+            {
+
+
+                for (int i = 0; i < this._select_card_num; i++)
+                {
+                    var _id = this._select_card_id_list[i];
+                    this.first_out_card_list[i] = _id;
+                    this.fitrt_out_card_type_list[i] = sDH_GameManager.GetTypeById(_id);
+                }
+                this.first_out_card_num = this._select_card_num;
+            }
+
+            for (int i = 0; i < this._select_card_num; i++)
+            {
+                var _id = this._select_card_id_list[i];
+                this.out_card_id_list[i] = _id;
+                if (_current_player == SDH_GameManager.CONST_PLAYER_P0) this._p0_out_list[i] = _id;
+                else if (_current_player == SDH_GameManager.CONST_PLAYER_P1) this._p1_out_list[i] = _id;
+                else if (_current_player == SDH_GameManager.CONST_PLAYER_P2) this._p2_out_list[i] = _id;
+                else if (_current_player == SDH_GameManager.CONST_PLAYER_P3) this._p3_out_list[i] = _id;
+            }
+            this.out_card_num = this._select_card_num;
             
-            sDH_GameManager.SortListByIdxCard(this.out_card_id_list, this.out_card_num);
-            hugf.TriggerEventWith2Data(nameof(SDH_OutCartP.SetOutCardP0Call), this.out_card_id_list, this.out_card_num);
+            if (_current_player == SDH_GameManager.CONST_PLAYER_P0)
+            {
+                hugf.TriggerEventWith2Data(nameof(SDH_OutCartP.SetOutCardP0Call), this._p0_out_list, this.out_card_num);
+            }
+            else if (_current_player == SDH_GameManager.CONST_PLAYER_P1)
+            {
+                hugf.TriggerEventWith2Data(nameof(SDH_OutCartP.SetOutCardP1Call), this._p1_out_list, this.out_card_num);
+            }
+            else if (_current_player == SDH_GameManager.CONST_PLAYER_P2)
+            {
+                hugf.TriggerEventWith2Data(nameof(SDH_OutCartP.SetOutCardP2Call), this._p2_out_list, this.out_card_num);
+            }
+            else if (_current_player == SDH_GameManager.CONST_PLAYER_P3)
+            {
+                hugf.TriggerEventWith2Data(nameof(SDH_OutCartP.SetOutCardP3Call), this._p3_out_list, this.out_card_num);
+            }
+
             hugf.TriggerEventWith2Data(nameof(SDH_FaPaiJi.DisCardTileClickCall), this.out_card_id_list, this.out_card_num);
+
+            this._current_player++;
+            this._current_player %= 4;
+
+            if (this._current_player == this._first_out_player)
+            {
+                _old_card_show_num = this.first_out_card_num;
+                DelHandOutCard();
+                var _max_p = CheckOutMaxPlayer();
+                StartNewRound(_max_p);
+            }
+            else
+            {
+                this._select_card_num = 0;
+                hugf.TriggerEventWithData(nameof(SDH_Tips.SetActivePlayerCall), _current_player);
+            }
         }
 
+        private int _old_card_show_num;
+        public void StartNewRound(int p)
+        {
+            this._current_player = p;
+            this._first_out_player = p;
+            this.out_card_num = 0;
+            this._select_card_num = 0;
+            hugf.TriggerEventWithData(nameof(SDH_Tips.SetActivePlayerCall), p);                        
+        }
+
+
+
+        private void DelHandOutCard()
+        {
+            var _num = this._old_card_show_num;
+            if (_num <= 0 || _pre_hand_card_num <= 0) return;
+
+            // 使用通用的DelListCard方法删除手牌
+            sDH_GameManager.DelListCard(_p0_hand_list, _p0_out_list, _pre_hand_card_num, _num);
+            sDH_GameManager.DelListCard(_p1_hand_list, _p1_out_list, _pre_hand_card_num, _num);
+            sDH_GameManager.DelListCard(_p2_hand_list, _p2_out_list, _pre_hand_card_num, _num);
+            sDH_GameManager.DelListCard(_p3_hand_list, _p3_out_list, _pre_hand_card_num, _num);
+            _pre_hand_card_num -= _num;
+            hugf.TriggerEventWith2Data(nameof(SDH_PlayerManager.SetHandCardP0Call), this._p0_hand_list, _pre_hand_card_num);
+            hugf.TriggerEventWith2Data(nameof(SDH_PlayerManager.SetHandCardP1Call), this._p1_hand_list, _pre_hand_card_num);
+            hugf.TriggerEventWith2Data(nameof(SDH_PlayerManager.SetHandCardP2Call), this._p2_hand_list, _pre_hand_card_num);
+            hugf.TriggerEventWith2Data(nameof(SDH_PlayerManager.SetHandCardP3Call), this._p3_hand_list, _pre_hand_card_num);
+        }
 
         private void JiaoZhuangFinishCall()
         {
             ;
         }
 
-
-        private void AfterOutFun()
+        public int CheckOutMaxPlayer()
         {
-            ;
-        }
+            var _typ_list = new int[4];
+            _typ_list[0] = sDH_GameManager.GetTypeById(_p0_out_list[0]) & SDH_GameManager.CONST_ID_TYP_MASK;
+            _typ_list[1] = sDH_GameManager.GetTypeById(_p1_out_list[0]) & SDH_GameManager.CONST_ID_TYP_MASK;
+            _typ_list[2] = sDH_GameManager.GetTypeById(_p2_out_list[0]) & SDH_GameManager.CONST_ID_TYP_MASK;
+            _typ_list[3] = sDH_GameManager.GetTypeById(_p3_out_list[0]) & SDH_GameManager.CONST_ID_TYP_MASK;
 
-       
+            var max_p = -1;
+            var max_typ = -1;
+
+            for (int i = 0; i < 4; i++)
+            {
+                var _p = (i + this._first_out_player) % 4;
+                if (_typ_list[_p] > max_typ)
+                {
+                    max_p = _p;
+                    max_typ = _typ_list[_p];
+                }
+            }
+            return max_p;
+        }
 
         private bool CheckFirstOutEn()
         {
-            if (select_card_num == 1)
+            if (_select_card_num == 1)
             {
                 return true;
             }
 
-            if (select_card_num == 2)
+            if (_select_card_num == 2)
             {
-                var x = select_card_id_list[0] / 2;
-                var y = select_card_id_list[1] / 2;
+                var x = _select_card_id_list[0] / 2;
+                var y = _select_card_id_list[1] / 2;
                 return x == y;
             }
 
             // 单数， 暂时不支持甩牌, err
-            if ((select_card_num & 0x01) > 0)
+            if ((_select_card_num & 0x01) > 0)
             {
                 return false;
             }
+
             // 最高到五连拖
-            if (select_card_num > 10)
+            if (_select_card_num > 10)
             {
                 return false;
             }
@@ -372,32 +495,26 @@ namespace HopeSDH
             return false;
         }
 
-
-
         private bool CheckAfterOutEn()
         {
-            if (this.select_card_num != this.first_out_card_num)
+            if (this._select_card_num != this.first_out_card_num)
             {
                 return false;
             }
 
-            if(this.first_out_card_num == 1)
+            if (this.first_out_card_num == 1)
             {
-                var typ = sDH_GameManager.GetTypeById(this.select_card_id_list[0]);
-                
+                var typ = sDH_GameManager.GetTypeById(this._select_card_id_list[0]);
+                return true;
             }
-
-
             return false;
         }
 
         public void StartChuPaiCall()
         {
-            this._current_player = sDH_GameManager.config_zhuang_player;
-            this._zhu_icon = sDH_GameManager.config_zhu_icon;
-            this.select_card_num = 0;
+            StartNewRound(sDH_GameManager.config_zhuang_player);
         }
-        
+
         public void ChuPaiFirst()
         {
             ;

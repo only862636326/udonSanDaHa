@@ -33,6 +33,12 @@ namespace HopeSDH
         public const int CONST_ICON_JOKER = 4;
         public const int CONST_ICON_ZHU = CONST_ICON_JOKER;
         public const int CONST_ICON_TYPE_MAST = 0x0f00;
+        public const int CONST_ID_TYP_MASK = 0x00ff;
+
+        public const int CONST_PLAYER_P0 = 0;
+        public const int CONST_PLAYER_P1 = 1;
+        public const int CONST_PLAYER_P2 = 2;
+        public const int CONST_PLAYER_P3 = 3;
 
         public int config_zhuang_player = -1;
         public int config_zhuang_score = 0;
@@ -132,7 +138,7 @@ namespace HopeSDH
 
         public void JiaoZhuangFinishCall()
         {
-            var zhuang = (int) this.eventData;
+            var zhuang = (int)this.eventData;
             this.config_zhuang_player = zhuang;
         }
 
@@ -141,7 +147,7 @@ namespace HopeSDH
         void RequestSyn()
         {
 #if !UNITY_EDITOR
-            if(!Networking.IsOwner(this.gameObject))
+            if (!Networking.IsOwner(this.gameObject))
             {
                 Networking.SetOwner(Networking.LocalPlayer, this.gameObject);
             }
@@ -179,7 +185,7 @@ namespace HopeSDH
         #region sort list
         public int[] sort_id_list = null;
         public int[] id_in_sorted_list = null;
-        public int[] split_id_list = { 4, 20, 20 + 18, 20 + 36, 20 + 54, 20 + 72 };
+
         private bool _is_sorted_init = false;
         public void ConfigSortIdList(int _icon)
         {
@@ -275,7 +281,7 @@ namespace HopeSDH
 
         #endregion end sortd list
         // zhu;
-        public const int CONST_TYPE_Zheng5 = 0x1000; // 0x1000 = 4096
+        public const int CONST_TYPE_Zheng5 = 0x0010; //
         public const int CONST_TYPE_Zheng6 = CONST_TYPE_Zheng5 + 1;
         public const int CONST_TYPE_Zheng8 = CONST_TYPE_Zheng6 + 1;
         public const int CONST_TYPE_Zheng9 = CONST_TYPE_Zheng8 + 1;
@@ -292,7 +298,7 @@ namespace HopeSDH
         public const int CONST_TYPE_BigJoker = CONST_TYPE_SmallJoker + 1;
 
         // fu
-        public const int CONST_TYPE_Fu5 = 0;
+        public const int CONST_TYPE_Fu5 = 0x0000;
         public const int CONST_TYPE_Fu6 = CONST_TYPE_Fu5 + 1;
         public const int CONST_TYPE_Fu8 = CONST_TYPE_Fu6 + 1;
         public const int CONST_TYPE_Fu9 = CONST_TYPE_Fu8 + 1;
@@ -302,7 +308,7 @@ namespace HopeSDH
         public const int CONST_TYPE_FuK = CONST_TYPE_FuQ + 1;
         public const int CONST_TYPE_FuA = CONST_TYPE_FuK + 1;
 
-        public const int CONST_TYPE_UNKNOWN = 0xffff;
+        public const int CONST_TYPE_UNKNOWN = -1;
         public const int CONST_TYPE_Zheng3 = CONST_TYPE_UNKNOWN;
         public const int CONST_TYPE_Zheng4 = CONST_TYPE_UNKNOWN;
         public const int CONST_TYPE_Fu3 = CONST_TYPE_UNKNOWN;
@@ -465,14 +471,17 @@ namespace HopeSDH
             config_type_id_list[card_id++] = CONST_TYPE_BigJoker | 0x400;
         }
 
-
         public void ConfigTuolajLIst()
         {
             ;
         }
+
         public int GetTypeById(int id)
         {
-            return config_type_id_list[id];
+            if (id >= 0 && id < 108)
+                return config_type_id_list[id];
+            hugf.udondebug.LogWarning("id is CONST_TYPE_UNKNOWN");
+            return CONST_TYPE_UNKNOWN;
         }
 
         [SerializeField] private int[] _sort_temp_list = new int[CONST_SHOW_CARD_NUM];
@@ -507,9 +516,6 @@ namespace HopeSDH
             return _num;
         }
 
-
-        
-
         /// <summary>
         /// 排序大小
         /// </summary>
@@ -527,7 +533,6 @@ namespace HopeSDH
                 _sort_temp_list[i] = -1;
             }
 
-            var max_id = 0;
             for (int i = 0; i < num; i++)
             {
                 int card_id = _id_list[i];
@@ -551,6 +556,33 @@ namespace HopeSDH
                 hugf.udondebug.LogWarning($"SortCard failed, _n != this._hand_card_num, _n = {_n}, this._hand_card_num = {num}");
                 return;
             }
+        }
+
+        public int DelListCard(int[] list1, int[] list2, int _list_num, int _list_num2)
+        {
+            if (_list_num <= 0 || _list_num2 <= 0) return _list_num;
+
+            // 双指针遍历，直接在原数组上操作
+            int newLength = 0;
+            int index2 = 0;
+
+            for (int index1 = 0; index1 < _list_num; index1++)
+            {
+                // 如果还有需要删除的元素，并且当前元素匹配
+                if (index2 < _list_num2 && list1[index1] == list2[index2])
+                {
+                    // 跳过当前元素（删除），并移动list2的指针
+                    index2++;
+                }
+                else
+                {
+                    // 保留当前元素，将其移到新位置
+                    list1[newLength++] = list1[index1];
+                }
+            }
+
+            // 返回新的元素数量
+            return newLength;
         }
 
         #endregion function for others

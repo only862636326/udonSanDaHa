@@ -92,7 +92,6 @@ namespace HopeSDH
             sDH_GameManager = (SDH_GameManager)hugf.udonIoc.GetServiceUdon(SDH_GameManager.SDH_CONFIG_Singleton_String);
         }
 
-
         public void FaPaiCall()
         {
             var dat = (int[])this.eventData;

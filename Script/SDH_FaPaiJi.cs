@@ -112,6 +112,9 @@ namespace HopeSDH
             hugf.udonIoc.RegisterSingleton(nameof(this.card_tf_list), this, this.card_tf_list);
             hugf.udonEvn.RegisterListener(nameof(this.EnCardTileClickCall), this);
             hugf.udonEvn.RegisterListener(nameof(this.DisCardTileClickCall), this);
+
+            hugf.udonEvn.RegisterListener(nameof(this.StartShuffleCall), this);
+            hugf.udonEvn.RegisterListener(nameof(this.SetCardTileDisCall), this);
         }
 
 
@@ -161,6 +164,28 @@ namespace HopeSDH
             }
         }
 
+        public void SetCardTileEnCall()
+        {
+            var _card_id_list = (int[])(this.eventData);
+            var _card_num = (int)this.eventData2;
+            for (int i = 0; i < _card_num; i++)
+            {
+                var _id = _card_id_list[i];
+                this.card_tf_list[_id].gameObject.SetActive(true);
+            }
+        }
+
+        public void SetCardTileDisCall()
+        {
+            var _card_id_list = (int[])(this.eventData);
+            var _card_num = (int)this.eventData2;
+            for (int i = 0; i < _card_num; i++)
+            {
+                var _id = _card_id_list[i];
+                this.card_tf_list[_id].gameObject.SetActive(false);
+            }
+        }
+
         public void DisCardTileClickCall()
         {
             SetCardTileClick(false);
@@ -183,6 +208,7 @@ namespace HopeSDH
         /// </summary>
         public void FisherYatesShuffle(int seed)
         {
+            InitCardIdList();
             // 设置随机数种子
             Random.InitState(seed);
 

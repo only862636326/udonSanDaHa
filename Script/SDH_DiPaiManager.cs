@@ -19,8 +19,6 @@ namespace HopeSDH
         [SerializeField] private Transform _dipai_positon_prt;
         private Transform[] card_tf_list;
 
-
-
         #region init 
         private bool _is_init = false;
         public void Init()
@@ -39,6 +37,7 @@ namespace HopeSDH
                 if (_n.Contains("dipai") && (_n.Contains("prt") || _n.Contains("parent")))
                 {
                     this._dipai_positon_prt = child;
+                    this._dipai_positon_prt.gameObject.SetActive(false);
                     break;
                 }
             }

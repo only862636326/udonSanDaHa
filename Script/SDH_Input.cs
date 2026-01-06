@@ -38,7 +38,15 @@ namespace HopeSDH
 
         public void Update()
         {
-            ;
+            if (Input.GetKeyDown(KeyCode.O))
+            {
+                hugf.TriggerEvent(nameof(SDH_OutCartFsm.StartChuPaiCall));
+            }
+            this.eventData = 10;
+            if (Input.GetKeyDown(KeyCode.P))
+            {
+                hugf.TriggerEventWithData(nameof(SDH_FaPaiJi.StartShuffleCall), this.eventData);
+            }
         }
 
         private string[] _huifang_evn_temp;
@@ -199,6 +207,46 @@ namespace HopeSDH
         public void ToggleEvn_ExitBut_2() { ToggleEvn_ExitBut(2); }
         public void ToggleEvn_JoinBut_3() { ToggleEvn_JoinBut(3); }
         public void ToggleEvn_ExitBut_3() { ToggleEvn_ExitBut(3); }
+
+
+        public void ToggleEvn_OutBut(int idx)
+        {
+            hugf.TriggerEventWithData(nameof(SDH_OutCartFsm.ToggleEvn_OutButCall), idx);
+            var time = Time.time;
+            // time|env_name|par|par,
+            evn_his += $"{time:F6}|ToggleEvn_OutButCall|{idx},";
+        }
+
+        public void ToggleEvn_MaiDi(int idx)
+        {
+            hugf.TriggerEventWithData(nameof(SDH_OutCartFsm.ToggleEvn_MaiDiCall), idx);
+            var time = Time.time;
+            // time|env_name|par|par,
+            evn_his += $"{time:F6}|ToggleEvn_MaiDiCall|{idx},";
+        }
+
+        public void ToggleEvn_TipsBut(int idx)
+        {
+            hugf.TriggerEventWithData(nameof(SDH_OutCartFsm.ToggleEvn_TipsButCall), idx);
+            var time = Time.time;
+            // time|env_name|par|par,
+            evn_his += $"{time:F6}|ToggleEvn_TipsButCall|{idx},";
+        }
+
+        public void ToggleEvn_OutBut_0() { ToggleEvn_OutBut(0); }
+        public void ToggleEvn_OutBut_1() { ToggleEvn_OutBut(1); }
+        public void ToggleEvn_OutBut_2() { ToggleEvn_OutBut(2); }
+        public void ToggleEvn_OutBut_3() { ToggleEvn_OutBut(3); }
+
+        public void ToggleEvn_MaiDi_0() { ToggleEvn_MaiDi(0); }
+        public void ToggleEvn_MaiDi_1() { ToggleEvn_MaiDi(1); }
+        public void ToggleEvn_MaiDi_2() { ToggleEvn_MaiDi(2); }
+        public void ToggleEvn_MaiDi_3() { ToggleEvn_MaiDi(3); }
+
+        public void ToggleEvn_TipsBut_0() { ToggleEvn_TipsBut(0); }
+        public void ToggleEvn_TipsBut_1() { ToggleEvn_TipsBut(1); }
+        public void ToggleEvn_TipsBut_2() { ToggleEvn_TipsBut(2); }
+        public void ToggleEvn_TipsBut_3() { ToggleEvn_TipsBut(3); }
         // end method
 
     }
