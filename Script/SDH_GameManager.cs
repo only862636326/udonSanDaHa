@@ -31,7 +31,7 @@ namespace HopeSDH
         public const int CONST_ICON_HONG = 2;
         public const int CONST_ICON_HEI = 3;
         public const int CONST_ICON_JOKER = 4;
-        public const int CONST_ICON_ZHU = CONST_ICON_JOKER;
+
         public const int CONST_ICON_TYPE_MAST = 0x0f00;
         public const int CONST_ID_TYP_MASK = 0x00ff;
 
@@ -280,8 +280,10 @@ namespace HopeSDH
         }
 
         #endregion end sortd list
+
+        public const int CONST_TYPE_ZHU_BASE = 0x0010;
         // zhu;
-        public const int CONST_TYPE_Zheng5 = 0x0010; //
+        public const int CONST_TYPE_Zheng5 = CONST_TYPE_ZHU_BASE; //
         public const int CONST_TYPE_Zheng6 = CONST_TYPE_Zheng5 + 1;
         public const int CONST_TYPE_Zheng8 = CONST_TYPE_Zheng6 + 1;
         public const int CONST_TYPE_Zheng9 = CONST_TYPE_Zheng8 + 1;
@@ -432,8 +434,8 @@ namespace HopeSDH
                                 config_type_id_list[card_id - 2] = CONST_TYPE_Fu7 + _base;
                                 if (zhu == CONST_ICON_JOKER)
                                 {
-                                    config_type_id_list[card_id - 1] = CONST_TYPE_Zheng7;
-                                    config_type_id_list[card_id - 2] = CONST_TYPE_Zheng7;
+                                    config_type_id_list[card_id - 1] = CONST_TYPE_Zheng7 + _base;
+                                    config_type_id_list[card_id - 2] = CONST_TYPE_Zheng7 + _base;
                                 }
                                 break;
                             case 7:
@@ -475,7 +477,11 @@ namespace HopeSDH
         {
             ;
         }
-
+        /// <summary>
+        /// 0x0f00 icon mask  0
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public int GetTypeById(int id)
         {
             if (id >= 0 && id < 108)
@@ -585,6 +591,71 @@ namespace HopeSDH
             return newLength;
         }
 
+        public bool CheckSameIconType(int typ1, int typ2)
+        {
+            if ((typ1 & CONST_ICON_TYPE_MAST) == (typ2 & CONST_ICON_TYPE_MAST))
+            {
+                return true;
+            }
+
+            var typ1_is_zhu = (typ1 & CONST_ID_TYP_MASK) >= 0x10;
+            var typ2_is_zhu = (typ2 & CONST_ID_TYP_MASK) >= 0x10;
+
+            // 都是主牌， 花色相同
+            if (typ1_is_zhu && typ2_is_zhu)
+            {
+                return true;
+            }
+
+            // 一个主牌， 一个不是主牌， 花色不同
+            else if (typ1_is_zhu != typ2_is_zhu)
+            {
+                return false;
+            }
+
+            var _icon_typ1 = (typ1 & CONST_ICON_TYPE_MAST) >> 8;
+            var _icon_typ2 = (typ2 & CONST_ICON_TYPE_MAST) >> 8;
+            // 副牌， 花色相同
+            if (_icon_typ1 == _icon_typ2)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public int GetIconNumS(int[] card_id, int num, int base_typ)
+        {
+            var icon_s = new int[4];
+            icon_s[0] = 0;
+            icon_s[1] = 0;
+            icon_s[2] = 0;
+            icon_s[3] = 0;
+            var zhu = 0;
+            for (int i = 0; i < num; i++)
+            {
+                var typ = GetTypeById(card_id[i]);
+                if(typ == CONST_TYPE_UNKNOWN)
+                    continue;
+
+                if ((typ & CONST_ID_TYP_MASK) >= 0x10)
+                {
+                    zhu++;
+                }
+                else
+                {
+                    icon_s[(typ & CONST_ICON_TYPE_MAST) >> 8]++;
+                }
+            }
+
+            if ((base_typ & CONST_ID_TYP_MASK) >= 0x0f)
+            {
+                return zhu;
+            }
+            else
+            {
+                return icon_s[(base_typ & CONST_ICON_TYPE_MAST) >> 8];
+            }
+        }
         #endregion function for others
     }
 }

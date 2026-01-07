@@ -98,12 +98,8 @@ namespace HopeSDH
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.O))
-            {
-                StartJiaoCall();
-            }
+            ;
         }
-
         public void HugfInitAfter()
         {
             // user code after hugf init here

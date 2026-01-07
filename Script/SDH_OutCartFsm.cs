@@ -1,4 +1,5 @@
 
+using System.Reflection.Emit;
 using HopeSDH;
 using HopeTools;
 using UdonSharp;
@@ -199,6 +200,7 @@ namespace HopeSDH
             }
             this._select_card_num--;
         }
+
         // start method
 
         public void ToggleEvn_OutButCall()
@@ -307,19 +309,12 @@ namespace HopeSDH
             hugf.TriggerEventWith2Data(nameof(SDH_FaPaiJi.EnCardTileClickCall), dat, _pre_hand_card_num * 4);
         }
 
-        private bool CheckIsOutUser(int idx)
-        {
-            return idx == _current_player;
-        }
-
-        private int[] _sort_temp_list;
-
 
         private void OutFun()
         {
             var _out_en = false;
 
-            if (_select_card_num >= 3)
+            if (_select_card_num >= 2)
             {
                 sDH_GameManager.SortListByIdxCard(this._select_card_id_list, this._select_card_num);
             }
@@ -340,6 +335,7 @@ namespace HopeSDH
                 return;
             }
 
+            // clear last times card
             if (_old_card_show_num > 0)
             {
                 hugf.TriggerEventWith2Data(nameof(SDH_FaPaiJi.SetCardTileDisCall), this._p0_out_list, this._old_card_show_num);
@@ -351,8 +347,6 @@ namespace HopeSDH
 
             if (this._current_player == this._first_out_player)
             {
-
-
                 for (int i = 0; i < this._select_card_num; i++)
                 {
                     var _id = this._select_card_id_list[i];
@@ -371,8 +365,31 @@ namespace HopeSDH
                 else if (_current_player == SDH_GameManager.CONST_PLAYER_P2) this._p2_out_list[i] = _id;
                 else if (_current_player == SDH_GameManager.CONST_PLAYER_P3) this._p3_out_list[i] = _id;
             }
+
             this.out_card_num = this._select_card_num;
-            
+            TrigPlayerOutCard();
+            hugf.TriggerEventWith2Data(nameof(SDH_FaPaiJi.DisCardTileClickCall), this.out_card_id_list, this.out_card_num);
+
+            this._current_player++;
+            this._current_player %= 4;
+
+            if (this._current_player == this._first_out_player)
+            {
+                this._select_card_num = 0;
+                _old_card_show_num = this.first_out_card_num;
+                DelHandOutCard();
+                var _max_p = CheckOutMaxPlayer();
+                StartNewRound(_max_p);
+            }
+            else
+            {
+                this._select_card_num = 0;
+                hugf.TriggerEventWithData(nameof(SDH_Tips.SetActivePlayerCall), _current_player);
+            }
+        }
+
+        private void TrigPlayerOutCard()
+        {
             if (_current_player == SDH_GameManager.CONST_PLAYER_P0)
             {
                 hugf.TriggerEventWith2Data(nameof(SDH_OutCartP.SetOutCardP0Call), this._p0_out_list, this.out_card_num);
@@ -389,24 +406,6 @@ namespace HopeSDH
             {
                 hugf.TriggerEventWith2Data(nameof(SDH_OutCartP.SetOutCardP3Call), this._p3_out_list, this.out_card_num);
             }
-
-            hugf.TriggerEventWith2Data(nameof(SDH_FaPaiJi.DisCardTileClickCall), this.out_card_id_list, this.out_card_num);
-
-            this._current_player++;
-            this._current_player %= 4;
-
-            if (this._current_player == this._first_out_player)
-            {
-                _old_card_show_num = this.first_out_card_num;
-                DelHandOutCard();
-                var _max_p = CheckOutMaxPlayer();
-                StartNewRound(_max_p);
-            }
-            else
-            {
-                this._select_card_num = 0;
-                hugf.TriggerEventWithData(nameof(SDH_Tips.SetActivePlayerCall), _current_player);
-            }
         }
 
         private int _old_card_show_num;
@@ -418,8 +417,6 @@ namespace HopeSDH
             this._select_card_num = 0;
             hugf.TriggerEventWithData(nameof(SDH_Tips.SetActivePlayerCall), p);                        
         }
-
-
 
         private void DelHandOutCard()
         {
@@ -495,6 +492,27 @@ namespace HopeSDH
             return false;
         }
 
+        private int GetPlayerIconNum(int p, int typ)
+        {
+            if (p == SDH_GameManager.CONST_PLAYER_P0)
+            {
+                return sDH_GameManager.GetIconNumS(this._p0_hand_list, this._pre_hand_card_num, typ);
+            }
+            else if (p == SDH_GameManager.CONST_PLAYER_P1)
+            {
+                return sDH_GameManager.GetIconNumS(this._p1_hand_list, this._pre_hand_card_num, typ);
+            }
+            else if (p == SDH_GameManager.CONST_PLAYER_P2)
+            {
+                return sDH_GameManager.GetIconNumS(this._p2_hand_list, this._pre_hand_card_num, typ);
+            }
+            else if (p == SDH_GameManager.CONST_PLAYER_P3)
+            {
+                return sDH_GameManager.GetIconNumS(this._p3_hand_list, this._pre_hand_card_num, typ);
+            }
+            return -1;
+        }
+
         private bool CheckAfterOutEn()
         {
             if (this._select_card_num != this.first_out_card_num)
@@ -504,9 +522,33 @@ namespace HopeSDH
 
             if (this.first_out_card_num == 1)
             {
-                var typ = sDH_GameManager.GetTypeById(this._select_card_id_list[0]);
-                return true;
+                var _selet_typ = sDH_GameManager.GetTypeById(this._select_card_id_list[0]);
+                var _first_typ = fitrt_out_card_type_list[0];
+                // 16进制打印
+                // 相同花色， 可以出牌
+                //hugf.Log($"_selet_typ: {_selet_typ:X4}, _first_typ: {_first_typ:X4}");
+                if ((_selet_typ & SDH_GameManager.CONST_ICON_TYPE_MAST) == (_first_typ & SDH_GameManager.CONST_ICON_TYPE_MAST))
+                {
+                    return true;
+                }
+                // 相同类型， 可以出牌
+                var _type_eq = sDH_GameManager.CheckSameIconType(_selet_typ, _first_typ);
+                //hugf.Log($"_type_eq: {_type_eq}");
+                if (_type_eq)
+                {
+                    return true;
+                }
+
+                // 没有相同花色的牌， 可以出牌
+                int _icon_num = GetPlayerIconNum(this._current_player, _first_typ);
+                //hugf.Log($"_icon_num: {_icon_num}, _first_typ: {_first_typ:X4}");
+                if (_icon_num == 0)
+                {
+                    return true;
+                }
+                return false;
             }
+
             return false;
         }
 
@@ -528,3 +570,4 @@ namespace HopeSDH
         #endregion   出牌判定
     }
 }
+

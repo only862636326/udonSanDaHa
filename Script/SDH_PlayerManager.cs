@@ -162,6 +162,9 @@ namespace HopeSDH
         public void SetHandCardP2Call() { if (this._player_index == 2) SetHandCardPositionCall(); }
         public void SetHandCardP3Call() { if (this._player_index == 3) SetHandCardPositionCall(); }
 
+
+
+
 #if UNITY_EDITOR       
         [Header("测试用，运行时无效")]
         public Transform test_tf_card_prt;
