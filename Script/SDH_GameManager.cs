@@ -623,6 +623,13 @@ namespace HopeSDH
             return false;
         }
 
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <param name="card_id"></param>
+        /// <param name="num"></param>
+        /// <param name="base_typ">主, 副(黑红梅方 其中的三种)</param>
+        /// <returns></returns>
         public int GetIconNumS(int[] card_id, int num, int base_typ)
         {
             var icon_s = new int[4];
@@ -656,6 +663,13 @@ namespace HopeSDH
                 return icon_s[(base_typ & CONST_ICON_TYPE_MAST) >> 8];
             }
         }
+
+        public int GetIconPairNum(int[] card_id, int num, int base_typ)
+        {
+            ;
+            return 0;
+        }
+
         #endregion function for others
     }
 }

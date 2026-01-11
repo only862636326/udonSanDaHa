@@ -549,6 +549,32 @@ namespace HopeSDH
                 return false;
             }
 
+            if(this.first_out_card_num == 2)
+            {
+                var _selet_typ = sDH_GameManager.GetTypeById(this._select_card_id_list[0]);
+                var _first_typ = fitrt_out_card_type_list[0];
+
+                int _icon_num = GetPlayerIconNum(this._current_player, _first_typ);
+                if(_icon_num == 0)
+                {
+                    return true;
+                }
+                if((_icon_num == 2) || (_icon_num == 1))
+                {
+                    int _sele_num = sDH_GameManager.GetIconNumS(this._select_card_id_list,this._select_card_num, _first_typ);
+                    return _icon_num == _sele_num;
+                }
+                if(_icon_num >2)
+                {
+                    int _sele_num = sDH_GameManager.GetIconNumS(this._select_card_id_list, this._select_card_num, _first_typ);
+                    if(_sele_num != 2)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+
             return false;
         }
 
