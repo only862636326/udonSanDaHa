@@ -507,21 +507,6 @@ namespace HopeSDH
             return icon_num;
         }
 
-        public int GetPaiList(int[] id_list, int[] out_pair_list, int num)
-        {
-            var _num = 0;
-            for (int i = 0; i < num - 1; i++)
-            {
-                if (id_list[i] / 2 == id_list[i + 1] / 2)
-                {
-                    out_pair_list[i] = id_list[i];
-                    _num++;
-                }
-            }
-            out_pair_list[_num] = -1;
-            return _num;
-        }
-
         /// <summary>
         /// 排序大小
         /// </summary>
@@ -621,6 +606,77 @@ namespace HopeSDH
                 return true;
             }
             return false;
+        }
+
+        public int GetTypePairList(int[] card_id, int num, int base_typ, int[] pair_list)
+        {
+            var pair_num = 0;
+            for (int i = 0; i < num - 1; i++)
+            {
+                if ((card_id[i] % 2) == (card_id[i] + 1) % 2 && CheckSameIconType(card_id[i], base_typ))
+                {
+                    pair_list[pair_num++] = card_id[i];
+                }
+            }
+            pair_list[pair_num] = -1;
+            return pair_num;
+        }
+
+        public int GetPairTuoLaJi(int[] pair_list, int num)
+        {
+            var tuola_ji = 0;
+            // 检查参数有效性
+            if (pair_list == null || num <= 1) return tuola_ji;
+
+            // 当前连续下降1的序列长度
+            int current_streak = 1;
+            // 最长连续下降1的序列长度
+            int max_streak = 1;
+            // 记录上一个有效的牌点
+            int last_valid_value = pair_list[0];
+
+            // 遍历降序数组，寻找连续下降1的元素序列
+            for (int i = 0; i < num - 1; i++)
+            {
+                // 当前元素和下一个元素
+                int current = pair_list[i];
+                int next = pair_list[i + 1];
+
+                // 计算差值
+                int diff = current - next;
+
+                // 如果当前元素和下一个元素相同，忽略（视为同一牌点）
+                if (diff == 0)
+                {
+                    continue;
+                }
+                // 如果差值为1，说明下降率为1
+                else if (diff == 1)
+                {
+                    current_streak++;
+                    // 更新最长序列长度
+                    if (current_streak > max_streak)
+                    {
+                        max_streak = current_streak;
+                    }
+                    // 更新上一个有效的牌点
+                    last_valid_value = next;
+                }
+                else
+                {
+                    // 差值大于1，重置当前序列长度
+                    current_streak = 1;
+                    // 更新上一个有效的牌点
+                    last_valid_value = next;
+                }
+            }
+            return max_streak;
+        }
+
+        public int GetCardTuoLaJi(int[] card_id, int num, int base_typ)
+        { 
+            int _num = GetTypePairList(card_id, num, base_typ, _sort_temp_list);
+            return GetPairTuoLaJi(_sort_temp_list, _num);
         }
 
         /// <summary>

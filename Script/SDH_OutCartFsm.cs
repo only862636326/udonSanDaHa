@@ -513,6 +513,28 @@ namespace HopeSDH
             return -1;
         }
 
+        private int GetPlayerPairNum(int p, int typ)
+        {
+            if (p == SDH_GameManager.CONST_PLAYER_P0)
+            {
+                return sDH_GameManager.GetTypePairList(this._p0_hand_list, this._pre_hand_card_num, typ, _temp_int_list);
+            }
+            else if (p == SDH_GameManager.CONST_PLAYER_P1)
+            {
+                return sDH_GameManager.GetTypePairList(this._p1_hand_list, this._pre_hand_card_num, typ, _temp_int_list);
+            }
+            else if (p == SDH_GameManager.CONST_PLAYER_P2)
+            {
+                return sDH_GameManager.GetTypePairList(this._p2_hand_list, this._pre_hand_card_num, typ, _temp_int_list);
+            }
+            else if (p == SDH_GameManager.CONST_PLAYER_P3)
+            {
+                return sDH_GameManager.GetTypePairList(this._p3_hand_list, this._pre_hand_card_num, typ, _temp_int_list);
+            }
+            return -1;
+        }
+
+        private int[] _temp_int_list = new int[SDH_GameManager.CONST_PLAYER_HAND_CARD_MAX];
         private bool CheckAfterOutEn()
         {
             if (this._select_card_num != this.first_out_card_num)
@@ -549,28 +571,37 @@ namespace HopeSDH
                 return false;
             }
 
-            if(this.first_out_card_num == 2)
+            if (this.first_out_card_num == 2)
             {
                 var _selet_typ = sDH_GameManager.GetTypeById(this._select_card_id_list[0]);
                 var _first_typ = fitrt_out_card_type_list[0];
 
                 int _icon_num = GetPlayerIconNum(this._current_player, _first_typ);
-                if(_icon_num == 0)
+                if (_icon_num == 0)
                 {
                     return true;
                 }
-                if((_icon_num == 2) || (_icon_num == 1))
-                {
-                    int _sele_num = sDH_GameManager.GetIconNumS(this._select_card_id_list,this._select_card_num, _first_typ);
-                    return _icon_num == _sele_num;
-                }
-                if(_icon_num >2)
+
+                if ((_icon_num == 2) || (_icon_num == 1))
                 {
                     int _sele_num = sDH_GameManager.GetIconNumS(this._select_card_id_list, this._select_card_num, _first_typ);
-                    if(_sele_num != 2)
-                    {
+                    return _icon_num == _sele_num;
+                }
+
+                if (_icon_num > 2)
+                {
+                    int _sele_num = sDH_GameManager.GetIconNumS(this._select_card_id_list, this._select_card_num, _first_typ);
+                    if (_sele_num != 2)
+                    {                    
                         return false;
                     }
+                    int pair_num1 = sDH_GameManager.GetTypePairList(this._select_card_id_list, this._select_card_num, _first_typ, this._temp_int_list);
+                    int pair_num2 = GetPlayerPairNum(this._current_player, _first_typ);
+                   if(pair_num1 == 1)
+                   {
+                        return true;
+                   }
+                   
                 }
             }
 
