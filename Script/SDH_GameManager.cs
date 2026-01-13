@@ -608,16 +608,60 @@ namespace HopeSDH
             return false;
         }
 
+        public bool CheckOutBigEnType(int typ1, int typ2)
+        {
+            if ((typ1 & CONST_ICON_TYPE_MAST) == (typ2 & CONST_ICON_TYPE_MAST))
+            {
+                return true;
+            }
+
+            var typ1_is_zhu = (typ1 & CONST_ID_TYP_MASK) >= 0x10;
+            var typ2_is_zhu = (typ2 & CONST_ID_TYP_MASK) >= 0x10;
+
+            if(typ1_is_zhu && !typ2_is_zhu)
+            {
+                return false;
+            }
+
+            if (typ2_is_zhu)
+            {
+                return true;
+            }
+
+            var _icon_typ1 = (typ1 & CONST_ICON_TYPE_MAST) >> 8;
+            var _icon_typ2 = (typ2 & CONST_ICON_TYPE_MAST) >> 8;
+            // 副牌， 花色相同
+            if (_icon_typ1 == _icon_typ2)
+            {
+                return true;
+            }
+            return false;
+        }
+
+
+
         public int GetTypePairList(int[] card_id, int num, int base_typ, int[] pair_list)
         {
             var pair_num = 0;
             for (int i = 0; i < num - 1; i++)
             {
-                if ((card_id[i] % 2) == (card_id[i] + 1) % 2 && CheckSameIconType(card_id[i], base_typ))
+                var typ = GetTypeById(card_id[i]);
+                // 16进制显示， typ， base_typ
+                //hugf.udondebug.LogUdonMsg(this, "typ: 0x" + typ.ToString("X2") + ", base_typ: 0x" + base_typ.ToString("X2"));
+                if (!CheckSameIconType(base_typ, typ))
+                {
+                    //hugf.udondebug.LogUdonMsg(this, "type !=");
+                    continue;
+                }
+                if ((card_id[i] / 2) == (card_id[i + 1] / 2))
                 {
                     pair_list[pair_num++] = card_id[i];
                 }
+
+                //hugf.udondebug.LogUdonMsg(this, "type !=, not pair, card_id: " + card_id[i] + ", card_id[i + 1]: " + card_id[i + 1]);
+
             }
+
             pair_list[pair_num] = -1;
             return pair_num;
         }
@@ -627,6 +671,11 @@ namespace HopeSDH
             var tuola_ji = 0;
             // 检查参数有效性
             if (pair_list == null || num <= 1) return tuola_ji;
+
+            for(int i = 0;i < num;i++)
+            {
+                pair_list[i] = GetTypeById(pair_list[i]);
+            }
 
             // 当前连续下降1的序列长度
             int current_streak = 1;
@@ -674,8 +723,10 @@ namespace HopeSDH
         }
 
         public int GetCardTuoLaJi(int[] card_id, int num, int base_typ)
-        { 
+        {
             int _num = GetTypePairList(card_id, num, base_typ, _sort_temp_list);
+            
+            hugf.udondebug.LogUdonMsg(this, "pair num --- _num:" + _num.ToString());
             return GetPairTuoLaJi(_sort_temp_list, _num);
         }
 

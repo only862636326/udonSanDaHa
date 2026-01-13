@@ -118,11 +118,26 @@ namespace HopeSDH
         }
 
 
+        public void WanMeiXiPai()
+        {
+            InitCardIdList();
+
+            for (int i = 0; i < 84; i++)
+            {
+                var x = i * 4;
+                var _1 = x % 84;
+                var _2 = x / 84;
+
+                card_id_list[_1 + _2] = i;
+            }
+        }
+
         // 发牌
         public void StartShuffleCall()
         {
             int seed = (int)this.eventData;
-            FisherYatesShuffle(seed);
+            //FisherYatesShuffle(seed);
+            WanMeiXiPai();
 
             if (true)
             {

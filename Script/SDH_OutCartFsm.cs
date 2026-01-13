@@ -326,6 +326,7 @@ namespace HopeSDH
             else
             {
                 _out_en = CheckAfterOutEn();
+                _out_en = true;
             }
 
             // 出牌不合法
@@ -440,6 +441,40 @@ namespace HopeSDH
             ;
         }
 
+        private bool CheckEqCheckEq(int[] first_list, int[] _list_1, int num)
+        {
+            int first_typ = sDH_GameManager.GetTypeById(first_list[0]);
+            int select_typ = sDH_GameManager.GetTypeById(_list_1[0]);
+
+            var _en = sDH_GameManager.CheckOutBigEnType(first_typ, select_typ);
+
+            // 16进制打印，检查大小关系
+            hugf.udondebug.LogUdonMsg(this, first_typ.ToString("X") + " " + select_typ.ToString("X") + " " + _en);
+            if (_en == false)
+            {
+                return false;
+            }
+
+            if (num == 1)
+            {
+                return true;
+            }
+
+            if (num == 2)
+            {
+                if ((_list_1[0] / 2) == (_list_1[1] / 2))
+                {
+                    return true;
+                }
+                return false;
+            }
+
+
+            int _tuo = sDH_GameManager.GetCardTuoLaJi(_list_1, num, sDH_GameManager.GetTypeById(_list_1[0]));
+            return _tuo * 2 == num;
+            return false;
+        }
+
         public int CheckOutMaxPlayer()
         {
             var _typ_list = new int[4];
@@ -450,11 +485,16 @@ namespace HopeSDH
 
             var max_p = -1;
             var max_typ = -1;
+            var en_list = new bool[4];
+            en_list[0] = CheckEqCheckEq(this.first_out_card_list, this._p0_out_list, this.first_out_card_num);
+            en_list[1] = CheckEqCheckEq(this.first_out_card_list, this._p1_out_list, this.first_out_card_num);
+            en_list[2] = CheckEqCheckEq(this.first_out_card_list, this._p2_out_list, this.first_out_card_num);
+            en_list[3] = CheckEqCheckEq(this.first_out_card_list, this._p3_out_list, this.first_out_card_num);
 
             for (int i = 0; i < 4; i++)
             {
                 var _p = (i + this._first_out_player) % 4;
-                if (_typ_list[_p] > max_typ)
+                if (en_list[_p] && _typ_list[_p] > max_typ)
                 {
                     max_p = _p;
                     max_typ = _typ_list[_p];
@@ -482,6 +522,19 @@ namespace HopeSDH
             {
                 return false;
             }
+
+            var _typ = sDH_GameManager.GetTypeById(this._select_card_id_list[0]);
+            var _icon_num = sDH_GameManager.GetIconNumS(this._select_card_id_list, this._select_card_num, _typ);
+            
+            if(_icon_num != _select_card_num)
+            {
+                return false;
+            }
+
+
+            var tuo_la_ji = sDH_GameManager.GetCardTuoLaJi(this._select_card_id_list, this._select_card_num, _typ);
+            hugf.udondebug.LogUdonMsg(this, "tuo_la_ji: " + tuo_la_ji);
+            return tuo_la_ji * 2 == this._select_card_num;
 
             // 最高到五连拖
             if (_select_card_num > 10)
@@ -534,6 +587,27 @@ namespace HopeSDH
             return -1;
         }
 
+        private int GetPlayerTuoLaJi(int p, int typ)
+        {
+            if (p == SDH_GameManager.CONST_PLAYER_P0)
+            {
+                return sDH_GameManager.GetCardTuoLaJi(this._p0_hand_list, this._pre_hand_card_num, typ);
+            }
+            else if (p == SDH_GameManager.CONST_PLAYER_P1)
+            {
+                return sDH_GameManager.GetCardTuoLaJi(this._p1_hand_list, this._pre_hand_card_num, typ);
+            }
+            else if (p == SDH_GameManager.CONST_PLAYER_P2)
+            {
+                return sDH_GameManager.GetCardTuoLaJi(this._p2_hand_list, this._pre_hand_card_num, typ);
+            }
+            else if (p == SDH_GameManager.CONST_PLAYER_P3)
+            {
+                return sDH_GameManager.GetCardTuoLaJi(this._p3_hand_list, this._pre_hand_card_num, typ);
+            }
+            return -1;
+        }
+
         private int[] _temp_int_list = new int[SDH_GameManager.CONST_PLAYER_HAND_CARD_MAX];
         private bool CheckAfterOutEn()
         {
@@ -542,71 +616,94 @@ namespace HopeSDH
                 return false;
             }
 
-            if (this.first_out_card_num == 1)
-            {
-                var _selet_typ = sDH_GameManager.GetTypeById(this._select_card_id_list[0]);
-                var _first_typ = fitrt_out_card_type_list[0];
-                // 16进制打印
-                // 相同花色， 可以出牌
-                //hugf.Log($"_selet_typ: {_selet_typ:X4}, _first_typ: {_first_typ:X4}");
-                if ((_selet_typ & SDH_GameManager.CONST_ICON_TYPE_MAST) == (_first_typ & SDH_GameManager.CONST_ICON_TYPE_MAST))
-                {
-                    return true;
-                }
-                // 相同类型， 可以出牌
-                var _type_eq = sDH_GameManager.CheckSameIconType(_selet_typ, _first_typ);
-                //hugf.Log($"_type_eq: {_type_eq}");
-                if (_type_eq)
-                {
-                    return true;
-                }
+            var _first_typ = fitrt_out_card_type_list[0];
+            int _icon_num = GetPlayerIconNum(this._current_player, _first_typ);
+            int _sele_num = sDH_GameManager.GetIconNumS(this._select_card_id_list, this._select_card_num, _first_typ);
 
-                // 没有相同花色的牌， 可以出牌
-                int _icon_num = GetPlayerIconNum(this._current_player, _first_typ);
-                //hugf.Log($"_icon_num: {_icon_num}, _first_typ: {_first_typ:X4}");
-                if (_icon_num == 0)
-                {
-                    return true;
-                }
+            // 手牌花色不够或刚好，全出
+            if (_icon_num <= first_out_card_num)
+            {
+                return _sele_num == _icon_num;
+            }
+
+            // 手牌有多，但不出对应的花色
+            if (_sele_num < first_out_card_num)
+            {
                 return false;
             }
 
+            int select_pair_num = sDH_GameManager.GetTypePairList(this._select_card_id_list, this._select_card_num, _first_typ, this._temp_int_list);
+            int player_pair_num = GetPlayerPairNum(this._current_player, _first_typ);
+
+            // 处理对子情况（2张牌）
             if (this.first_out_card_num == 2)
             {
-                var _selet_typ = sDH_GameManager.GetTypeById(this._select_card_id_list[0]);
-                var _first_typ = fitrt_out_card_type_list[0];
-
-                int _icon_num = GetPlayerIconNum(this._current_player, _first_typ);
-                if (_icon_num == 0)
+                if (player_pair_num >= 1) // 手上有对，必须出对
                 {
-                    return true;
+                    return select_pair_num >= 1;
                 }
-
-                if ((_icon_num == 2) || (_icon_num == 1))
-                {
-                    int _sele_num = sDH_GameManager.GetIconNumS(this._select_card_id_list, this._select_card_num, _first_typ);
-                    return _icon_num == _sele_num;
-                }
-
-                if (_icon_num > 2)
-                {
-                    int _sele_num = sDH_GameManager.GetIconNumS(this._select_card_id_list, this._select_card_num, _first_typ);
-                    if (_sele_num != 2)
-                    {                    
-                        return false;
-                    }
-                    int pair_num1 = sDH_GameManager.GetTypePairList(this._select_card_id_list, this._select_card_num, _first_typ, this._temp_int_list);
-                    int pair_num2 = GetPlayerPairNum(this._current_player, _first_typ);
-                   if(pair_num1 == 1)
-                   {
-                        return true;
-                   }
-                   
-                }
+                return true;
             }
 
+            // 处理两连拖情况
+            if (this.first_out_card_num == 4)
+            {
+                int select_tuo = sDH_GameManager.GetCardTuoLaJi(this._select_card_id_list, this._select_card_num, _first_typ);
+                int player_tuo = GetPlayerTuoLaJi(this._current_player, _first_typ);
 
-            return false;
+                if (player_tuo >= 2) // 有两连拖，必须出连拖
+                {
+                    return select_tuo >= 2;
+                }
+
+                if (select_pair_num < player_pair_num && player_pair_num >= 2) // 出对子数不能大于出牌数
+                {
+                    return false;
+                }
+                return true;
+            }
+            // 处理三连拖情况
+            if (this.first_out_card_num == 6)
+            {
+                int select_tuo = sDH_GameManager.GetCardTuoLaJi(this._select_card_id_list, this._select_card_num, _first_typ);
+                int player_tuo = GetPlayerTuoLaJi(this._current_player, _first_typ);
+
+                if (player_tuo >= 3) // 有三连拖，必须出连拖
+                {
+                    return select_tuo >= 3;
+                }
+
+                if (select_tuo < player_tuo && player_tuo >= 2) // 出对子数不能大于出牌数
+                {
+                    return false;
+                }
+
+                if (select_pair_num < player_pair_num && player_pair_num >= 3) // 出对子数不能大于出牌数
+                {
+                    return false;
+                }
+                return true;
+            }
+
+            // tuolaji 4
+            if (this.first_out_card_num == 8)
+            {
+                int select_tuo = sDH_GameManager.GetCardTuoLaJi(this._select_card_id_list, this._select_card_num, _first_typ);
+                int player_tuo = GetPlayerTuoLaJi(this._current_player, _first_typ);
+
+                if (player_tuo >= 4) // 有三连拖，必须出连拖
+                {
+                    return select_tuo >= 4;
+                }
+
+                if (select_pair_num < player_pair_num && player_pair_num >= 4) // 出对子数不能大于出牌数
+                {
+                    return false;
+                }
+                return true;
+            }
+
+            return true;
         }
 
         public void StartChuPaiCall()
