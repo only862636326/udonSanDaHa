@@ -45,6 +45,8 @@ namespace HopeSDH
 
         private HopeTools.HopeUdonFramework hugf;
         public object eventData;
+        public object eventData1;
+        public object eventData2;
         private bool _is_hugf_init = false;
         public void HugfInit()
         {
@@ -94,6 +96,30 @@ namespace HopeSDH
                 card_tf.rotation = dipai_pos_tf.rotation;
             }
         }
+
+
+        private int[] _fend_id_list;
+
+        public void SetFenCardCall()
+        {
+            if(this._fend_id_list == null)
+            {
+                this._fend_id_list = new int[SDH_GameManager.CONST_MAX_FENG_NUM];
+            }
+
+            var dat = (int[])this.eventData;
+            var num = (int)this.eventData2;
+            if (dat == null || dat.Length == 0)
+            {
+                hugf.udondebug.LogWarning("SDH_DiPaiManager SetFenCardCall data is null or empty!");
+                return;
+            }
+            for(int i = 0; i < num; i++)
+            {
+
+            }
+        }
+
 
         public void FaPaiCall()
         {

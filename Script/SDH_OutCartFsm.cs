@@ -409,6 +409,8 @@ namespace HopeSDH
             }
         }
 
+
+
         private int _old_card_show_num;
         public void StartNewRound(int p)
         {
@@ -416,7 +418,7 @@ namespace HopeSDH
             this._first_out_player = p;
             this.out_card_num = 0;
             this._select_card_num = 0;
-            hugf.TriggerEventWithData(nameof(SDH_Tips.SetActivePlayerCall), p);                        
+            hugf.TriggerEventWithData(nameof(SDH_Tips.SetActivePlayerCall), p);
         }
 
         private void DelHandOutCard()
@@ -525,8 +527,8 @@ namespace HopeSDH
 
             var _typ = sDH_GameManager.GetTypeById(this._select_card_id_list[0]);
             var _icon_num = sDH_GameManager.GetIconNumS(this._select_card_id_list, this._select_card_num, _typ);
-            
-            if(_icon_num != _select_card_num)
+
+            if (_icon_num != _select_card_num)
             {
                 return false;
             }
@@ -609,6 +611,7 @@ namespace HopeSDH
         }
 
         private int[] _temp_int_list = new int[SDH_GameManager.CONST_PLAYER_HAND_CARD_MAX];
+
         private bool CheckAfterOutEn()
         {
             if (this._select_card_num != this.first_out_card_num)
@@ -722,6 +725,50 @@ namespace HopeSDH
         }
 
         #endregion   出牌判定
+
+
+        private int[] feng_card_list;
+        private int feng_card_num;
+        private bool[] feng_fast_list;
+        public void PushToFengListIf(int card_id)
+        {
+            if(feng_fast_list == null)
+            {
+                feng_fast_list = new bool[0x1f];
+                feng_fast_list[SDH_GameManager.CONST_TYPE_Zheng5] = true;
+                feng_fast_list[SDH_GameManager.CONST_TYPE_Zheng10] = true;
+                feng_fast_list[SDH_GameManager.CONST_TYPE_ZhengK] = true;
+
+                feng_fast_list[SDH_GameManager.CONST_TYPE_Fu5] = true;
+                feng_fast_list[SDH_GameManager.CONST_TYPE_Fu10] = true;
+                feng_fast_list[SDH_GameManager.CONST_TYPE_FuK] = true;
+            }
+
+            var typ = sDH_GameManager.GetTypeById(card_id) & SDH_GameManager.CONST_ID_TYP_MASK;
+            if (feng_fast_list[typ])
+            {
+                feng_card_list[feng_card_num++] = card_id;
+            }
+        }
+
+        public void JianFen(int zhuang, int max_p)
+        {
+            if (zhuang == max_p)
+            {
+                return;
+            }
+
+            for(int i = 0;i < first_out_card_num;i++)
+            {
+                PushToFengListIf(this._p0_hand_list[i]);
+                PushToFengListIf(this._p1_hand_list[i]);
+                PushToFengListIf(this._p2_hand_list[i]);
+                PushToFengListIf(this._p3_hand_list[i]);
+            }
+        }
     }
 }
+
+
+
 

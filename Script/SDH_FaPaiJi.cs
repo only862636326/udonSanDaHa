@@ -117,10 +117,15 @@ namespace HopeSDH
             hugf.udonEvn.RegisterListener(nameof(this.SetCardTileDisCall), this);
         }
 
-
+       
         public void WanMeiXiPai()
         {
             InitCardIdList();
+            var temp = new int[84];
+            for (int i = 0; i < temp.Length; i++)
+            {
+                temp[i] = card_id_list[i];
+            }
 
             for (int i = 0; i < 84; i++)
             {
@@ -128,7 +133,7 @@ namespace HopeSDH
                 var _1 = x % 84;
                 var _2 = x / 84;
 
-                card_id_list[_1 + _2] = i;
+                card_id_list[_1 + _2] = temp[i];
             }
         }
 

@@ -25,7 +25,7 @@ namespace HopeSDH
         public const string CONST_SDH_HUGF_STRING = "SDH_hufg";
         public const string SDH_CONFIG_Singleton_String = "SDH_CONFIG_Singleton_String";
         public const int CONST_MAX_OUT_CARD = 23;
-
+        public const int CONST_MAX_FENG_NUM = 25;
         public const int CONST_ICON_MEI = 0;
         public const int CONST_ICON_FANG = 1;
         public const int CONST_ICON_HONG = 2;
