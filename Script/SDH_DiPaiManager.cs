@@ -17,6 +17,7 @@ namespace HopeSDH
         private int _dipai_count;
 
         [SerializeField] private Transform _dipai_positon_prt;
+        [SerializeField] private Transform _fenpai_position_prt;
         private Transform[] card_tf_list;
 
         #region init 
@@ -38,34 +39,24 @@ namespace HopeSDH
                 {
                     this._dipai_positon_prt = child;
                     this._dipai_positon_prt.gameObject.SetActive(false);
-                    break;
+                }
+                if (_n.Contains("fen") && (_n.Contains("prt") || _n.Contains("parent")))
+                {
+                    this._fenpai_position_prt = child;
+                    this._fenpai_position_prt.gameObject.SetActive(false);
                 }
             }
         }
 
-        private HopeTools.HopeUdonFramework hugf;
+        public HopeTools.HopeUdonFramework hugf;
         public object eventData;
         public object eventData1;
         public object eventData2;
-        private bool _is_hugf_init = false;
-        public void HugfInit()
-        {
-            if (hugf == null)
-            { 
-                hugf = GameObject.Find(SDH_GameManager.CONST_SDH_HUGF_STRING).GetComponent<HopeUdonFramework>();
-                if(hugf == null)
-                {
-                    Debug.LogError("SDH_DiPaiManager HugfInit failed, hugf is null!");
-                    return;
-                }
-                hugf.Init();
-                return;
-            }    
-        }
 
         public void HugfInitAfter()
         {
             hugf.udonEvn.RegisterListener(nameof(this.FaPaiCall), this);
+            hugf.udonEvn.RegisterListener(nameof(this.SetFenCardPostionCall), this);
         }
 
         public void HufgIocGet()
@@ -100,9 +91,9 @@ namespace HopeSDH
 
         private int[] _fend_id_list;
 
-        public void SetFenCardCall()
+        public void SetFenCardPostionCall()
         {
-            if(this._fend_id_list == null)
+            if (this._fend_id_list == null)
             {
                 this._fend_id_list = new int[SDH_GameManager.CONST_MAX_FENG_NUM];
             }
@@ -114,12 +105,15 @@ namespace HopeSDH
                 hugf.udondebug.LogWarning("SDH_DiPaiManager SetFenCardCall data is null or empty!");
                 return;
             }
-            for(int i = 0; i < num; i++)
+            for (int i = 0; i < num; i++)
             {
-
+                var _id = dat[i];
+                _fend_id_list[i] = _id;
+                this.card_tf_list[_id].gameObject.SetActive(true);
+                this.card_tf_list[_id].position = this._fenpai_position_prt.GetChild(i).position;
+                this.card_tf_list[_id].rotation = this._fenpai_position_prt.GetChild(i).rotation;
             }
         }
-
 
         public void FaPaiCall()
         {
@@ -131,6 +125,7 @@ namespace HopeSDH
             }
             GrabHandCard(dat);
             hugf.TriggerEventWith2Data(nameof(SDH_FaPaiJi.DisCardTileClickCall), this._dipai_list, this._dipai_count);
+            hugf.TriggerEventWith2Data(nameof(SDH_FaPaiJi.SetCardFaceNullCall), this._dipai_list, this._dipai_count);
 
             RequestSyn();
         }

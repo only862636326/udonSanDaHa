@@ -295,7 +295,7 @@ namespace HopeSDH
                 this._p3_hand_list[i] = dat[i * 4 + 3];
             }
             _pre_hand_card_num = SDH_GameManager.CONST_PLAYER_GRAB_CARD_NUM;
-
+            _feng_card_num = 0;
             sDH_GameManager.SortListByIdxCard(this._p0_hand_list, _pre_hand_card_num);
             sDH_GameManager.SortListByIdxCard(this._p1_hand_list, _pre_hand_card_num);
             sDH_GameManager.SortListByIdxCard(this._p2_hand_list, _pre_hand_card_num);
@@ -380,6 +380,7 @@ namespace HopeSDH
                 _old_card_show_num = this.first_out_card_num;
                 DelHandOutCard();
                 var _max_p = CheckOutMaxPlayer();
+                JianFen(_max_p, _max_p + 1);
                 StartNewRound(_max_p);
             }
             else
@@ -451,7 +452,7 @@ namespace HopeSDH
             var _en = sDH_GameManager.CheckOutBigEnType(first_typ, select_typ);
 
             // 16进制打印，检查大小关系
-            hugf.udondebug.LogUdonMsg(this, first_typ.ToString("X") + " " + select_typ.ToString("X") + " " + _en);
+            // hugf.udondebug.LogUdonMsg(this, first_typ.ToString("X") + " " + select_typ.ToString("X") + " " + _en);
             if (_en == false)
             {
                 return false;
@@ -535,7 +536,7 @@ namespace HopeSDH
 
 
             var tuo_la_ji = sDH_GameManager.GetCardTuoLaJi(this._select_card_id_list, this._select_card_num, _typ);
-            hugf.udondebug.LogUdonMsg(this, "tuo_la_ji: " + tuo_la_ji);
+            // hugf.udondebug.LogUdonMsg(this, "tuo_la_ji: " + tuo_la_ji);
             return tuo_la_ji * 2 == this._select_card_num;
 
             // 最高到五连拖
@@ -727,27 +728,32 @@ namespace HopeSDH
         #endregion   出牌判定
 
 
-        private int[] feng_card_list;
-        private int feng_card_num;
-        private bool[] feng_fast_list;
+        [HideInInspector] public int[] _feng_card_list;
+        private int _feng_card_num;
+        private bool[] _feng_fast_list;
         public void PushToFengListIf(int card_id)
         {
-            if(feng_fast_list == null)
-            {
-                feng_fast_list = new bool[0x1f];
-                feng_fast_list[SDH_GameManager.CONST_TYPE_Zheng5] = true;
-                feng_fast_list[SDH_GameManager.CONST_TYPE_Zheng10] = true;
-                feng_fast_list[SDH_GameManager.CONST_TYPE_ZhengK] = true;
 
-                feng_fast_list[SDH_GameManager.CONST_TYPE_Fu5] = true;
-                feng_fast_list[SDH_GameManager.CONST_TYPE_Fu10] = true;
-                feng_fast_list[SDH_GameManager.CONST_TYPE_FuK] = true;
+            if (_feng_fast_list == null)
+            {
+                _feng_fast_list = new bool[0x1f];
+                _feng_card_list = new int[0x1f];
+                _feng_fast_list[SDH_GameManager.CONST_TYPE_Zheng5] = true;
+                _feng_fast_list[SDH_GameManager.CONST_TYPE_Zheng10] = true;
+                _feng_fast_list[SDH_GameManager.CONST_TYPE_ZhengK] = true;
+
+                _feng_fast_list[SDH_GameManager.CONST_TYPE_Fu5] = true;
+                _feng_fast_list[SDH_GameManager.CONST_TYPE_Fu10] = true;
+                _feng_fast_list[SDH_GameManager.CONST_TYPE_FuK] = true;
             }
 
             var typ = sDH_GameManager.GetTypeById(card_id) & SDH_GameManager.CONST_ID_TYP_MASK;
-            if (feng_fast_list[typ])
+            // 16 进制打印
+            //Debug.Log($"PushToFengListIf: card_id: {card_id},{typ} typ: {typ.ToString("X")}, feng_fast_list: {_feng_fast_list[typ]}");
+
+            if (_feng_fast_list[typ])
             {
-                feng_card_list[feng_card_num++] = card_id;
+                _feng_card_list[_feng_card_num++] = card_id;
             }
         }
 
@@ -758,12 +764,17 @@ namespace HopeSDH
                 return;
             }
 
-            for(int i = 0;i < first_out_card_num;i++)
+            var _num = this._feng_card_num;
+            for (int i = 0; i < first_out_card_num; i++)
             {
-                PushToFengListIf(this._p0_hand_list[i]);
-                PushToFengListIf(this._p1_hand_list[i]);
-                PushToFengListIf(this._p2_hand_list[i]);
-                PushToFengListIf(this._p3_hand_list[i]);
+                PushToFengListIf(this._p0_out_list[i]);
+                PushToFengListIf(this._p1_out_list[i]);
+                PushToFengListIf(this._p2_out_list[i]);
+                PushToFengListIf(this._p3_out_list[i]);
+            }
+            if (this._feng_card_num != _num)
+            {
+                hugf.TriggerEventWith2Data(nameof(SDH_DiPaiManager.SetFenCardPostionCall), this._feng_card_list, this._feng_card_num);
             }
         }
     }

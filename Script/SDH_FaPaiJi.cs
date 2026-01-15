@@ -115,6 +115,10 @@ namespace HopeSDH
 
             hugf.udonEvn.RegisterListener(nameof(this.StartShuffleCall), this);
             hugf.udonEvn.RegisterListener(nameof(this.SetCardTileDisCall), this);
+
+            hugf.udonEvn.RegisterListener(nameof(this.SetFenCardPostionCall), this);
+            hugf.udonEvn.RegisterListener(nameof(this.SetCardFaceNullCall), this);
+            hugf.udonEvn.RegisterListener(nameof(this.SetCardFaceTureCall), this);
         }
 
        
@@ -197,15 +201,62 @@ namespace HopeSDH
 
         public void SetCardTileDisCall()
         {
+            if (this._fend_locked == null)
+            {
+                this._fend_locked = new bool[SDH_GameManager.CONST_SHOW_CARD_NUM];
+            }
             var _card_id_list = (int[])(this.eventData);
             var _card_num = (int)this.eventData2;
             for (int i = 0; i < _card_num; i++)
             {
                 var _id = _card_id_list[i];
-                this.card_tf_list[_id].gameObject.SetActive(false);
+                if (!this._fend_locked[_id])
+                    this.card_tf_list[_id].gameObject.SetActive(false);
             }
         }
 
+        public void SetCardFaceNullCall()
+        {
+            var _card_id_list = (int[])(this.eventData);
+            var _card_num = (int)this.eventData2;
+            for (int i = 0; i < _card_num; i++)
+            {
+                var _id = _card_id_list[i];
+                SetCardFaceById(_id, true);
+            }
+        }
+
+        public void SetCardFaceTureCall()
+        {
+            var _card_id_list = (int[])(this.eventData);
+            var _card_num = (int)this.eventData2;
+            for (int i = 0; i < _card_num; i++)
+            {
+                var _id = _card_id_list[i];
+                SetCardFaceById(_id, false);
+            }
+        }
+
+        private bool[] _fend_locked;
+
+        public void SetFenCardPostionCall()
+        {
+            if (this._fend_locked == null)
+            {
+                this._fend_locked = new bool[SDH_GameManager.CONST_SHOW_CARD_NUM];
+            }
+            var dat = (int[])this.eventData;
+            var num = (int)this.eventData2;
+            if (dat == null || dat.Length == 0)
+            {
+                hugf.udondebug.LogWarning("SDH_DiPaiManager SetFenCardCall data is null or empty!");
+                return;
+            }
+            for (int i = 0; i < num; i++)
+            {
+                this._fend_locked[dat[i]] = true;
+            }
+        }
         public void DisCardTileClickCall()
         {
             SetCardTileClick(false);
@@ -327,6 +378,26 @@ namespace HopeSDH
                 this._renderer.SetPropertyBlock(this._block);
             }
         }
+
+        public void SetCardFaceById(int _id, bool is_face)
+        {
+            _renderer = this.transform.GetChild(_id).GetChild(0).GetComponent<Renderer>();
+            this._block = new MaterialPropertyBlock();
+            _renderer.GetPropertyBlock(_block);
+            if (is_face)
+            {
+                this._block.SetVector("_MainParams", new Vector4(5, 2, 5, 13));
+                this._renderer.SetPropertyBlock(this._block);
+            }
+            else
+            {
+                var icon = _id / 26;
+                var num = (_id % 26) / 2;
+                this._block.SetVector("_MainParams", new Vector4(4 - icon, num, 5, 13));
+                this._renderer.SetPropertyBlock(this._block);
+            }
+        }
+
         #endregion end render tool
     }
 }
