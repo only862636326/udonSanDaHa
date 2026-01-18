@@ -81,6 +81,7 @@ namespace HopeSDH
         }
 
 
+
         private HopeTools.HopeUdonFramework hugf;
         public object eventData;
         public object eventData1;
@@ -110,6 +111,8 @@ namespace HopeSDH
             }
             // user code after hugf init here
             hugf.udonIoc.RegisterSingleton(nameof(this.card_tf_list), this, this.card_tf_list);
+            hugf.udonIoc.RegisterSingleton(nameof(SDH_FaPaiJi), this, this);
+
             hugf.udonEvn.RegisterListener(nameof(this.EnCardTileClickCall), this);
             hugf.udonEvn.RegisterListener(nameof(this.DisCardTileClickCall), this);
 
@@ -177,6 +180,11 @@ namespace HopeSDH
                 var _id = _card_id_list[i];
                 this.card_tf_list[_id].GetComponent<SDH_CardTile>().IsSelectable = b;
             }
+        }
+
+        public void UpdateCardPosition(int _id, int p)
+        {
+            this.card_tf_list[_id].GetComponent<SDH_CardTile>().UpdateCardPosition(p);
         }
 
         public void ResetAllTileChildCall()

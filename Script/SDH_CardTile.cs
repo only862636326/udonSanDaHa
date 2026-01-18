@@ -1,5 +1,6 @@
 ﻿
 using Cysharp.Threading.Tasks.Triggers;
+using SGS;
 using UdonSharp;
 using UnityEngine;
 using UnityEngine.InputSystem.LowLevel;
@@ -32,24 +33,8 @@ namespace HopeSDH
             // Debug.Log($"SDH_CardTile: Init: 自己的id为{card_id}, {transform.name}");
         }
 
-
-        private HopeTools.HopeUdonFramework hugf;
+        public HopeTools.HopeUdonFramework hugf;
         public object eventData;
-        public void HugfInit()
-        {
-            if (hugf == null)
-            {
-                hugf = GameObject.Find(SDH_GameManager.CONST_SDH_HUGF_STRING).GetComponent<HopeTools.HopeUdonFramework>();
-                if (hugf == null)
-                {
-                    Debug.LogError("HugfInit failed, hugf is null!");
-                    return;
-                }
-
-                hugf.Init();
-                return;
-            }
-        }
 
         private BoxCollider _box;
         public bool IsSelectable
@@ -78,27 +63,33 @@ namespace HopeSDH
             this._card_p1 = x;
         }
 
+        SDH_Input sdh_input;
+        public void HufgIocGet()
+        {
+            //var p = (Transform[])hugf.udonIoc.GetServiceObj(nameof(SDH_FaPaiJi.card_tf_list));
+            sdh_input = (SDH_Input)hugf.udonIoc.GetServiceUdon(nameof(SDH_Input));
+        }
+
         private void OnMouseDown()
         {
             if (!IsSelectable)
                 return;
 
-            if (_card_p1 == 0)
+            if (_card_p1 == CARD_POS_SELECT)
             {
-                hugf.TriggerEventWithData(nameof(SDH_OutCartFsm.SelecCardCall), this.card_id);
+                sdh_input.ToggleEvn_UnselecCard(this.card_id);
+                //    _card_p1 = 0;
             }
-            else if (_card_p1 == 2)
+            else if (_card_p1 == CARD_POS_UNSELEC)
             {
-                hugf.TriggerEventWithData(nameof(SDH_OutCartFsm.UnselecCardCall), this.card_id);
+                sdh_input.ToggleEvn_SelecCard(this.card_id);
+                //    _card_p1 = 2;
             }
-            _card_p1 = _card_p1 == 0 ? 2 : 0;
-            UpdateCardPosition(_card_p1);
         }
 
-        private void OnMouseDrag()
-        {
-            ;
-        }
+        public const int CARD_POS_UNSELEC = 0;
+        public const int CARD_POS_HOVER = 1;
+        public const int CARD_POS_SELECT = 2;
 
         public void UpdateCardPosition(int _p)
         {
@@ -108,6 +99,10 @@ namespace HopeSDH
             }
             var p = this.transform.position + this.transform.up * 0.005f * _p;
             _child_tf.position = p;
+            if (_p != CARD_POS_HOVER)
+            {
+                this._card_p1 = _p;
+            }
         }
 
         private void OnMouseEnter()
@@ -115,10 +110,9 @@ namespace HopeSDH
             if (!IsSelectable)
                 return;
 
-
-            if (_card_p1 == 0)
+            if (_card_p1 == CARD_POS_UNSELEC)
             {
-                UpdateCardPosition(1);
+                UpdateCardPosition(CARD_POS_HOVER);
             }
         }
         public void OnMouseExit()

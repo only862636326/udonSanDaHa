@@ -1,4 +1,5 @@
 
+using System;
 using UdonSharp;
 using UnityEngine;
 using VRC.SDKBase;
@@ -9,104 +10,44 @@ namespace HopeSDH
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class SDH_Input : UdonSharpBehaviour
     {
-        [HideInInspector] public string evn_his;
-        void Start()
-        {
-            evn_his = "";
-        }
-
-        private HopeTools.HopeUdonFramework hugf;
+        [HideInInspector] public HopeTools.HopeUdonFramework hugf;
         public object eventData;
         public object eventData1;
         public object eventData2;
-
-        public void HugfInit()
-        {
-            if (hugf == null)
-            {
-                hugf = GameObject.Find(SDH_GameManager.CONST_SDH_HUGF_STRING).GetComponent<HopeTools.HopeUdonFramework>();
-                if (hugf == null)
-                {
-                    Debug.LogError("HugfInit failed, hugf is null!");
-                    return;
-                }
-
-                hugf.Init();
-                return;
-            }
-        }
 
         public void Update()
         {
             if (Input.GetKeyDown(KeyCode.O))
             {
-                hugf.TriggerEvent(nameof(SDH_OutCartFsm.StartChuPaiCall));
+                hugf.TriggerReEvent(nameof(SDH_OutCartFsm.StartChuPaiCall));
             }
             this.eventData = 10;
             if (Input.GetKeyDown(KeyCode.P))
             {
-                hugf.TriggerEventWithData(nameof(SDH_FaPaiJi.StartShuffleCall), this.eventData);
+                hugf.TriggerReEventWithData(nameof(SDH_FaPaiJi.StartShuffleCall), this.eventData);
             }
         }
 
-        private string[] _huifang_evn_temp;
-        private float _base_time;
-        private int _current_idx;
-        private int _all_idx;
-        public void HuiFangEvnStart()
+
+        public void HugfInitAfter()
         {
-            _huifang_evn_temp = evn_his.Split(',');
-            _current_idx = 0;
-            _all_idx = _huifang_evn_temp.Length;
-            _base_time = Time.time;
+            // user code after hugf init here
+            //hugf.udonEvn.RegisterListener(nameof(this.DemeFunCall), this);
+            hugf.udonIoc.RegisterSingleton(nameof(SDH_Input), this, this);
         }
-
-        public void HuiFangEvnTask()
-        {
-            if (_current_idx >= _all_idx)
-                return;
-
-            var infos = _huifang_evn_temp[_current_idx].Split('|');
-
-            float _t = float.Parse(infos[0]);
-            string _str = infos[1];
-
-            if (Time.time >= _base_time + _t)
-            {
-                if (infos.Length == 3)
-                {
-                    hugf.TriggerEventWithData(_str, int.Parse(infos[2]));
-                }
-                else if (infos.Length == 4)
-                {
-                    hugf.TriggerEventWith2Data(_str, int.Parse(infos[2]), int.Parse(infos[3]));
-                }
-                _current_idx++;
-            }
-        }
-
 
         public void ToggleEvn_Score(int score_idx, int idx)
         {
-            hugf.TriggerEventWith2Data(nameof(SDH_JiaoZhuang.ToggleEvn_ScoreCall), idx, score_idx);
-            var time = Time.time;
-            // time|env_name|par|par,
-            evn_his += $"{time:F6}|ToggleEvn_ScoreCall|{score_idx}|{idx},";
+            hugf.TriggerReEventWith2Data(nameof(SDH_JiaoZhuang.ToggleEvn_ScoreCall), idx, score_idx);
         }
 
         public void ToggleEvn_JiaoZhuang(int idx)
         {
-            hugf.TriggerEventWithData(nameof(SDH_JiaoZhuang.ToggleEvn_JiaoZhuangCall), idx);
-            var time = Time.time;
-            // time|env_name|par|par,
-            evn_his += $"{time:F6}|ToggleEvn_JiaoZhuangCall|{idx},";
+            hugf.TriggerReEventWithData(nameof(SDH_JiaoZhuang.ToggleEvn_JiaoZhuangCall), idx);
         }
         public void ToggleEvn_BuJiao(int idx)
         {
-            hugf.TriggerEventWithData(nameof(SDH_JiaoZhuang.ToggleEvn_BuJiaoCall), idx);
-            var time = Time.time;
-            // time|env_name|par|par,
-            evn_his += $"{time:F6}|ToggleEvn_BuJiaoCall|{idx},";
+            hugf.TriggerReEventWithData(nameof(SDH_JiaoZhuang.ToggleEvn_BuJiaoCall), idx);
         }
 
         // start method
@@ -185,18 +126,12 @@ namespace HopeSDH
 
         public void ToggleEvn_JoinBut(int idx)
         {
-            hugf.TriggerEventWithData(nameof(SDH_JoinExit.ToggleEvn_JoinButCall), idx);
-            var time = Time.time;
-            // time|env_name|par|par,
-            evn_his += $"{time:F6}|ToggleEvn_JoinButCall|{idx},";
+            hugf.TriggerReEventWithData(nameof(SDH_JoinExit.ToggleEvn_JoinButCall), idx);
         }
 
         public void ToggleEvn_ExitBut(int idx)
         {
-            hugf.TriggerEventWithData(nameof(SDH_JoinExit.ToggleEvn_ExitButCall), idx);
-            var time = Time.time;
-            // time|env_name|par|par,
-            evn_his += $"{time:F6}|ToggleEvn_ExitButCall|{idx},";
+            hugf.TriggerReEventWithData(nameof(SDH_JoinExit.ToggleEvn_ExitButCall), idx);
         }
 
         public void ToggleEvn_JoinBut_0() { ToggleEvn_JoinBut(0); }
@@ -211,26 +146,17 @@ namespace HopeSDH
 
         public void ToggleEvn_OutBut(int idx)
         {
-            hugf.TriggerEventWithData(nameof(SDH_OutCartFsm.ToggleEvn_OutButCall), idx);
-            var time = Time.time;
-            // time|env_name|par|par,
-            evn_his += $"{time:F6}|ToggleEvn_OutButCall|{idx},";
+            hugf.TriggerReEventWithData(nameof(SDH_OutCartFsm.ToggleEvn_OutButCall), idx);
         }
 
         public void ToggleEvn_MaiDi(int idx)
         {
-            hugf.TriggerEventWithData(nameof(SDH_OutCartFsm.ToggleEvn_MaiDiCall), idx);
-            var time = Time.time;
-            // time|env_name|par|par,
-            evn_his += $"{time:F6}|ToggleEvn_MaiDiCall|{idx},";
+            hugf.TriggerReEventWithData(nameof(SDH_OutCartFsm.ToggleEvn_MaiDiCall), idx);
         }
 
         public void ToggleEvn_TipsBut(int idx)
         {
-            hugf.TriggerEventWithData(nameof(SDH_OutCartFsm.ToggleEvn_TipsButCall), idx);
-            var time = Time.time;
-            // time|env_name|par|par,
-            evn_his += $"{time:F6}|ToggleEvn_TipsButCall|{idx},";
+            hugf.TriggerReEventWithData(nameof(SDH_OutCartFsm.ToggleEvn_TipsButCall), idx);
         }
 
         public void ToggleEvn_OutBut_0() { ToggleEvn_OutBut(0); }
@@ -247,7 +173,23 @@ namespace HopeSDH
         public void ToggleEvn_TipsBut_1() { ToggleEvn_TipsBut(1); }
         public void ToggleEvn_TipsBut_2() { ToggleEvn_TipsBut(2); }
         public void ToggleEvn_TipsBut_3() { ToggleEvn_TipsBut(3); }
-        // end method
 
+        public void ToggleEvn_UnselecCard(int card_id)
+        {
+            hugf.TriggerReEventWithData(nameof(SDH_OutCartFsm.UnselecCardCall), card_id);
+        }
+        public void ToggleEvn_SelecCard(int card_id)
+        {
+            hugf.TriggerReEventWithData(nameof(SDH_OutCartFsm.SelecCardCall), card_id);
+        }
+        public void ToggleEvn_ClickCard(int card_id)
+        {
+            //hugf.TriggerReEventWithData(nameof(SDH_OutCartFsm.ClickCardCall), card_id);
+        }
+
+        // end method
     }
 }
+
+
+
