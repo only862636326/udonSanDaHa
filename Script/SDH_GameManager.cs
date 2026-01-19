@@ -310,7 +310,7 @@ namespace HopeSDH
         public const int CONST_TYPE_FuK = CONST_TYPE_FuQ + 1;
         public const int CONST_TYPE_FuA = CONST_TYPE_FuK + 1;
 
-        public const int CONST_TYPE_UNKNOWN = -1;
+        public const int CONST_TYPE_UNKNOWN = 255;
         public const int CONST_TYPE_Zheng3 = CONST_TYPE_UNKNOWN;
         public const int CONST_TYPE_Zheng4 = CONST_TYPE_UNKNOWN;
         public const int CONST_TYPE_Fu3 = CONST_TYPE_UNKNOWN;
@@ -486,6 +486,7 @@ namespace HopeSDH
         {
             if (id >= 0 && id < 108)
                 return config_type_id_list[id];
+
             hugf.udondebug.LogWarning("id is CONST_TYPE_UNKNOWN");
             return CONST_TYPE_UNKNOWN;
         }

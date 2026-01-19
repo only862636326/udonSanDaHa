@@ -108,6 +108,7 @@ MonoBehaviour:
   _udonSharpBackingUdonBehaviour: {fileID: 6941017221620899020}
   card_id: 0
   owner_id: -1
+  hugf: {fileID: 0}
 --- !u!114 &6941017221620899020
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -186,6 +187,11 @@ PrefabInstance:
     - target: {fileID: 1108872807653339454, guid: 0efba89399e1c5b46b41c585273cd382,
         type: 3}
       propertyPath: m_ConstrainProportionsScale
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2338810632138335927, guid: 0efba89399e1c5b46b41c585273cd382,
+        type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3975699451139143571, guid: 0efba89399e1c5b46b41c585273cd382,

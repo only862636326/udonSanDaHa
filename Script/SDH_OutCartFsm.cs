@@ -148,10 +148,52 @@ namespace HopeSDH
         {
             hugf.Log($"ToggleEvn_MaiDi: {x}");
         }
+
+        public bool CardIsInPlayerHand(int card_id, int p)
+        {
+            if (p == SDH_GameManager.CONST_PLAYER_P0)
+            {
+                for (int i = 0; i < _pre_hand_card_num; i++)
+                {
+                    if (_p0_hand_list[i] == card_id)
+                        return true;
+                }
+            }
+            else if (p == SDH_GameManager.CONST_PLAYER_P1)
+            {
+                for (int i = 0; i < _pre_hand_card_num; i++)
+                {
+                    if (_p1_hand_list[i] == card_id)
+                        return true;
+                }
+            }
+            else if (p == SDH_GameManager.CONST_PLAYER_P2)
+            {
+                for (int i = 0; i < _pre_hand_card_num; i++)
+                {
+                    if (_p2_hand_list[i] == card_id)
+                        return true;
+                }
+            }
+            else if (p == SDH_GameManager.CONST_PLAYER_P3)
+            {
+                for (int i = 0; i < _pre_hand_card_num; i++)
+                {
+                    if (_p3_hand_list[i] == card_id)
+                        return true;
+                }
+            }
+            return false;
+        }
+
         public void SelecCardCall()
         {
             if (_select_card_num >= _select_card_id_list.Length) return;
+
             var _id = (int)this.eventData;
+            if (!CardIsInPlayerHand(_id, this._current_player))
+                return;
+
             for (int i = 0; i < this._select_card_num; i++)
             {
                 if (this._select_card_id_list[i] == _id)
@@ -166,19 +208,27 @@ namespace HopeSDH
             if (_select_card_num <= 0) return;
 
             var _id = (int)this.eventData;
-
-            var _has = false;
+            int foundIndex = -1;
+            
+            // Find the index of the card to remove
             for (int i = 0; i < this._select_card_num; i++)
             {
                 if (this._select_card_id_list[i] == _id)
                 {
-                    _has = true;
-                }
-                if (_has)
-                {
-                    this._select_card_id_list[i] = this._select_card_id_list[this._select_card_num - 1];
+                    foundIndex = i;
+                    break;
                 }
             }
+            
+            // If card found, shift elements from foundIndex onwards
+            if (foundIndex != -1)
+            {
+                for (int i = foundIndex; i < this._select_card_num - 1; i++)
+                {
+                    this._select_card_id_list[i] = this._select_card_id_list[i + 1];
+                }
+            }
+
             if (this._select_card_num >= this._select_card_id_list.Length)
             {
                 hugf.udondebug.LogWarning($"UnselecCardCall: {_id}, select_card_num: {this._select_card_num}");
@@ -396,8 +446,6 @@ namespace HopeSDH
             }
         }
 
-
-
         private int _pre_round_card_show_num;
         public void StartNewRound(int p)
         {
@@ -405,7 +453,6 @@ namespace HopeSDH
             this._first_out_player = p;
             this.out_card_num = 0;
             this._select_card_num = 0;
-            this._pre_round_card_show_num = 0;
             hugf.TriggerEventWithData(nameof(SDH_Tips.SetActivePlayerCall), p);
         }
 
@@ -700,6 +747,7 @@ namespace HopeSDH
         public void StartChuPaiCall()
         {
             StartNewRound(sDH_GameManager.config_zhuang_player);
+            this._pre_round_card_show_num = 0;
         }
 
         public void ChuPaiFirst()
@@ -736,9 +784,11 @@ namespace HopeSDH
 
             var typ = sDH_GameManager.GetTypeById(card_id) & SDH_GameManager.CONST_ID_TYP_MASK;
             // 16 进制打印
-            //Debug.Log($"PushToFengListIf: card_id: {card_id},{typ} typ: {typ.ToString("X")}, feng_fast_list: {_feng_fast_list[typ]}");
+            //Debug.Log($"PushToFengListIf: card_id: {card_id},{typ} typ: {typ.ToString("X")}, feng_fast_list: [typ]");
             if (typ == SDH_GameManager.CONST_TYPE_UNKNOWN)
                 return;
+
+            Debug.Log($"PushToFengListIf: card_id: {card_id}, typ: {typ}");
             if (_feng_fast_list[typ])
             {
                 _feng_card_list[_feng_card_num++] = card_id;
