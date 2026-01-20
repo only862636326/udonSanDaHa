@@ -21,9 +21,12 @@ namespace HopeSDH
             {
                 hugf.TriggerReEvent(nameof(SDH_OutCartFsm.StartChuPaiCall));
             }
-            this.eventData = 10;
             if (Input.GetKeyDown(KeyCode.P))
             {
+                //  eventData = 随机种子 
+                // 使用当前时间作为随机种子
+                int seed = DateTime.Now.Ticks.GetHashCode();
+                this.eventData = seed;
                 hugf.TriggerReEventWithData(nameof(SDH_FaPaiJi.StartShuffleCall), this.eventData);
             }
         }

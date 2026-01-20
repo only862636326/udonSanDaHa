@@ -148,8 +148,8 @@ namespace HopeSDH
         public void StartShuffleCall()
         {
             int seed = (int)this.eventData;
-            //FisherYatesShuffle(seed);
-            WanMeiXiPai();
+            FisherYatesShuffle(seed);
+            //WanMeiXiPai();
 
             if (true)
             {
@@ -218,6 +218,11 @@ namespace HopeSDH
             for (int i = 0; i < _card_num; i++)
             {
                 var _id = _card_id_list[i];
+                if (_id < 0 || _id >= SDH_GameManager.CONST_SHOW_CARD_NUM)
+                {
+                    hugf.udondebug.LogWarning($"SDH_DiPaiManager SetCardTileDisCall _id {_id} out of range!");
+                    continue;
+                }
                 if (!this._fend_locked[_id])
                     this.card_tf_list[_id].gameObject.SetActive(false);
             }

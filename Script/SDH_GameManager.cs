@@ -579,11 +579,6 @@ namespace HopeSDH
 
         public bool CheckSameIconType(int typ1, int typ2)
         {
-            if ((typ1 & CONST_ICON_TYPE_MAST) == (typ2 & CONST_ICON_TYPE_MAST))
-            {
-                return true;
-            }
-
             var typ1_is_zhu = (typ1 & CONST_ID_TYP_MASK) >= 0x10;
             var typ2_is_zhu = (typ2 & CONST_ID_TYP_MASK) >= 0x10;
 
@@ -648,19 +643,20 @@ namespace HopeSDH
             {
                 var typ = GetTypeById(card_id[i]);
                 // 16进制显示， typ， base_typ
-                //hugf.udondebug.LogUdonMsg(this, "typ: 0x" + typ.ToString("X2") + ", base_typ: 0x" + base_typ.ToString("X2"));
-                if (!CheckSameIconType(base_typ, typ))
+                var _is_pair = false;
+
+                if (CheckSameIconType(base_typ, typ))
                 {
                     //hugf.udondebug.LogUdonMsg(this, "type !=");
-                    continue;
-                }
-                if ((card_id[i] / 2) == (card_id[i + 1] / 2))
-                {
-                    pair_list[pair_num++] = card_id[i];
+                    if ((card_id[i] / 2) == (card_id[i + 1] / 2))
+                    {
+                        pair_list[pair_num++] = card_id[i];
+                        _is_pair = true;
+                    }
                 }
 
-                //hugf.udondebug.LogUdonMsg(this, "type !=, not pair, card_id: " + card_id[i] + ", card_id[i + 1]: " + card_id[i + 1]);
-
+                //card[i] , card[i+1], typ, base_typ, _is_pair 打印
+                hugf.udondebug.LogUdonMsg(this, card_id[i].ToString() + " typ: 0x" + typ.ToString("X2") + ", base_typ: 0x" + base_typ.ToString("X2") + ", _is_pair: " + _is_pair);
             }
 
             pair_list[pair_num] = -1;

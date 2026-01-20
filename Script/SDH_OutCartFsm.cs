@@ -1,4 +1,5 @@
 
+using System;
 using System.Reflection.Emit;
 using HopeSDH;
 using HopeTools;
@@ -358,19 +359,23 @@ namespace HopeSDH
             if (this._current_player == this._first_out_player)
             {
                 _out_en = CheckFirstOutEn();
+                // 出牌不合法
+                if (!_out_en)
+                {
+                    hugf.Log($"CheckFirstOutEn CheckOutEn failed, select_card_num: {this._select_card_num}");
+                    return;
+                }
             }
             else
             {
                 _out_en = CheckAfterOutEn();
-                _out_en = true;
+                if (!_out_en)
+                {
+                    hugf.Log($"CheckAfterOutEn CheckOutEn failed, select_card_num: {this._select_card_num}");
+                    return;
+                }
             }
-
-            // 出牌不合法
-            if (!_out_en)
-            {
-                hugf.Log($"CheckOutEn failed, select_card_num: {this._select_card_num}");
-                return;
-            }
+           
 
             // clear last times card
             if (_pre_round_card_show_num > 0)
@@ -645,7 +650,7 @@ namespace HopeSDH
             return -1;
         }
 
-        private int[] _temp_int_list = new int[SDH_GameManager.CONST_PLAYER_HAND_CARD_MAX];
+         [SerializeField] private int[] _temp_int_list = new int[SDH_GameManager.CONST_PLAYER_HAND_CARD_MAX];
 
         private bool CheckAfterOutEn()
         {
@@ -672,7 +677,7 @@ namespace HopeSDH
 
             int select_pair_num = sDH_GameManager.GetTypePairList(this._select_card_id_list, this._select_card_num, _first_typ, this._temp_int_list);
             int player_pair_num = GetPlayerPairNum(this._current_player, _first_typ);
-
+            hugf.udondebug.LogUdonMsg(this, $"CheckAfterOutEn: select_pair_num: {select_pair_num}, player_pair_num: {player_pair_num}");
             // 处理对子情况（2张牌）
             if (this.first_out_card_num == 2)
             {

@@ -48,6 +48,7 @@ namespace HopeSDH
                 if (_n.Contains("position") && (_n.Contains("prt") || _n.Contains("parent")))
                 {
                     this._hand_card_positon_prt = child;
+                    this._hand_card_positon_prt.gameObject.SetActive(false);
                     break;
                 }
             }
