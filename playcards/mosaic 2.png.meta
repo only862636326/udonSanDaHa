@@ -1,0 +1,697 @@
+fileFormatVersion: 2
+guid: a59ba82ed7fa556419a7237e73d89d9e
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 12
+  mipmaps:
+    mipMapMode: 1
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 0
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 20, y: 0, z: 10, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: 0
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: mosaic 2_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 100
+        width: 25
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 640c1a0e0c4112b488158ce5523736cb
+      internalID: 1553474371
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mosaic 2_1
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 100
+        width: 25
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 33268347de50c4d48968cc2434be7051
+      internalID: 1439968609
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mosaic 2_2
+      rect:
+        serializedVersion: 2
+        x: 50
+        y: 100
+        width: 25
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cbb1fa201a1cb42429b6042ff80177f8
+      internalID: 632240272
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mosaic 2_3
+      rect:
+        serializedVersion: 2
+        x: 75
+        y: 100
+        width: 25
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b5356dad008089e4fbe85a88e01b7a53
+      internalID: -179759694
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mosaic 2_4
+      rect:
+        serializedVersion: 2
+        x: 100
+        y: 100
+        width: 25
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 75f777a48f2f58e4b8a00cb9186e8223
+      internalID: -1847455155
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mosaic 2_5
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 75
+        width: 25
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 943a03b634e96954592e3594d04727ee
+      internalID: 1668270050
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mosaic 2_6
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 75
+        width: 25
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5db3e45485efa0c48a5a01a5b7b87643
+      internalID: -265919934
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mosaic 2_7
+      rect:
+        serializedVersion: 2
+        x: 50
+        y: 75
+        width: 25
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f8f74cd4c074c354db2fb1991538212c
+      internalID: -1840009225
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mosaic 2_8
+      rect:
+        serializedVersion: 2
+        x: 75
+        y: 75
+        width: 25
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2f3053b21aca8094591f8c432c028eae
+      internalID: -868549008
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mosaic 2_9
+      rect:
+        serializedVersion: 2
+        x: 100
+        y: 75
+        width: 25
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9f6b7b039b62c6f4abd2eba1068d0043
+      internalID: 295262014
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mosaic 2_10
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 50
+        width: 25
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0d80cf7175777644c86403cc389fc83e
+      internalID: 1635691304
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mosaic 2_11
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 50
+        width: 25
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4f3626681f07820448913be8f6339b85
+      internalID: 1848161150
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mosaic 2_12
+      rect:
+        serializedVersion: 2
+        x: 50
+        y: 50
+        width: 25
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7f6ca0c401a8dc84ebbb6fc7dcef931f
+      internalID: 84752288
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mosaic 2_13
+      rect:
+        serializedVersion: 2
+        x: 75
+        y: 50
+        width: 25
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 59e828292eea572499b522726606e922
+      internalID: 1550310544
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mosaic 2_14
+      rect:
+        serializedVersion: 2
+        x: 100
+        y: 50
+        width: 25
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0db5ad1f38c69b540ae92095e13908a0
+      internalID: -613427595
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mosaic 2_15
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 25
+        width: 25
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9ae93466d6ea56d4d92ea6f4e62f1a60
+      internalID: -1541005777
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mosaic 2_16
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 25
+        width: 25
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a43567342ba663548a0af0f01becea7c
+      internalID: 840173449
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline:
+    - - {x: 11.5, y: 62.5}
+      - {x: 11.5, y: 45.5}
+      - {x: 11.5, y: 57.5}
+      - {x: 10.5, y: 60.5}
+      - {x: 7.5, y: 62.5}
+      - {x: -9.5, y: 62.5}
+      - {x: -13.5, y: 56.5}
+      - {x: -11.5, y: 45.5}
+      - {x: -13.5, y: 54.5}
+      - {x: -16.5, y: 62.5}
+      - {x: -34.5, y: 62.5}
+      - {x: -38.5, y: 61.5}
+      - {x: -36.5, y: 53.5}
+      - {x: -36.5, y: 45.5}
+      - {x: -36.5, y: 52.5}
+      - {x: -37.5, y: 55.5}
+      - {x: -42.5, y: 62.5}
+      - {x: -57.5, y: 62.5}
+      - {x: -62.5, y: 54.5}
+      - {x: -62.5, y: -38.5}
+      - {x: 37.5, y: -38.5}
+      - {x: 62.5, y: -24.5}
+      - {x: 62.5, y: 62.5}
+    - - {x: -42.5, y: -10.5}
+      - {x: -43.5, y: -10.5}
+      - {x: -39.5, y: -7.5}
+      - {x: -39.5, y: -6.5}
+      - {x: -37.5, y: -4.5}
+      - {x: -38.5, y: -2.5}
+      - {x: -39.5, y: -5.5}
+      - {x: -38.5, y: -8.5}
+      - {x: -33.5, y: -12.5}
+      - {x: -36.5, y: -15.5}
+    - - {x: -37.5, y: 9.5}
+      - {x: -41.5, y: 13.5}
+      - {x: -36.5, y: 18.5}
+      - {x: -37.5, y: 19.5}
+      - {x: -37.5, y: 16.5}
+      - {x: -32.5, y: 12.5}
+      - {x: -32.5, y: 13.5}
+      - {x: -37.5, y: 8.5}
+      - {x: -37.5, y: 5.5}
+      - {x: -36.5, y: 5.5}
+    - - {x: 34.5, y: 13.5}
+      - {x: 31.5, y: 13.5}
+      - {x: 31.5, y: 12.5}
+      - {x: 36.5, y: 17.5}
+      - {x: 36.5, y: 20.5}
+      - {x: 36.5, y: 17.5}
+      - {x: 42.5, y: 11.5}
+      - {x: 38.5, y: 7.5}
+      - {x: 39.5, y: 7.5}
+    - - {x: -17.5, y: 14.5}
+      - {x: -19.5, y: 13.5}
+      - {x: -18.5, y: 12.5}
+      - {x: -12.5, y: 17.5}
+      - {x: -12.5, y: 19.5}
+      - {x: -13.5, y: 18.5}
+      - {x: -8.5, y: 13.5}
+      - {x: -8.5, y: 12.5}
+      - {x: -12.5, y: 8.5}
+      - {x: -11.5, y: 8.5}
+    - - {x: 7.5, y: 14.5}
+      - {x: 6.5, y: 13.5}
+      - {x: 7.5, y: 12.5}
+      - {x: 11.5, y: 16.5}
+      - {x: 16.5, y: 11.5}
+      - {x: 17.5, y: 12.5}
+      - {x: 16.5, y: 13.5}
+      - {x: 12.5, y: 9.5}
+      - {x: 12.5, y: 10.5}
+    - - {x: 38.5, y: 31.5}
+      - {x: 37.5, y: 34.5}
+      - {x: 34.5, y: 38.5}
+      - {x: 36.5, y: 40.5}
+      - {x: 35.5, y: 40.5}
+      - {x: 40.5, y: 35.5}
+      - {x: 36.5, y: 30.5}
+      - {x: 37.5, y: 27.5}
+      - {x: 38.5, y: 28.5}
+    physicsShape:
+    - - {x: -53.5, y: -18.5}
+      - {x: -55.5, y: -22.5}
+      - {x: -55.5, y: -29.5}
+      - {x: -50.5, y: -31.5}
+      - {x: -45.5, y: -31.5}
+      - {x: -44.5, y: -29.5}
+      - {x: -43.5, y: -24.5}
+      - {x: -43.5, y: -21.5}
+      - {x: -46.5, y: -18.5}
+    - - {x: -28.5, y: -18.5}
+      - {x: -29.5, y: -19.5}
+      - {x: -30.5, y: -24.5}
+      - {x: -30.5, y: -28.5}
+      - {x: -28.5, y: -29.5}
+      - {x: -19.5, y: -29.5}
+      - {x: -19.5, y: -18.5}
+    - - {x: -52.5, y: 6.5}
+      - {x: -54.5, y: 5.5}
+      - {x: -54.5, y: -6.5}
+      - {x: -50.5, y: -6.5}
+      - {x: -45.5, y: -0.5}
+      - {x: -45.5, y: 4.5}
+      - {x: -47.5, y: 6.5}
+    - - {x: -28.5, y: 6.5}
+      - {x: -30.5, y: 5.5}
+      - {x: -30.5, y: -5.5}
+      - {x: -27.5, y: -6.5}
+      - {x: -21.5, y: -6.5}
+      - {x: -19.5, y: -4.5}
+      - {x: -19.5, y: 3.5}
+      - {x: -20.5, y: 6.5}
+    - - {x: -1.5, y: 6.5}
+      - {x: -4.5, y: 3.5}
+      - {x: -4.5, y: -5.5}
+      - {x: -2.5, y: -6.5}
+      - {x: 1.5, y: -6.5}
+      - {x: 5.5, y: -1.5}
+      - {x: 5.5, y: 3.5}
+      - {x: 3.5, y: 6.5}
+    - - {x: 20.5, y: 5.5}
+      - {x: 18.5, y: 3.5}
+      - {x: 18.5, y: -5.5}
+      - {x: 30.5, y: -5.5}
+      - {x: 31.5, y: -2.5}
+      - {x: 31.5, y: 4.5}
+      - {x: 30.5, y: 5.5}
+    - - {x: 48.5, y: 7.5}
+      - {x: 44.5, y: 2.5}
+      - {x: 44.5, y: -4.5}
+      - {x: 46.5, y: -5.5}
+      - {x: 52.5, y: -5.5}
+      - {x: 53.5, y: -2.5}
+      - {x: 55.5, y: 5.5}
+      - {x: 53.5, y: 7.5}
+    - - {x: -1.5, y: 31.5}
+      - {x: -5.5, y: 25.5}
+      - {x: -5.5, y: 20.5}
+      - {x: -1.5, y: 18.5}
+      - {x: 1.5, y: 18.5}
+      - {x: 5.5, y: 23.5}
+      - {x: 5.5, y: 28.5}
+      - {x: 3.5, y: 31.5}
+    - - {x: 19.5, y: 19.5}
+      - {x: 21.5, y: 18.5}
+      - {x: 28.5, y: 21.5}
+      - {x: 29.5, y: 29.5}
+      - {x: 28.5, y: 31.5}
+      - {x: 19.5, y: 31.5}
+    - - {x: 48.5, y: 31.5}
+      - {x: 44.5, y: 25.5}
+      - {x: 44.5, y: 20.5}
+      - {x: 48.5, y: 18.5}
+      - {x: 52.5, y: 18.5}
+      - {x: 54.5, y: 22.5}
+      - {x: 54.5, y: 28.5}
+      - {x: 52.5, y: 31.5}
+    - - {x: -53.5, y: 32.5}
+      - {x: -55.5, y: 27.5}
+      - {x: -55.5, y: 19.5}
+      - {x: -45.5, y: 19.5}
+      - {x: -45.5, y: 30.5}
+      - {x: -47.5, y: 32.5}
+    - - {x: -26.5, y: 32.5}
+      - {x: -29.5, y: 30.5}
+      - {x: -29.5, y: 19.5}
+      - {x: -23.5, y: 19.5}
+      - {x: -20.5, y: 23.5}
+      - {x: -20.5, y: 30.5}
+      - {x: -22.5, y: 32.5}
+    - - {x: -59.5, y: 44.5}
+      - {x: -55.5, y: 38.5}
+      - {x: -45.5, y: 38.5}
+      - {x: -40.5, y: 41.5}
+      - {x: -40.5, y: 51.5}
+      - {x: -44.5, y: 61.5}
+      - {x: -53.5, y: 61.5}
+      - {x: -59.5, y: 56.5}
+    - - {x: -27.5, y: 59.5}
+      - {x: -31.5, y: 57.5}
+      - {x: -32.5, y: 52.5}
+      - {x: -32.5, y: 46.5}
+      - {x: -26.5, y: 39.5}
+      - {x: -22.5, y: 39.5}
+      - {x: -17.5, y: 44.5}
+      - {x: -17.5, y: 52.5}
+      - {x: -20.5, y: 59.5}
+    - - {x: -7.5, y: 59.5}
+      - {x: -8.5, y: 56.5}
+      - {x: -8.5, y: 45.5}
+      - {x: -2.5, y: 39.5}
+      - {x: 2.5, y: 39.5}
+      - {x: 8.5, y: 45.5}
+      - {x: 8.5, y: 54.5}
+      - {x: 6.5, y: 59.5}
+    - - {x: 28.5, y: 61.5}
+      - {x: 25.5, y: 61.5}
+      - {x: 17.5, y: 57.5}
+      - {x: 17.5, y: 42.5}
+      - {x: 22.5, y: 39.5}
+      - {x: 30.5, y: 39.5}
+      - {x: 34.5, y: 43.5}
+      - {x: 34.5, y: 54.5}
+    - - {x: 52.5, y: 57.5}
+      - {x: 43.5, y: 51.5}
+      - {x: 43.5, y: 45.5}
+      - {x: 44.5, y: 42.5}
+      - {x: 49.5, y: 42.5}
+      - {x: 55.5, y: 44.5}
+      - {x: 55.5, y: 56.5}
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 1537655665
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      mosaic 2_0: 1553474371
+      mosaic 2_1: 1439968609
+      mosaic 2_10: 1635691304
+      mosaic 2_11: 1848161150
+      mosaic 2_12: 84752288
+      mosaic 2_13: 1550310544
+      mosaic 2_14: -613427595
+      mosaic 2_15: -1541005777
+      mosaic 2_16: 840173449
+      mosaic 2_2: 632240272
+      mosaic 2_3: -179759694
+      mosaic 2_4: -1847455155
+      mosaic 2_5: 1668270050
+      mosaic 2_6: -265919934
+      mosaic 2_7: -1840009225
+      mosaic 2_8: -868549008
+      mosaic 2_9: 295262014
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

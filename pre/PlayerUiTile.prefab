@@ -165,7 +165,7 @@ GameObject:
   - component: {fileID: 9152912848732745049}
   - component: {fileID: 1678761121339313720}
   - component: {fileID: 4508294841752298731}
-  - component: {fileID: 4550847224833432034}
+  - component: {fileID: 388725721877751712}
   - component: {fileID: 4367838294782099149}
   m_Layer: 17
   m_Name: ToggleEvn_JoinBut
@@ -223,7 +223,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 180, y: 60, z: 1}
   m_Center: {x: 0, y: 0, z: 1.1}
---- !u!114 &4550847224833432034
+--- !u!114 &388725721877751712
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -232,24 +232,27 @@ MonoBehaviour:
   m_GameObject: {fileID: 1165562228390508848}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1344c3c82d62a2a41a3576d8abb8e3ea, type: 3}
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: b36d32b2b0dad824ab5379b5de0cb443, type: 2}
-  m_Color: {r: 0.6862745, g: 0.6862745, b: 0.6862745, a: 1}
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.5098487, g: 0.9056604, b: 0.47419012, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 0}
-  m_UVRect:
-    serializedVersion: 2
-    x: 0
-    y: 0
-    width: 1
-    height: 1
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!114 &4367838294782099149
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -290,7 +293,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 4550847224833432034}
+  m_TargetGraphic: {fileID: 388725721877751712}
   toggleTransition: 1
   graphic: {fileID: 0}
   m_Group: {fileID: 0}
@@ -308,7 +311,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4195784185931924056}
   - component: {fileID: 3503531330027554128}
-  - component: {fileID: 5203482280165150348}
+  - component: {fileID: 4661118744652557522}
   m_Layer: 17
   m_Name: Image
   m_TagString: Untagged
@@ -343,7 +346,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1959614326791901269}
   m_CullTransparentMesh: 1
---- !u!114 &5203482280165150348
+--- !u!114 &4661118744652557522
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -356,15 +359,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.3529412}
+  m_Color: {r: 0.16981131, g: 0.16981131, b: 0.16981131, a: 0.19215687}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -503,7 +506,7 @@ GameObject:
   - component: {fileID: 673566505786547661}
   - component: {fileID: 9064705789437333452}
   - component: {fileID: 3650683000162835253}
-  - component: {fileID: 3134429525369010439}
+  - component: {fileID: 1134085290888100727}
   - component: {fileID: 2156871178216199315}
   m_Layer: 17
   m_Name: ToggleEvn_ExitBut
@@ -561,7 +564,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 180, y: 60, z: 1}
   m_Center: {x: 0, y: 0, z: 1.1}
---- !u!114 &3134429525369010439
+--- !u!114 &1134085290888100727
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -570,24 +573,27 @@ MonoBehaviour:
   m_GameObject: {fileID: 2799479311494514320}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1344c3c82d62a2a41a3576d8abb8e3ea, type: 3}
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: b36d32b2b0dad824ab5379b5de0cb443, type: 2}
-  m_Color: {r: 0.9811321, g: 0.56924176, b: 0.56924176, a: 1}
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.8962264, g: 0.5538003, b: 0.5538003, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 0}
-  m_UVRect:
-    serializedVersion: 2
-    x: 0
-    y: 0
-    width: 1
-    height: 1
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!114 &2156871178216199315
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -628,7 +634,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 3134429525369010439}
+  m_TargetGraphic: {fileID: 1134085290888100727}
   toggleTransition: 1
   graphic: {fileID: 0}
   m_Group: {fileID: 0}

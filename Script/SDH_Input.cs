@@ -15,28 +15,37 @@ namespace HopeSDH
         public object eventData1;
         public object eventData2;
 
+
         public void Update()
         {
-            if (Input.GetKeyDown(KeyCode.O))
-            {
-                hugf.TriggerReEvent(nameof(SDH_OutCartFsm.StartChuPaiCall));
-            }
-            if (Input.GetKeyDown(KeyCode.P))
-            {
-                //  eventData = 随机种子 
-                // 使用当前时间作为随机种子
-                int seed = DateTime.Now.Ticks.GetHashCode();
-                this.eventData = seed;
-                hugf.TriggerReEventWithData(nameof(SDH_FaPaiJi.StartShuffleCall), this.eventData);
-            }
+            //if (Input.GetKeyDown(KeyCode.O))
+            //{
+            //    hugf.TriggerReEvent(nameof(SDH_OutCartFsm.StartChuPaiCall));
+            //}
+            //if (Input.GetKeyDown(KeyCode.P))
+            //{
+            //    //  eventData = 随机种子 
+            //    // 使用当前时间作为随机种子
+            //    int seed = DateTime.Now.Ticks.GetHashCode();
+            //    this.eventData = seed;
+            //    hugf.TriggerReEventWithData(nameof(SDH_FaPaiJi.StartShuffleCall), this.eventData);
+            //}
+            //if (Input.GetKeyUp(KeyCode.P))
+            //{
+            //    hugf.TriggerReEvent(nameof(SDH_JiaoZhuang.StartJiaoCall));
+            //}
         }
-
 
         public void HugfInitAfter()
         {
             // user code after hugf init here
             //hugf.udonEvn.RegisterListener(nameof(this.DemeFunCall), this);
             hugf.udonIoc.RegisterSingleton(nameof(SDH_Input), this, this);
+        }
+
+        public void ToggleEvn_StartFaPai()
+        {
+            hugf.TriggerEvent(nameof(SDH_FaPaiJi.StartShuffleCall));
         }
 
         public void ToggleEvn_Score(int score_idx, int idx)
@@ -189,6 +198,43 @@ namespace HopeSDH
         {
             //hugf.TriggerReEventWithData(nameof(SDH_OutCartFsm.ClickCardCall), card_id);
         }
+
+        public void ToggleEvn_ZhuMei(int p)
+        {
+            hugf.TriggerReEventWithData(nameof(SDH_Tips.SetZhuIconShowCall), 0);
+        }
+
+        public void ToggleEvn_ZhuFang(int p)
+        {
+            hugf.TriggerReEventWithData(nameof(SDH_Tips.SetZhuIconShowCall), 1);
+        }
+        public void ToggleEvn_ZhuHong(int p)
+        {
+            hugf.TriggerReEventWithData(nameof(SDH_Tips.SetZhuIconShowCall), 2);
+        }
+
+        public void ToggleEvn_ZhuHei(int p)
+        {
+            hugf.TriggerReEventWithData(nameof(SDH_Tips.SetZhuIconShowCall), 3);
+        }
+
+        public void ToggleEvn_ZhuMei_0() { ToggleEvn_ZhuMei(0); }
+        public void ToggleEvn_ZhuFang_0() { ToggleEvn_ZhuFang(0); }
+        public void ToggleEvn_ZhuHong_0() { ToggleEvn_ZhuHong(0); }
+        public void ToggleEvn_ZhuHei_0() { ToggleEvn_ZhuHei(0); }
+        public void ToggleEvn_ZhuMei_1() { ToggleEvn_ZhuMei(1); }
+        public void ToggleEvn_ZhuFang_1() { ToggleEvn_ZhuFang(1); }
+        public void ToggleEvn_ZhuHong_1() { ToggleEvn_ZhuHong(1); }
+        public void ToggleEvn_ZhuHei_1() { ToggleEvn_ZhuHei(1); }
+        public void ToggleEvn_ZhuMei_2() { ToggleEvn_ZhuMei(2); }
+        public void ToggleEvn_ZhuFang_2() { ToggleEvn_ZhuFang(2); }
+        public void ToggleEvn_ZhuHong_2() { ToggleEvn_ZhuHong(2); }
+        public void ToggleEvn_ZhuHei_2() { ToggleEvn_ZhuHei(2); }
+        public void ToggleEvn_ZhuMei_3() { ToggleEvn_ZhuMei(3); }
+        public void ToggleEvn_ZhuFang_3() { ToggleEvn_ZhuFang(3); }
+        public void ToggleEvn_ZhuHong_3() { ToggleEvn_ZhuHong(3); }
+        public void ToggleEvn_ZhuHei_3() { ToggleEvn_ZhuHei(3); }
+
 
         // end method
     }

@@ -1,22 +1,22 @@
 ﻿
-using HopeSDH;
-using HopeTools;
 using UdonSharp;
 using UnityEngine;
+using UnityEngine.UI;
 using VRC.SDKBase;
 using VRC.Udon;
 
 
 
-namespace HopeTools
+namespace HopeSDH
 {
-    [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
+    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class SDH_Tips : UdonSharpBehaviour
     {
         #region init code
         private bool _is_init = false;
 
         private GameObject []_obj_tips_list;
+        private Transform [] _tf_game_info;
         public void Init()
         {
             if (this._is_init)
@@ -35,33 +35,34 @@ namespace HopeTools
                     for (int i = 0; i < tf.childCount; i++)
                     {
                         _obj_tips_list[i] = tf.GetChild(i).gameObject;
-                    }   
+                    }
                 }
-            }
-        }
-
-        private HopeTools.HopeUdonFramework hugf;
-        public object eventData;
-        public void HugfInit()
-        {
-            if (hugf == null)
-            {
-                hugf = GameObject.Find(SDH_GameManager.CONST_SDH_HUGF_STRING).GetComponent<HopeTools.HopeUdonFramework>();
-                if (hugf == null)
+                if (_low.Contains("info") && _low.Contains("prt"))
                 {
-                    Debug.LogError("HugfInit failed, hugf is null!");
-                    return;
+                    _tf_game_info = new Transform[tf.childCount];
+                    for (int i = 0; i < tf.childCount; i++)
+                    {
+                        _tf_game_info[i] = tf.GetChild(i);
+                    }
                 }
-
-                hugf.Init();
-                return;
             }
         }
+
+        public HopeTools.HopeUdonFramework hugf;
+        public object eventData;
 
         public void HugfInitAfter()
         {
             // user code after hugf init here
             hugf.udonEvn.RegisterListener(nameof(this.SetActivePlayerCall), this);
+            hugf.udonEvn.RegisterListener(nameof(this.SetZhuangPlayerCall), this);
+            hugf.udonEvn.RegisterListener(nameof(this.SetZhuIconShowCall), this);
+            hugf.udonEvn.RegisterListener(nameof(this.SetJiaoFenShowCall), this);
+            hugf.udonEvn.RegisterListener(nameof(this.SetDeFenShowCall), this);
+
+            hugf.udonEvn.RegisterListener(nameof(SDH_JiaoZhuang.StartJiaoCall), this);
+
+            StartJiaoCall();
         }
 
 
@@ -79,41 +80,74 @@ namespace HopeTools
             }
         }
 
+        public void SetZhuIconShowCall()
+        {
+            var x = (int)eventData;
+            for (int i = 0; i < _tf_game_info.Length; i++)
+            {
+                var prt = _tf_game_info[i].GetChild(0);
+                for (int j = 0; j < prt.childCount; j++)
+                {
+                    prt.GetChild(j).gameObject.SetActive(j == x);
+                }
+            }
+        }
+
+        public void StartJiaoCall()
+        {
+            for (int i = 0; i < _tf_game_info.Length; i++)
+            {
+                _tf_game_info[i].GetComponent<Image>().color = Color.white * 0.7f;
+                _tf_game_info[i].Find("Text_JiaoFen").GetComponent<Text>().text = "";
+                _tf_game_info[i].Find("Text_DeFen").GetComponent<Text>().text = "";
+                _obj_tips_list[i].SetActive(false);
+
+                var prt = _tf_game_info[i].GetChild(0);
+                for (int j = 0; j < prt.childCount; j++)
+                {
+                    prt.GetChild(j).gameObject.SetActive(false);
+                }
+            }
+        }
+
+        public void SetZhuangPlayerCall()
+        {
+            int x = (int)eventData;
+            for (int i = 0; i < _tf_game_info.Length; i++)
+            {
+                if (i == x)
+                {
+                    _tf_game_info[i].GetComponent<Image>().color = Color.green * 0.7f;
+                }
+                else
+                {
+                    _tf_game_info[i].GetComponent<Image>().color = Color.white * 0.7f;
+                }
+            }
+        }
+
+        public void SetJiaoFenShowCall()
+        {
+            var x = (int)eventData;
+            for (int i = 0; i < _tf_game_info.Length; i++)
+            {
+                _tf_game_info[i].Find("Text_JiaoFen").GetComponent<Text>().text = "叫分 "+ x;
+            }
+        }
+
+
+        public void SetDeFenShowCall()
+        {
+            var x = (int)eventData;
+            for (int i = 0; i < _tf_game_info.Length; i++)
+            {
+                _tf_game_info[i].Find("Text_DeFen").GetComponent<Text>().text = "得分 "+ x;
+            }
+        }
+
         #endregion end init code
 
-        #region syn
 
-        void RequestSyn()
-        {
-#if !UNITY_EDITOR
-            if(!Networking.IsOwner(this.gameObject))
-            {
-                Networking.SetOwner(Networking.LocalPlayer, this.gameObject);
-            }
-            RequestSerialization();
-#else
-            OnPreSerialization();
-#endif
-            ;
-        }
-
-        public override void OnPreSerialization()
-        {
-
-            //DebugSynData();
-        }
-
-        public override void OnDeserialization()
-        {
-
-            //DebugSynData();
-        }
-
-        public void DebugSynData()
-        {
-
-        }
-        #endregion end syn
 
 
         // start method

@@ -26,6 +26,7 @@ namespace HopeSDH
         public const string SDH_CONFIG_Singleton_String = "SDH_CONFIG_Singleton_String";
         public const int CONST_MAX_OUT_CARD = 23;
         public const int CONST_MAX_FENG_NUM = 25;
+
         public const int CONST_ICON_MEI = 0;
         public const int CONST_ICON_FANG = 1;
         public const int CONST_ICON_HONG = 2;
@@ -48,13 +49,12 @@ namespace HopeSDH
         public const int GAME_STA_IDLE = 0;
         public const int GAME_STA_JOIN_EXIT = 1;
         public const int GAME_STA_JIAO_ZHUANG = 2;
-        public const int GAME_STA_JIAO_ZHU = 3;
+        public const int GAME_STA_JIAO_MAIDI = 3;
         public const int GAME_STA_PLAY = 4;
         public const int GAME_STA_OVER = 5;
 
         public int info_game_sta = 0;
         public int info_acitve_layer = 0;
-        public int[] info_out_card;
 
         #region init code
         private bool _is_init = false;
@@ -125,6 +125,11 @@ namespace HopeSDH
             {
                 config_player_vrcid_list[i] = _id[i];
             }
+        }
+
+        public void SetZhuangInfoCall()
+        {
+            ;
         }
 
         /// <summary>

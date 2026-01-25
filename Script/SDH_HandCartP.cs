@@ -8,7 +8,7 @@ using VRC.Udon;
 namespace HopeTools
 {
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
-    public class SDH_OutCartP : UdonSharpBehaviour
+    public class SDH_HandCartP : UdonSharpBehaviour
     {
         #region init code
         private bool _is_init = false;
@@ -40,12 +40,11 @@ namespace HopeTools
         public void HugfInitAfter()
         {
             // user code after hugf init here
-            hugf.udonEvn.RegisterListener(nameof(this.SetOutCardP0Call), this);
-            hugf.udonEvn.RegisterListener(nameof(this.SetOutCardP1Call), this);
-            hugf.udonEvn.RegisterListener(nameof(this.SetOutCardP2Call), this);
-            hugf.udonEvn.RegisterListener(nameof(this.SetOutCardP3Call), this);
+            hugf.udonEvn.RegisterListener(nameof(this.SetHandCardP0Call), this);
+            hugf.udonEvn.RegisterListener(nameof(this.SetHandCardP1Call), this);
+            hugf.udonEvn.RegisterListener(nameof(this.SetHandCardP2Call), this);
+            hugf.udonEvn.RegisterListener(nameof(this.SetHandCardP3Call), this);
         }
-
 
         public void HufgIocGet()
         {
@@ -67,7 +66,7 @@ namespace HopeTools
         }
 
 
-        public void SetOutCardP(int idx)
+        public void SetHandCard(int idx)
         {
             var _card_id_list = (int[])(this.eventData);
             var _card_num = (int)this.eventData2;
@@ -86,19 +85,19 @@ namespace HopeTools
                 tf.position = pos;
                 tf.rotation = _r;
                 tf.gameObject.SetActive(true);
-            }           
+            }
         }
 
-        public void SetOutCardP0Call() { SetOutCardP(0); }
-        public void SetOutCardP1Call() { SetOutCardP(1); }
-        public void SetOutCardP2Call() { SetOutCardP(2); }
-        public void SetOutCardP3Call() { SetOutCardP(3); }
+        public void SetHandCardP0Call() { SetHandCard(0); }
+        public void SetHandCardP1Call() { SetHandCard(1); }
+        public void SetHandCardP2Call() { SetHandCard(2); }
+        public void SetHandCardP3Call() { SetHandCard(3); }
 
         private Vector3 GetCardPosition(Transform tf, int card_index, int card_num)
         {
             if (card_num <= 0)
                 return Vector3.zero;
-            
+
             if (tf == null)
                 return Vector3.zero;
 

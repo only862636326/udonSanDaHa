@@ -19,7 +19,7 @@ namespace HopeSDH
         public const int SYN_DATA_IDX_CURRENT_SCORE = 1;
         public const int SYN_DATA_IDX_ZHUNG_PLAYER = 2;
         public const int SYN_LIST_LEN = 10;
-        [UdonSynced] private int[] syn_data_list;
+
         private int _active_player;
         private int _current_score;
         private int _select_score;
@@ -37,8 +37,6 @@ namespace HopeSDH
             this._is_init = true;
 
             // user code init here
-            syn_data_list = new int[SYN_LIST_LEN];
-
             var _n = this.transform.childCount;
             PLAYER_NUM = this.transform.childCount;
 
@@ -75,7 +73,7 @@ namespace HopeSDH
             _jiao_zhuang_idx_list = new int[_n];          
         }
 
-        private HopeTools.HopeUdonFramework hugf;
+        public HopeTools.HopeUdonFramework hugf;
         public object eventData;
         public object eventData1;
         public object eventData2;
@@ -121,115 +119,88 @@ namespace HopeSDH
         //}
         #endregion end init code
 
-
+        private bool _first_jiao_zhuang = false;
         public void StartJiaoCall()
         {
+            _first_jiao_zhuang = true;
+
             for (int i = 0; i < PLAYER_NUM; i++)
             {
-                _jiao_zhuang_idx_list[i] = i;                
+                _jiao_zhuang_idx_list[i] = i;
             }
             _active_player = 0;
-            _current_score = 85;
+            _current_score = 80;
+            _select_score = 0;
             _zhung_player = -1;
-            RequestSyn();
+            StartJiaoShow();
         }
 
-        private void SetShow()
+        private void StartJiaoShow()
         {
-            var n = _current_score / 5;      // 5 1
-            var _l = _tf_score_prt_list[0].childCount; // 16
-            var _ = _l - n;
             hugf.TriggerEventWithData(nameof(SDH_Tips.SetActivePlayerCall), this._active_player);
 
-            if (_zhung_player > -1)
+            foreach (Transform tf in this.transform)
             {
-                for (int i = 0; i < PLAYER_NUM; i++)
+                tf.gameObject.SetActive(true);
+            }
+
+            var _scro_num = _tf_score_prt_list[0].childCount;            
+            foreach (Transform tf in _tf_score_prt_list)
+            {
+                for (int i = 0; i < _scro_num; i++)
                 {
-                    _obj_jiao_zhuang_list[i].SetActive(false);
-                    _obj_bu_jiao_li_list[i].SetActive(false);
-                    _tf_score_prt_list[i].gameObject.SetActive(false);
-                    this._text_tips[i].text = $"庄{_zhung_player}:{_current_score}";
+                    tf.GetChild(i).gameObject.SetActive(true);
                 }
+            }
+
+            for (int i = 0; i < PLAYER_NUM; i++)
+            {
+                _obj_jiao_zhuang_list[i].SetActive(i == _active_player);
+                _obj_bu_jiao_li_list[i].SetActive(false);
+                _tf_score_prt_list[i].gameObject.SetActive(true);
+                this._text_tips[i].text = _current_score.ToString();
+            }
+        }
+
+        public void SetZhuangShow()
+        {
+            if (_zhung_player < 0)
+            {
+                hugf.udondebug.LogWarning("SetZhuangShow is not a player");
                 return;
             }
-
-            else
+            foreach (Transform tf in this.transform)
             {
-                for (int i = 0; i < _l; i++)
-                {
-                    foreach (Transform tf in _tf_score_prt_list)
-                    {
-                        tf.GetChild(i).gameObject.SetActive(i > _);
-                    }
-                }
-
-                for (int i = 0; i < PLAYER_NUM; i++)
-                {
-                    _obj_jiao_zhuang_list[i].SetActive(i == _active_player);
-                    _obj_bu_jiao_li_list[i].SetActive(i == _active_player);
-                    _tf_score_prt_list[i].gameObject.SetActive(true);
-                    this._text_tips[i].text = _select_score.ToString();
-                }
+                tf.gameObject.SetActive(false);
             }
+
+            hugf.TriggerEventWithData(nameof(SDH_Tips.SetActivePlayerCall), this._active_player);
+            hugf.TriggerEventWithData(nameof(SDH_Tips.SetZhuangPlayerCall), this._active_player);
+            hugf.TriggerEventWithData(nameof(SDH_Tips.SetJiaoFenShowCall), this._current_score);
+            hugf.TriggerEventWithData(nameof(SDH_OutCartFsm.JiaoZhuangFinishCall), this._zhung_player);
         }
 
-        #region syn
-
-        void RequestSyn()
+        public void NextPlayerShow()
         {
-#if !UNITY_EDITOR
-            if (!Networking.IsOwner(this.gameObject))
+            var n = _current_score / 5;      // 5 1
+            var _score_num = _tf_score_prt_list[0].childCount; // 16
+            var _ = _score_num - n;
+            hugf.TriggerEventWithData(nameof(SDH_Tips.SetActivePlayerCall), this._active_player);
+
+            foreach (Transform tf in _tf_score_prt_list)
             {
-                Networking.SetOwner(Networking.LocalPlayer, this.gameObject);
+                for (int i = 0; i < _score_num; i++)
+                    tf.GetChild(i).gameObject.SetActive(i > _);
             }
-            RequestSerialization();
-#else
-            OnPreSerialization();
-#endif
-            ;
-        }
-
-        public override void OnPreSerialization()
-        {
-
-            EnCodeGameInfo();
-            SetShow();
-        }
-
-        public override void OnDeserialization()
-        {
-            DecodeGameInfo();
-            SetShow();
-        }
-
-        private void EnCodeGameInfo()
-        {
+            this._select_score = 0;
             for (int i = 0; i < PLAYER_NUM; i++)
             {
-                syn_data_list[i + 5] = this._jiao_zhuang_idx_list[i];
+                _obj_jiao_zhuang_list[i].SetActive(i == _active_player);
+                _obj_bu_jiao_li_list[i].SetActive(i == _active_player);
+                _tf_score_prt_list[i].gameObject.SetActive(true);
+                this._text_tips[i].text = _current_score.ToString();
             }
-            syn_data_list[SYN_DATA_IDX_ACTIVE_PLAYER] = _active_player;
-            syn_data_list[SYN_DATA_IDX_CURRENT_SCORE] = _current_score;
-            syn_data_list[SYN_DATA_IDX_ZHUNG_PLAYER] = _zhung_player;
         }
-
-        public void DecodeGameInfo()
-        {
-            for (int i = 0; i < PLAYER_NUM; i++)
-            {
-                this._jiao_zhuang_idx_list[i] = syn_data_list[i + 5];
-            }
-            _active_player = syn_data_list[SYN_DATA_IDX_ACTIVE_PLAYER];
-            _current_score = syn_data_list[SYN_DATA_IDX_CURRENT_SCORE];
-            _zhung_player = syn_data_list[SYN_DATA_IDX_ZHUNG_PLAYER];
-        }
-
-        public void DebugSynData()
-        {
-
-        }
-        #endregion end syn
-
 
         public void ToggleEvn_Score(int score_idx, int idx)
         {
@@ -246,10 +217,15 @@ namespace HopeSDH
                 _text_tips[idx].text = $"{_select_score}";
             }
         }
+
         public void ToggleEvn_JiaoZhuang(int idx)
         {
             //Debug.Log($"ToggleEvn_JiaoZhuang called with idx: {idx}");
             if (idx != _active_player)
+            {
+                return;
+            }
+            if(this._select_score == 0)
             {
                 return;
             }
@@ -260,7 +236,7 @@ namespace HopeSDH
                 if (this._current_score == 5)
                 {
                     _zhung_player = this._active_player;
-                    RequestSyn();
+                    SetZhuangShow();
                     return;
                 }
             }
@@ -270,10 +246,8 @@ namespace HopeSDH
                 this._active_player++;
                 this._active_player %= this.PLAYER_NUM;
             } while (this._jiao_zhuang_idx_list[this._active_player] < 0);
-            RequestSyn();
+            NextPlayerShow();
         }
-
-
 
         public void ToggleEvn_BuJiao(int idx)
         {
@@ -297,16 +271,16 @@ namespace HopeSDH
                 this._active_player %= this.PLAYER_NUM;
             } while (this._jiao_zhuang_idx_list[this._active_player] < 0); // next 2 player
 
-
             if (_his == this._active_player) // next 1 == next2 , only one player
             {
                 _zhung_player = this._active_player;
+                SetZhuangShow();
             }
             else
             {
                 this._active_player = _his;
+                NextPlayerShow();
             }
-            RequestSyn();
         }
 
         public void ToggleEvn_ScoreCall()

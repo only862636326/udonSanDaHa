@@ -13,7 +13,6 @@ namespace HopeSDH
     public class SDH_DiPaiManager : UdonSharpBehaviour
     {
         private int[] _dipai_list;
-        [UdonSynced] private int[] _dipai_list_syn;
         private int _dipai_count;
 
         [SerializeField] private Transform _dipai_positon_prt;
@@ -30,7 +29,6 @@ namespace HopeSDH
 
             _dipai_count = SDH_GameManager.CONST_DIPAI_CARD_NUM;
             _dipai_list = new int[_dipai_count];
-            _dipai_list_syn = new int[_dipai_count];
 
             foreach (Transform child in this.transform)
             {
@@ -55,8 +53,8 @@ namespace HopeSDH
 
         public void HugfInitAfter()
         {
-            hugf.udonEvn.RegisterListener(nameof(this.FaPaiCall), this);
-            hugf.udonEvn.RegisterListener(nameof(this.SetFenCardPostionCall), this);
+            hugf.udonEvn.RegisterListener(nameof(this.SetFenCardPositionCall), this);
+            hugf.udonEvn.RegisterListener(nameof(this.SetDiCardPositionCall), this);
         }
 
         public void HufgIocGet()
@@ -66,15 +64,6 @@ namespace HopeSDH
 
         #endregion init
 
-        public void GrabHandCard(int[] cards)
-        {
-            var n = cards.Length;
-            // cards 最后的作为底牌;
-            for (int i = 0; i < _dipai_count; i++)
-            {
-                _dipai_list[i] = cards[n - 1 - i];
-            }
-        }
 
         public void SetDiPaiPosition(Transform[] tf_list)
         {
@@ -91,7 +80,7 @@ namespace HopeSDH
 
         private int[] _fend_id_list;
 
-        public void SetFenCardPostionCall()
+        public void SetFenCardPositionCall()
         {
             if (this._fend_id_list == null)
             {
@@ -115,55 +104,30 @@ namespace HopeSDH
             }
         }
 
-        public void FaPaiCall()
+        public void SetDiCardPositionCall()
         {
+            if (this._dipai_list == null)
+            {
+                _dipai_list = new int[_dipai_count];
+            }
             var dat = (int[])this.eventData;
+            var num = (int)this.eventData2;
+
             if (dat == null || dat.Length == 0)
             {
-                hugf.udondebug.LogWarning("SDH_DiPaiManager FaPaiCall data is null or empty!");
+                hugf.udondebug.LogWarning("SDH_DiPaiManager SetFenCardCall data is null or empty!");
                 return;
             }
-            GrabHandCard(dat);
-            hugf.TriggerEventWith2Data(nameof(SDH_FaPaiJi.DisCardTileClickCall), this._dipai_list, this._dipai_count);
-            hugf.TriggerEventWith2Data(nameof(SDH_FaPaiJi.SetCardFaceNullCall), this._dipai_list, this._dipai_count);
-
-            RequestSyn();
-        }
-
-        #region syn
-
-        void RequestSyn()
-        {
-#if !UNITY_EDITOR
-            if(!Networking.IsOwner(this.gameObject))
+            for (int i = 0; i < num; i++)
             {
-                Networking.SetOwner(Networking.LocalPlayer, this.gameObject);
+                var _id = dat[i];
+                _dipai_list[i] = _id;
+                this.card_tf_list[_id].gameObject.SetActive(true);
             }
-            RequestSerialization();
-#else
-            OnPreSerialization();
-#endif
-            ;
+            SetDiPaiPosition(this.card_tf_list);
         }
-
-        public override void OnPreSerialization()
-        {
-            for (int i = 0; i < SDH_GameManager.CONST_DIPAI_CARD_NUM; i++)
-            {
-                _dipai_list_syn[i] = _dipai_list[i];
-            }
-            SetDiPaiPosition(card_tf_list);
-        }
-
-        public override void OnDeserialization()
-        {
-            for (int i = 0; i < _dipai_count; i++)
-            {
-                _dipai_list[i] = _dipai_list_syn[i];
-            }
-            SetDiPaiPosition(card_tf_list);
-        }
-
-        #endregion end syn
     }
 }
+
+
+

@@ -12,13 +12,9 @@ namespace HopeSDH
     public class SDH_FaPaiJi : UdonSharpBehaviour
     {
         private int CHILD_CARD_NUM;
-        //public const int SYN_EVN_FAPAI = 1;
-        //private int _syn_evn;
-        [UdonSynced] private int[] card_list_syn;
         public int[] card_id_list;
 
         public Transform player_manager_prt;
-
         [HideInInspector] public Transform[] card_tf_list;
 
         void Start()
@@ -45,9 +41,6 @@ namespace HopeSDH
             {
                 this.card_tf_list[i] = this.transform.GetChild(i);
             }
-
-
-            card_list_syn = new int[SDH_GameManager.CONST_SDH_TOTAL_CARD_NUM + 10];
 
             InitCardIdList();
         }
@@ -153,13 +146,14 @@ namespace HopeSDH
 
             if (true)
             {
-                hugf.TriggerEventWithData(nameof(SDH_DiPaiManager.FaPaiCall), this.card_id_list);
+                hugf.TriggerEventWithData(nameof(SDH_OutCartFsm.FaPaiCall), this.card_id_list);
+                hugf.TriggerEventWithData(nameof(SDH_JiaoZhuang.StartJiaoCall), this.card_id_list);
             }
+
             else
             {
                 hugf.TriggerEventWithData(nameof(SDH_OutCartFsm.FaPaiCall), this.card_id_list);
             }
-            RequestSyn();
         }
 
         private void ClearCardSelect()
@@ -293,9 +287,9 @@ namespace HopeSDH
         public void FisherYatesShuffle(int seed)
         {
             InitCardIdList();
+            return;
             // 设置随机数种子
             Random.InitState(seed);
-
             // Fisher-Yates 洗牌算法
             for (int i = 0; i < card_id_list.Length; i++)
             {
@@ -305,38 +299,6 @@ namespace HopeSDH
                 card_id_list[r] = temp;
             }
         }
-
-        #region syn_code
-        void RequestSyn()
-        {
-#if !UNITY_EDITOR
-            if(!Networking.IsOwner(this.gameObject))
-            {
-                Networking.SetOwner(Networking.LocalPlayer, this.gameObject);
-            }
-            RequestSerialization();
-#else
-            OnPreSerialization();
-#endif
-            ;
-        }
-        public override void OnPreSerialization()
-        {
-            for (int i = 0; i < card_id_list.Length; i++)
-            {
-                card_list_syn[i] = card_id_list[i];
-            }
-        }
-
-        public override void OnDeserialization()
-        {
-            for (int i = 0; i < card_id_list.Length; i++)
-            {
-                card_id_list[i] = card_list_syn[i];
-            }
-        }
-
-        #endregion end syn_code
 
 
         #region reander tool
