@@ -51,7 +51,8 @@ namespace HopeSDH
         public const int GAME_STA_JIAO_ZHUANG = 2;
         public const int GAME_STA_JIAO_MAIDI = 3;
         public const int GAME_STA_PLAY = 4;
-        public const int GAME_STA_OVER = 5;
+        public const int GAME_STA_JIFEN = 5;
+        public const int GAME_STA_OVER = 6;
 
         public int info_game_sta = 0;
         public int info_acitve_layer = 0;
@@ -77,31 +78,21 @@ namespace HopeSDH
             this.config_zhuang_score = 80;
         }
 
-        private HopeTools.HopeUdonFramework hugf;
+        public HopeTools.HopeUdonFramework hugf;
         public object eventData;
-        public void HugfInit()
-        {
-            if (hugf == null)
-            {
-                hugf = GameObject.Find(SDH_GameManager.CONST_SDH_HUGF_STRING).GetComponent<HopeTools.HopeUdonFramework>();
-                if (hugf == null)
-                {
-                    Debug.LogError("HugfInit failed, hugf is null!");
-                    return;
-                }
-
-                hugf.Init();
-                return;
-            }
-        }
+        public object eventData1;
+        public object eventData2;
 
         public void HugfInitAfter()
         {
             // user code after hugf init here
             hugf.udonIoc.RegisterSingleton(nameof(SDH_CONFIG_Singleton_String), this, this);
 
-            hugf.udonEvn.RegisterListener(nameof(this.SetPlayerVrcIdCall), this);
-            hugf.udonEvn.RegisterListener(nameof(this.ToggleEvn_StartOneCall), this);
+            hugf.udonEvn.RegisterListener(nameof(this.JiaoZhuangFinishCall), this);
+            hugf.udonEvn.RegisterListener(nameof(this.MaiDiFinishCall), this);
+
+            hugf.udonEvn.RegisterListener(nameof(this.SDH_GameResetCall), this);
+            hugf.udonEvn.RegisterListener(nameof(this.JoinExitFinishCall), this);
         }
 
 
@@ -116,35 +107,43 @@ namespace HopeSDH
         //}
         #endregion end init code
 
-
-        public void SetPlayerVrcIdCall()
-        {
-            var _id = (int[])this.eventData;
-            hugf.Log("SetPlayerVrcIdCall");
-            for (int i = 0; i < CONST_PLAYER_NUM; i++)
-            {
-                config_player_vrcid_list[i] = _id[i];
-            }
-        }
-
         public void SetZhuangInfoCall()
         {
             ;
         }
 
-        /// <summary>
-        /// 开一居
-        /// </summary>
-        public void ToggleEvn_StartOneCall()
+        public void SDH_GameResetCall()
         {
-            var seed = (int)this.eventData;
-            hugf.TriggerEventWithData(nameof(SDH_FaPaiJi.StartShuffleCall), seed);
+            ;
         }
+
 
         public void JiaoZhuangFinishCall()
         {
-            var zhuang = (int)this.eventData;
-            this.config_zhuang_player = zhuang;
+            var x = (int)this.eventData;
+            var y = (int)this.eventData2;
+            this.config_zhuang_player = x;
+            this.config_zhuang_score = y;
+            this.info_game_sta = GAME_STA_JIAO_MAIDI;
+        }
+
+        public void MaiDiFinishCall()
+        {
+            var x = (int) this.eventData;
+            this.config_zhu_icon = x;
+            this.info_game_sta = GAME_STA_PLAY;
+        }
+
+        public void JoinExitFinishCall()
+        {
+            var list = (int[])this.eventData;
+            if (list != null && list.Length >= CONST_PLAYER_NUM)
+            {
+                for (int i = 0; i < CONST_PLAYER_NUM; i++)
+                {
+                    config_player_vrcid_list[i] = list[i];
+                }
+            }
         }
 
         #region syn
@@ -639,8 +638,6 @@ namespace HopeSDH
             return false;
         }
 
-
-
         public int GetTypePairList(int[] card_id, int num, int base_typ, int[] pair_list)
         {
             var pair_num = 0;
@@ -780,5 +777,8 @@ namespace HopeSDH
         }
 
         #endregion function for others
+
+
+
     }
 }

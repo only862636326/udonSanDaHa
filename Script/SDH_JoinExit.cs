@@ -97,8 +97,19 @@ namespace HopeSDH
             //hugf.udonEvn.RegisterListener(nameof(this.DemeFunCall), this);
             hugf.udonEvn.RegisterListener(nameof(this.ToggleEvn_ExitButCall), this);
             hugf.udonEvn.RegisterListener(nameof(this.ToggleEvn_JoinButCall), this);
+
+            hugf.udonEvn.RegisterListener(nameof(this.SDH_GameResetCall), this);
         }
 
+        public void SDH_GameResetCall()
+        {
+            for (int i = 0; i < MAX_PLAYER; i++)
+            {
+                player_list_syn[i] = PLAYER_NONE;
+                player_list_loc[i] = PLAYER_NONE;
+            }
+            RequestSyn();
+        }
 
 
         public void ToggleEvn_JoinBut(int idx)
@@ -165,9 +176,7 @@ namespace HopeSDH
             var n = this.transform.childCount;
             var loc_id = Networking.LocalPlayer.playerId;
             var loc_name = Networking.LocalPlayer.displayName;
-
-            if (hugf != null)
-                hugf.TriggerEventWithData(nameof(SDH_GameManager.SetPlayerVrcIdCall), this.player_list_loc);
+            var _join_finish = true;
 
             for (int i = 0; i < n; i++)
             {
@@ -177,7 +186,6 @@ namespace HopeSDH
                 }
                 if (player_list_loc[i] == loc_id)
                 {
-
                     but_join_list[i].SetActive(false);
                     but_exit_list[i].SetActive(true);
                     text_name_list[i].text = loc_name;
@@ -187,6 +195,7 @@ namespace HopeSDH
                     but_join_list[i].SetActive(true);
                     but_exit_list[i].SetActive(false);
                     text_name_list[i].text = "";
+                    _join_finish = false;
                 }
                 else
                 {
@@ -197,6 +206,9 @@ namespace HopeSDH
                     text_name_list[i].text = _name;
                 }
             }
+
+            if (_join_finish && hugf != null)
+                hugf.TriggerEventWithData(nameof(SDH_GameManager.JoinExitFinishCall), this.player_list_loc);
         }
 
         public void ToggleEvn_JoinButCall()

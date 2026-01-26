@@ -34,6 +34,11 @@ namespace HopeSDH
             //{
             //    hugf.TriggerReEvent(nameof(SDH_JiaoZhuang.StartJiaoCall));
             //}
+            //if (Input.GetKeyUp(KeyCode.P))
+            if (Input.GetKeyUp(KeyCode.L))
+            {
+                hugf.TriggerReEvent(nameof(SDH_GameManager.SDH_GameResetCall));
+            }
         }
 
         public void HugfInitAfter()
@@ -45,7 +50,8 @@ namespace HopeSDH
 
         public void ToggleEvn_StartFaPai()
         {
-            hugf.TriggerEvent(nameof(SDH_FaPaiJi.StartShuffleCall));
+            int seed = DateTime.Now.Ticks.GetHashCode();
+            hugf.TriggerReEventWithData(nameof(SDH_FaPaiJi.StartShuffleCall), seed);
         }
 
         public void ToggleEvn_Score(int score_idx, int idx)
@@ -218,6 +224,11 @@ namespace HopeSDH
             hugf.TriggerReEventWithData(nameof(SDH_Tips.SetZhuIconShowCall), 3);
         }
 
+        public void ToggleEvn_ZhuJoker(int p)
+        {
+            hugf.TriggerReEventWithData(nameof(SDH_Tips.SetZhuIconShowCall), 4);
+        }
+
         public void ToggleEvn_ZhuMei_0() { ToggleEvn_ZhuMei(0); }
         public void ToggleEvn_ZhuFang_0() { ToggleEvn_ZhuFang(0); }
         public void ToggleEvn_ZhuHong_0() { ToggleEvn_ZhuHong(0); }
@@ -234,11 +245,14 @@ namespace HopeSDH
         public void ToggleEvn_ZhuFang_3() { ToggleEvn_ZhuFang(3); }
         public void ToggleEvn_ZhuHong_3() { ToggleEvn_ZhuHong(3); }
         public void ToggleEvn_ZhuHei_3() { ToggleEvn_ZhuHei(3); }
-
-
+        public void ToggleEvn_ZhuJoker_0() { ToggleEvn_ZhuJoker(0); }
+        public void ToggleEvn_ZhuJoker_1() { ToggleEvn_ZhuJoker(1); }
+        public void ToggleEvn_ZhuJoker_2() { ToggleEvn_ZhuJoker(2); }
+        public void ToggleEvn_ZhuJoker_3() { ToggleEvn_ZhuJoker(3); }
         // end method
     }
 }
+
 
 
 

@@ -44,6 +44,8 @@ namespace HopeTools
             hugf.udonEvn.RegisterListener(nameof(this.SetHandCardP1Call), this);
             hugf.udonEvn.RegisterListener(nameof(this.SetHandCardP2Call), this);
             hugf.udonEvn.RegisterListener(nameof(this.SetHandCardP3Call), this);
+
+            hugf.udonEvn.RegisterListener(nameof(this.SDH_GameResetCall), this);
         }
 
         public void HufgIocGet()
@@ -57,7 +59,14 @@ namespace HopeTools
         //}
         #endregion end init code
 
-
+        public void SDH_GameResetCall()
+        {
+            for (int i = 0; i < card_tf_list.Length; i++)
+            {
+                if (this.card_tf_list[i] != null)
+                    this.card_tf_list[i].gameObject.SetActive(false);
+            }
+        }
 
         private int _out_card_player;
         public void SetOutCardPlayerCall()

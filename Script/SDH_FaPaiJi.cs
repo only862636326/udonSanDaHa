@@ -115,9 +115,16 @@ namespace HopeSDH
             hugf.udonEvn.RegisterListener(nameof(this.SetFenCardPostionCall), this);
             hugf.udonEvn.RegisterListener(nameof(this.SetCardFaceNullCall), this);
             hugf.udonEvn.RegisterListener(nameof(this.SetCardFaceTureCall), this);
+
+            hugf.udonEvn.RegisterListener(nameof(this.SDH_GameResetCall), this);
         }
 
-       
+        public void SDH_GameResetCall()
+        {
+            ;
+        }
+
+
         public void WanMeiXiPai()
         {
             InitCardIdList();

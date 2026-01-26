@@ -17,6 +17,9 @@ namespace HopeSDH
 
         private GameObject []_obj_tips_list;
         private Transform [] _tf_game_info;
+
+        private GameObject start_but;
+
         public void Init()
         {
             if (this._is_init)
@@ -45,6 +48,10 @@ namespace HopeSDH
                         _tf_game_info[i] = tf.GetChild(i);
                     }
                 }
+                if (_low.Contains("toggle") && _low.Contains("start"))
+                {
+                    start_but = tf.gameObject;
+                }
             }
         }
 
@@ -62,9 +69,17 @@ namespace HopeSDH
 
             hugf.udonEvn.RegisterListener(nameof(SDH_JiaoZhuang.StartJiaoCall), this);
 
+            hugf.udonEvn.RegisterListener(nameof(this.SDH_GameResetCall), this);
+
             StartJiaoCall();
         }
 
+        public void SDH_GameResetCall()
+        {
+            if (this.start_but != null)
+                this.start_but.SetActive(true);
+            StartJiaoCall();
+        }
 
         public void HufgIocGet()
         {
