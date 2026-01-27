@@ -3270,6 +3270,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: JiaoZhuang (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 2469726327018004690, guid: 0d269c36a4be6b64a96cce7ae5fbe61b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2479835813209234046, guid: 0d269c36a4be6b64a96cce7ae5fbe61b,
         type: 3}
       propertyPath: m_Name
@@ -6880,6 +6885,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 648367435}
+  - component: {fileID: 648367437}
+  - component: {fileID: 648367436}
   m_Layer: 17
   m_Name: PlayerUiChuPaiPrt
   m_TagString: Untagged
@@ -6910,6 +6917,66 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &648367436
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 648367434}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45115577ef41a5b4ca741ed302693907, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactTextPlacement: {fileID: 0}
+  interactText: Use
+  interactTextGO: {fileID: 0}
+  proximity: 2
+  SynchronizePosition: 0
+  AllowCollisionOwnershipTransfer: 0
+  Reliable: 0
+  _syncMethod: 1
+  serializedProgramAsset: {fileID: 11400000, guid: 19a4ff8c1a5ba2144bb44e4734db0b14,
+    type: 2}
+  programSource: {fileID: 11400000, guid: a20190f8d7718fe47bf9d4d8e091e417, type: 2}
+  serializedPublicVariablesBytesString: Ai8AAAAAATIAAABWAFIAQwAuAFUAZABvAG4ALgBDAG8AbQBtAG8AbgAuAFUAZABvAG4AVgBhAHIAaQBhAGIAbABlAFQAYQBiAGwAZQAsACAAVgBSAEMALgBVAGQAbwBuAC4AQwBvAG0AbQBvAG4AAAAAAAYBAAAAAAAAACcBBAAAAHQAeQBwAGUAAWgAAABTAHkAcwB0AGUAbQAuAEMAbwBsAGwAZQBjAHQAaQBvAG4AcwAuAEcAZQBuAGUAcgBpAGMALgBMAGkAcwB0AGAAMQBbAFsAVgBSAEMALgBVAGQAbwBuAC4AQwBvAG0AbQBvAG4ALgBJAG4AdABlAHIAZgBhAGMAZQBzAC4ASQBVAGQAbwBuAFYAYQByAGkAYQBiAGwAZQAsACAAVgBSAEMALgBVAGQAbwBuAC4AQwBvAG0AbQBvAG4AXQBdACwAIABtAHMAYwBvAHIAbABpAGIAAQEJAAAAVgBhAHIAaQBhAGIAbABlAHMALwEAAAABaAAAAFMAeQBzAHQAZQBtAC4AQwBvAGwAbABlAGMAdABpAG8AbgBzAC4ARwBlAG4AZQByAGkAYwAuAEwAaQBzAHQAYAAxAFsAWwBWAFIAQwAuAFUAZABvAG4ALgBDAG8AbQBtAG8AbgAuAEkAbgB0AGUAcgBmAGEAYwBlAHMALgBJAFUAZABvAG4AVgBhAHIAaQBhAGIAbABlACwAIABWAFIAQwAuAFUAZABvAG4ALgBDAG8AbQBtAG8AbgBdAF0ALAAgAG0AcwBjAG8AcgBsAGkAYgABAAAABgEAAAAAAAAAAi8CAAAAAUkAAABWAFIAQwAuAFUAZABvAG4ALgBDAG8AbQBtAG8AbgAuAFUAZABvAG4AVgBhAHIAaQBhAGIAbABlAGAAMQBbAFsAUwB5AHMAdABlAG0ALgBJAG4AdAAzADIALAAgAG0AcwBjAG8AcgBsAGkAYgBdAF0ALAAgAFYAUgBDAC4AVQBkAG8AbgAuAEMAbwBtAG0AbwBuAAIAAAAGAgAAAAAAAAAnAQQAAAB0AHkAcABlAAEXAAAAUwB5AHMAdABlAG0ALgBTAHQAcgBpAG4AZwAsACAAbQBzAGMAbwByAGwAaQBiACcBCgAAAFMAeQBtAGIAbwBsAE4AYQBtAGUAAR8AAABfAF8AXwBVAGQAbwBuAFMAaABhAHIAcABCAGUAaABhAHYAaQBvAHUAcgBWAGUAcgBzAGkAbwBuAF8AXwBfACcBBAAAAHQAeQBwAGUAARYAAABTAHkAcwB0AGUAbQAuAEkAbgB0ADMAMgAsACAAbQBzAGMAbwByAGwAaQBiABcBBQAAAFYAYQBsAHUAZQACAAAABwUHBQcF
+  publicVariablesUnityEngineObjects: []
+  publicVariablesSerializationDataFormat: 0
+--- !u!114 &648367437
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 648367434}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd3c05b7b41742e498c0b344cd813275, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: eventData
+      Entry: 6
+      Data: 
+    - Name: eventData1
+      Entry: 6
+      Data: 
+    - Name: eventData2
+      Entry: 6
+      Data: 
+  _udonSharpBackingUdonBehaviour: {fileID: 648367436}
+  _maidi_obj: []
+  _outbut_obj: []
+  hugf: {fileID: 0}
 --- !u!1 &653699184 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1771831224203820774, guid: 5332dab1b4994b44698d474e4c810000,
@@ -7667,6 +7734,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: JiaoZhuang (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2469726327018004690, guid: 0d269c36a4be6b64a96cce7ae5fbe61b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2479835813209234046, guid: 0d269c36a4be6b64a96cce7ae5fbe61b,
         type: 3}
@@ -8459,6 +8531,11 @@ PrefabInstance:
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
       value: ToggleEvn_ZhuJoker_3
       objectReference: {fileID: 0}
+    - target: {fileID: 6403069544789755201, guid: 363502b1eeeca104282c43c667005cf1,
+        type: 3}
+      propertyPath: m_Name
+      value: ToggleEvn_MaiDiFinish_3
+      objectReference: {fileID: 0}
     - target: {fileID: 6977686642222176550, guid: 363502b1eeeca104282c43c667005cf1,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -8493,6 +8570,41 @@ PrefabInstance:
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
       value: ToggleEvn_ZhuHong_3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7812578816328789670, guid: 363502b1eeeca104282c43c667005cf1,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7812578816328789670, guid: 363502b1eeeca104282c43c667005cf1,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7812578816328789670, guid: 363502b1eeeca104282c43c667005cf1,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 927018504}
+    - target: {fileID: 7812578816328789670, guid: 363502b1eeeca104282c43c667005cf1,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7812578816328789670, guid: 363502b1eeeca104282c43c667005cf1,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SendCustomEvent
+      objectReference: {fileID: 0}
+    - target: {fileID: 7812578816328789670, guid: 363502b1eeeca104282c43c667005cf1,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: VRC.Udon.UdonBehaviour, VRC.Udon
+      objectReference: {fileID: 0}
+    - target: {fileID: 7812578816328789670, guid: 363502b1eeeca104282c43c667005cf1,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
+      value: ToggleEvn_MaiDiFinish_3
       objectReference: {fileID: 0}
     - target: {fileID: 8004347913129971501, guid: 363502b1eeeca104282c43c667005cf1,
         type: 3}
@@ -10302,7 +10414,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1007955264
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11886,6 +11998,9 @@ MonoBehaviour:
     - Name: eventData
       Entry: 6
       Data: 
+    - Name: eventData2
+      Entry: 6
+      Data: 
   _udonSharpBackingUdonBehaviour: {fileID: 1174086592}
   out_card_id_list: 
   out_card_num: 0
@@ -12303,6 +12418,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: JiaoZhuang (0)
       objectReference: {fileID: 0}
+    - target: {fileID: 2469726327018004690, guid: 0d269c36a4be6b64a96cce7ae5fbe61b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2479835813209234046, guid: 0d269c36a4be6b64a96cce7ae5fbe61b,
         type: 3}
       propertyPath: m_Name
@@ -12607,6 +12727,11 @@ PrefabInstance:
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
       value: ToggleEvn_ZhuJoker_2
       objectReference: {fileID: 0}
+    - target: {fileID: 6403069544789755201, guid: 363502b1eeeca104282c43c667005cf1,
+        type: 3}
+      propertyPath: m_Name
+      value: ToggleEvn_MaiDiFinish_2
+      objectReference: {fileID: 0}
     - target: {fileID: 6977686642222176550, guid: 363502b1eeeca104282c43c667005cf1,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -12641,6 +12766,41 @@ PrefabInstance:
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
       value: ToggleEvn_ZhuHong_2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7812578816328789670, guid: 363502b1eeeca104282c43c667005cf1,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7812578816328789670, guid: 363502b1eeeca104282c43c667005cf1,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7812578816328789670, guid: 363502b1eeeca104282c43c667005cf1,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 927018504}
+    - target: {fileID: 7812578816328789670, guid: 363502b1eeeca104282c43c667005cf1,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7812578816328789670, guid: 363502b1eeeca104282c43c667005cf1,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SendCustomEvent
+      objectReference: {fileID: 0}
+    - target: {fileID: 7812578816328789670, guid: 363502b1eeeca104282c43c667005cf1,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: VRC.Udon.UdonBehaviour, VRC.Udon
+      objectReference: {fileID: 0}
+    - target: {fileID: 7812578816328789670, guid: 363502b1eeeca104282c43c667005cf1,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
+      value: ToggleEvn_MaiDiFinish_2
       objectReference: {fileID: 0}
     - target: {fileID: 8004347913129971501, guid: 363502b1eeeca104282c43c667005cf1,
         type: 3}
@@ -16889,6 +17049,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: JiaoZhuang (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 2469726327018004690, guid: 0d269c36a4be6b64a96cce7ae5fbe61b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2479835813209234046, guid: 0d269c36a4be6b64a96cce7ae5fbe61b,
         type: 3}
       propertyPath: m_Name
@@ -17406,6 +17571,11 @@ PrefabInstance:
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
       value: ToggleEvn_ZhuJoker_1
       objectReference: {fileID: 0}
+    - target: {fileID: 6403069544789755201, guid: 363502b1eeeca104282c43c667005cf1,
+        type: 3}
+      propertyPath: m_Name
+      value: ToggleEvn_MaiDiFinish_1
+      objectReference: {fileID: 0}
     - target: {fileID: 6977686642222176550, guid: 363502b1eeeca104282c43c667005cf1,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -17440,6 +17610,41 @@ PrefabInstance:
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
       value: ToggleEvn_ZhuHong_1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7812578816328789670, guid: 363502b1eeeca104282c43c667005cf1,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7812578816328789670, guid: 363502b1eeeca104282c43c667005cf1,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7812578816328789670, guid: 363502b1eeeca104282c43c667005cf1,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 927018504}
+    - target: {fileID: 7812578816328789670, guid: 363502b1eeeca104282c43c667005cf1,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7812578816328789670, guid: 363502b1eeeca104282c43c667005cf1,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SendCustomEvent
+      objectReference: {fileID: 0}
+    - target: {fileID: 7812578816328789670, guid: 363502b1eeeca104282c43c667005cf1,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: VRC.Udon.UdonBehaviour, VRC.Udon
+      objectReference: {fileID: 0}
+    - target: {fileID: 7812578816328789670, guid: 363502b1eeeca104282c43c667005cf1,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
+      value: ToggleEvn_MaiDiFinish_1
       objectReference: {fileID: 0}
     - target: {fileID: 8004347913129971501, guid: 363502b1eeeca104282c43c667005cf1,
         type: 3}
@@ -21950,6 +22155,55 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4142677819186470986, guid: f9dc8cb4ed8495849ad45e4257c70659,
+        type: 3}
+      propertyPath: m_Text
+      value: 'SDH_GameResetCall
+
+        StartShuffleCall|-1102147632
+
+        ToggleEvn_ScoreCall|0|15
+
+        ToggleEvn_JiaoZhuangCall|0
+
+        SelecCardCall|13
+
+        SelecCardCall|81
+
+        SelecCardCall|29
+
+        SelecCardCall|53
+
+        SelecCardCall|77
+
+        UnselecCardCall|77
+
+        SelecCardCall|77
+
+        SelecCardCall|73
+
+        SelecCardCall|69
+
+        SelecCardCall|61
+
+        ToggleEvn_MaiDiCall|0
+
+        ToggleEvn_ZhuChooseCall|0|3
+
+        ToggleEvn_MaidiFinishCall|0
+
+        SelecCardCall|107
+
+        SelecCardCall|106
+
+        SelecCardCall|105
+
+        SelecCardCall|104
+
+        ToggleEvn_OutButCall|0
+
+'
+      objectReference: {fileID: 0}
     - target: {fileID: 4542373068856371418, guid: f9dc8cb4ed8495849ad45e4257c70659,
         type: 3}
       propertyPath: m_Pivot.x
@@ -22190,6 +22444,11 @@ PrefabInstance:
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
       value: ToggleEvn_ZhuJoker_0
       objectReference: {fileID: 0}
+    - target: {fileID: 6403069544789755201, guid: 363502b1eeeca104282c43c667005cf1,
+        type: 3}
+      propertyPath: m_Name
+      value: ToggleEvn_MaiDiFinish_0
+      objectReference: {fileID: 0}
     - target: {fileID: 6977686642222176550, guid: 363502b1eeeca104282c43c667005cf1,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -22219,6 +22478,41 @@ PrefabInstance:
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
       value: ToggleEvn_ZhuHong_0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7812578816328789670, guid: 363502b1eeeca104282c43c667005cf1,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7812578816328789670, guid: 363502b1eeeca104282c43c667005cf1,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7812578816328789670, guid: 363502b1eeeca104282c43c667005cf1,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 927018504}
+    - target: {fileID: 7812578816328789670, guid: 363502b1eeeca104282c43c667005cf1,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7812578816328789670, guid: 363502b1eeeca104282c43c667005cf1,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SendCustomEvent
+      objectReference: {fileID: 0}
+    - target: {fileID: 7812578816328789670, guid: 363502b1eeeca104282c43c667005cf1,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: VRC.Udon.UdonBehaviour, VRC.Udon
+      objectReference: {fileID: 0}
+    - target: {fileID: 7812578816328789670, guid: 363502b1eeeca104282c43c667005cf1,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
+      value: ToggleEvn_MaiDiFinish_0
       objectReference: {fileID: 0}
     - target: {fileID: 8004347913129971501, guid: 363502b1eeeca104282c43c667005cf1,
         type: 3}

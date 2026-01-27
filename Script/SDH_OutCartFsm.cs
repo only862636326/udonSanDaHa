@@ -1,5 +1,6 @@
 
 using HopeTools;
+using System;
 using UdonSharp;
 using UnityEngine;
 using VRC.SDKBase;
@@ -51,6 +52,7 @@ namespace HopeSDH
 
         public HopeTools.HopeUdonFramework hugf;
         public object eventData;
+        public object eventData2;
 
         public void HugfInitAfter()
         {
@@ -64,7 +66,9 @@ namespace HopeSDH
 
             hugf.udonEvn.RegisterListener(nameof(this.ToggleEvn_OutButCall), this);
             hugf.udonEvn.RegisterListener(nameof(this.ToggleEvn_MaiDiCall), this);
+            hugf.udonEvn.RegisterListener(nameof(this.ToggleEvn_ZhuChooseCall), this);
             hugf.udonEvn.RegisterListener(nameof(this.ToggleEvn_TipsButCall), this);
+            hugf.udonEvn.RegisterListener(nameof(this.ToggleEvn_MaidiFinishCall), this);
 
             hugf.udonEvn.RegisterListener(nameof(this.JiaoZhuangFinishCall), this);
         }
@@ -125,37 +129,23 @@ namespace HopeSDH
 
             for (int i = 0; i < num; i++)
             {
-                _hand_list[i + this._pre_hand_card_num] = _list[i];
+                _hand_list[i + this._current_hand_card_num] = _list[i];
             }
-            this._pre_hand_card_num += num;
-            sDH_GameManager.SortListByIdxCard(_hand_list, _pre_hand_card_num);
+            this._current_hand_card_num += num;
+            sDH_GameManager.SortListByIdxCard(_hand_list, _current_hand_card_num);
         }
 
         public void JiaoZhuangFinishCall()
         {
             int x = (int)this.eventData;
             this._select_card_num = 0;
-            
-            AddIdxHandlist(this._dipai_list, SDH_GameManager.CONST_DIPAI_CARD_NUM, x);
-            TrigPlayerHandCardShow(x, this._pre_hand_card_num);
-            hugf.TriggerEventWith2Data(nameof(SDH_FaPaiJi.EnCardTileClickCall), this._dipai_list, this._dipai_num);
-        }
 
-        public void ToggleEvn_MaiDi(int x)
-        {
-            //hugf.Log($"ToggleEvn_MaiDi: {x}");
-            if (this._select_card_num == SDH_GameManager.CONST_DIPAI_CARD_NUM)
-            {
-                for (int i = 0; i < this._select_card_num; i++)
-                {
-                    this._dipai_list[i] = this._select_card_id_list[i];
-                }
-                DelIdxHandList(this._dipai_list, this._dipai_num, this._current_player);
-                this._pre_hand_card_num -= SDH_GameManager.CONST_DIPAI_CARD_NUM;
-                TrigPlayerHandCardShow(this._current_player, this._pre_hand_card_num);
-                hugf.TriggerEventWith2Data(nameof(SDH_FaPaiJi.DisCardTileClickCall), this._dipai_list, this._dipai_num);
-                hugf.TriggerEventWith2Data(nameof(SDH_DiPaiManager.SetDiCardPositionCall), this._dipai_list, this._dipai_num);
-            }
+            AddIdxHandlist(this._dipai_list, SDH_GameManager.CONST_DIPAI_CARD_NUM, x);
+            TrigPlayerHandCardShow(x, this._current_hand_card_num);
+            hugf.TriggerEventWith2Data(nameof(SDH_FaPaiJi.EnCardTileClickCall), this._dipai_list, this._dipai_num);
+            this._current_player = x;
+            this._has_maidi = false;
+            this._has_choose_zhu = false;
         }
 
         public bool CardIsInPlayerHand(int card_id, int p)
@@ -163,8 +153,8 @@ namespace HopeSDH
             var _list = GetPlayerHandList(p);
             if (_list == null)
                 return false;
-                
-            for (int i = 0; i < _pre_hand_card_num; i++)
+
+            for (int i = 0; i < _current_hand_card_num; i++)
             {
                 if (_list[i] == card_id)
                     return true;
@@ -235,11 +225,7 @@ namespace HopeSDH
             var idx = (int)this.eventData;
             ToggleEvn_TipsBut(idx);
         }
-        public void ToggleEvn_MaiDiCall()
-        {
-            var idx = (int)this.eventData;
-            ToggleEvn_MaiDi(idx);
-        }
+
         // end method
 
         #region 出牌判定
@@ -259,7 +245,7 @@ namespace HopeSDH
 
         private int[] _dipai_list;
         private int _dipai_num;
-        private int _pre_hand_card_num;
+        private int _current_hand_card_num;
         private int[] _jipaiqi_list;
 
         private int[] fitrt_out_card_type_list;
@@ -325,21 +311,18 @@ namespace HopeSDH
             {
                 this._dipai_list[i] = dat[SDH_GameManager.CONST_SDH_TOTAL_CARD_NUM - i - 1];
             }
-            _pre_hand_card_num = SDH_GameManager.CONST_PLAYER_GRAB_CARD_NUM;
+            _current_hand_card_num = SDH_GameManager.CONST_PLAYER_GRAB_CARD_NUM;
             _feng_card_num = 0;
-            sDH_GameManager.SortListByIdxCard(this._p0_hand_list, _pre_hand_card_num);
-            sDH_GameManager.SortListByIdxCard(this._p1_hand_list, _pre_hand_card_num);
-            sDH_GameManager.SortListByIdxCard(this._p2_hand_list, _pre_hand_card_num);
-            sDH_GameManager.SortListByIdxCard(this._p3_hand_list, _pre_hand_card_num);
+            sDH_GameManager.SortListByIdxCard(this._p0_hand_list, _current_hand_card_num);
+            sDH_GameManager.SortListByIdxCard(this._p1_hand_list, _current_hand_card_num);
+            sDH_GameManager.SortListByIdxCard(this._p2_hand_list, _current_hand_card_num);
+            sDH_GameManager.SortListByIdxCard(this._p3_hand_list, _current_hand_card_num);
 
-            hugf.TriggerEventWith2Data(nameof(SDH_HandCartP.SetHandCardP0Call), this._p0_hand_list, _pre_hand_card_num);
-            hugf.TriggerEventWith2Data(nameof(SDH_HandCartP.SetHandCardP1Call), this._p1_hand_list, _pre_hand_card_num);
-            hugf.TriggerEventWith2Data(nameof(SDH_HandCartP.SetHandCardP2Call), this._p2_hand_list, _pre_hand_card_num);
-            hugf.TriggerEventWith2Data(nameof(SDH_HandCartP.SetHandCardP3Call), this._p3_hand_list, _pre_hand_card_num);
+            this.TrigPlayerHandCardShow(255, this._current_hand_card_num);
 
             hugf.TriggerEventWith2Data(nameof(SDH_DiPaiManager.SetDiCardPositionCall), this._dipai_list, this._dipai_num);
 
-            hugf.TriggerEventWith2Data(nameof(SDH_FaPaiJi.EnCardTileClickCall), dat, _pre_hand_card_num * 4);
+            hugf.TriggerEventWith2Data(nameof(SDH_FaPaiJi.EnCardTileClickCall), dat, _current_hand_card_num * 4);
             hugf.TriggerEventWith2Data(nameof(SDH_FaPaiJi.DisCardTileClickCall), _dipai_list, _dipai_num);
         }
 
@@ -402,7 +385,7 @@ namespace HopeSDH
                 hugf.TriggerEventWith2Data(nameof(SDH_FaPaiJi.SetCardTileDisCall), this._p1_out_list, this._pre_round_card_show_num);
                 hugf.TriggerEventWith2Data(nameof(SDH_FaPaiJi.SetCardTileDisCall), this._p2_out_list, this._pre_round_card_show_num);
                 hugf.TriggerEventWith2Data(nameof(SDH_FaPaiJi.SetCardTileDisCall), this._p3_out_list, this._pre_round_card_show_num);
-                
+
                 _pre_round_card_show_num = 0;
             }
 
@@ -426,7 +409,6 @@ namespace HopeSDH
             }
 
             this.out_card_num = this._select_card_num;
-            TrigPlayerOutCardShow(255, this.out_card_num);
 
             hugf.TriggerEventWith2Data(nameof(SDH_FaPaiJi.DisCardTileClickCall), this.out_card_id_list, this.out_card_num);
 
@@ -475,15 +457,15 @@ namespace HopeSDH
             {
                 hugf.TriggerEventWith2Data(nameof(SDH_HandCartP.SetHandCardP0Call), this._p0_hand_list, num);
             }
-            else if (idx == SDH_GameManager.CONST_PLAYER_P1 || idx == 255)
+            if (idx == SDH_GameManager.CONST_PLAYER_P1 || idx == 255)
             {
                 hugf.TriggerEventWith2Data(nameof(SDH_HandCartP.SetHandCardP1Call), this._p1_hand_list, num);
             }
-            else if (idx == SDH_GameManager.CONST_PLAYER_P2 || idx == 255)
+            if (idx == SDH_GameManager.CONST_PLAYER_P2 || idx == 255)
             {
                 hugf.TriggerEventWith2Data(nameof(SDH_HandCartP.SetHandCardP2Call), this._p2_hand_list, num);
             }
-            else if (idx == SDH_GameManager.CONST_PLAYER_P3 || idx == 255)
+            if (idx == SDH_GameManager.CONST_PLAYER_P3 || idx == 255)
             {
                 hugf.TriggerEventWith2Data(nameof(SDH_HandCartP.SetHandCardP3Call), this._p3_hand_list, num);
             }
@@ -503,16 +485,16 @@ namespace HopeSDH
         private void DelHandOutCard()
         {
             var _num = this._pre_round_card_show_num;
-            if (_num <= 0 || _pre_hand_card_num <= 0) return;
+            if (_num <= 0 || _current_hand_card_num <= 0) return;
 
             // 使用通用的DelListCard方法删除手牌
-            sDH_GameManager.DelListCard(_p0_hand_list, _p0_out_list, _pre_hand_card_num, _num);
-            sDH_GameManager.DelListCard(_p1_hand_list, _p1_out_list, _pre_hand_card_num, _num);
-            sDH_GameManager.DelListCard(_p2_hand_list, _p2_out_list, _pre_hand_card_num, _num);
-            sDH_GameManager.DelListCard(_p3_hand_list, _p3_out_list, _pre_hand_card_num, _num);
-            _pre_hand_card_num -= _num;
+            sDH_GameManager.DelListCard(_p0_hand_list, _p0_out_list, _current_hand_card_num, _num);
+            sDH_GameManager.DelListCard(_p1_hand_list, _p1_out_list, _current_hand_card_num, _num);
+            sDH_GameManager.DelListCard(_p2_hand_list, _p2_out_list, _current_hand_card_num, _num);
+            sDH_GameManager.DelListCard(_p3_hand_list, _p3_out_list, _current_hand_card_num, _num);
+            _current_hand_card_num -= _num;
 
-            TrigPlayerHandCardShow(255, this._pre_hand_card_num);
+            TrigPlayerHandCardShow(255, this._current_hand_card_num);
         }
 
         private bool CheckEqCheckEq(int[] first_list, int[] _list_1, int num)
@@ -626,7 +608,7 @@ namespace HopeSDH
                 return -1;
             }
 
-            return sDH_GameManager.GetIconNumS(_list, this._pre_hand_card_num, typ);
+            return sDH_GameManager.GetIconNumS(_list, this._current_hand_card_num, typ);
 
         }
 
@@ -638,7 +620,7 @@ namespace HopeSDH
                 return -1;
             }
 
-            return sDH_GameManager.GetTypePairList(_list, this._pre_hand_card_num, typ, _temp_int_list);
+            return sDH_GameManager.GetTypePairList(_list, this._current_hand_card_num, typ, _temp_int_list);
 
         }
 
@@ -649,7 +631,7 @@ namespace HopeSDH
             {
                 return -1;
             }
-            return sDH_GameManager.GetCardTuoLaJi(_list, this._pre_hand_card_num, typ);
+            return sDH_GameManager.GetCardTuoLaJi(_list, this._current_hand_card_num, typ);
         }
 
         [SerializeField] private int[] _temp_int_list = new int[SDH_GameManager.CONST_PLAYER_HAND_CARD_MAX];
@@ -822,8 +804,68 @@ namespace HopeSDH
                 hugf.TriggerEventWith2Data(nameof(SDH_DiPaiManager.SetFenCardPositionCall), this._feng_card_list, this._feng_card_num);
             }
         }
+
+
+        private bool _has_maidi = false;
+
+
+        public void ToggleEvn_MaiDiCall()
+        {
+            if (this._has_maidi)
+            {
+                return;
+            }
+            var idx = (int)this.eventData;
+            if (this._select_card_num == SDH_GameManager.CONST_DIPAI_CARD_NUM)
+            {
+                _has_maidi = true;
+                for (int i = 0; i < this._select_card_num; i++)
+                {
+                    this._dipai_list[i] = this._select_card_id_list[i];
+                }
+                DelIdxHandList(this._dipai_list, this._dipai_num, this._current_player);
+                this._current_hand_card_num -= SDH_GameManager.CONST_DIPAI_CARD_NUM;
+                TrigPlayerHandCardShow(this._current_player, this._current_hand_card_num);
+                hugf.TriggerEventWith2Data(nameof(SDH_FaPaiJi.DisCardTileClickCall), this._dipai_list, this._dipai_num);
+                hugf.TriggerEventWith2Data(nameof(SDH_DiPaiManager.SetDiCardPositionCall), this._dipai_list, this._dipai_num);
+            }
+        }
+
+        public void ToggleEvn_ZhuChooseCall()
+        {
+            var p = (int)this.eventData;
+            var icon = (int)this.eventData2;
+            if (p == sDH_GameManager.config_zhuang_player)
+            {
+                _has_choose_zhu = true;
+                sDH_GameManager.config_zhu_icon = icon;
+                hugf.TriggerEventWithData(nameof(SDH_Tips.SetZhuIconShowCall), icon);
+            }
+        }
+        private bool _has_choose_zhu = false;
+        public void ToggleEvn_MaidiFinishCall()
+        {
+            hugf.Log($"ToggleEvn_MaidiFinishCall: _has_maidi: {_has_maidi}, _has_choose_zhu: {_has_choose_zhu}");
+            if (_has_maidi && _has_choose_zhu)
+            {
+                hugf.TriggerEventWithData(nameof(sDH_GameManager.MaiDiFinishCall), sDH_GameManager.config_zhu_icon);
+
+                sDH_GameManager.SortListByIdxCard(this._p0_hand_list, _current_hand_card_num);
+                sDH_GameManager.SortListByIdxCard(this._p1_hand_list, _current_hand_card_num);
+                sDH_GameManager.SortListByIdxCard(this._p2_hand_list, _current_hand_card_num);
+                sDH_GameManager.SortListByIdxCard(this._p3_hand_list, _current_hand_card_num);
+
+                TrigPlayerHandCardShow(255, this._current_hand_card_num);
+                this.StartChuPaiCall();
+            }
+        }
     }
 }
+
+
+
+
+
 
 
 

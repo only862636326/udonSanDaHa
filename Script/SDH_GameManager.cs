@@ -71,7 +71,7 @@ namespace HopeSDH
                 config_player_vrcid_list[i] = CONST_PLAYER_NONE;
             }
 
-            this.config_zhu_icon = CONST_ICON_FANG;
+            this.config_zhu_icon = CONST_ICON_HONG;
             ConfigSortIdList(this.config_zhu_icon);
             ConfigTypeIdList(this.config_zhu_icon);
             this.config_zhuang_player = 0;
@@ -114,9 +114,8 @@ namespace HopeSDH
 
         public void SDH_GameResetCall()
         {
-            ;
+            this.config_zhu_icon = -1;
         }
-
 
         public void JiaoZhuangFinishCall()
         {
@@ -129,9 +128,12 @@ namespace HopeSDH
 
         public void MaiDiFinishCall()
         {
-            var x = (int) this.eventData;
+            var x = (int)this.eventData;
             this.config_zhu_icon = x;
             this.info_game_sta = GAME_STA_PLAY;
+            ConfigSortIdList(this.config_zhu_icon);
+            ConfigTypeIdList(this.config_zhu_icon);
+            // hugf.TriggerEvent(nameof(SDH_OutCartFsm.StartChuPaiCall));
         }
 
         public void JoinExitFinishCall()
@@ -775,6 +777,7 @@ namespace HopeSDH
             ;
             return 0;
         }
+
 
         #endregion function for others
 

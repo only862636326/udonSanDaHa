@@ -106,6 +106,8 @@ namespace HopeSDH
             hugf.udonEvn.RegisterListener(nameof(this.ToggleEvn_JiaoZhuangCall), this);
             hugf.udonEvn.RegisterListener(nameof(this.ToggleEvn_ScoreCall), this);
             hugf.udonEvn.RegisterListener(nameof(this.StartJiaoCall), this);
+
+            hugf.udonEvn.RegisterListener(nameof(this.SDH_GameResetCall), this);
         }
 
         public void HufgIocGet()
@@ -118,6 +120,15 @@ namespace HopeSDH
         //    this.eventData = data;
         //}
         #endregion end init code
+
+
+        public void SDH_GameResetCall()
+        {
+            foreach (Transform tf in this.transform)
+            {
+                tf.gameObject.SetActive(false);
+            }
+        }
 
         private bool _first_jiao_zhuang = false;
         public void StartJiaoCall()

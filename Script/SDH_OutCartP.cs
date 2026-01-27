@@ -76,10 +76,16 @@ namespace HopeTools
             {
                 var card_id = _card_id_list[i];
 
+                if (card_id < 0 || card_id >= card_tf_list.Length)
+                {
+                    hugf.LogUdonWarning(this, $"invalid card id : {card_id}");
+                    return;
+                }
+
                 var pos = GetCardPosition(this._out_card_prt_list[idx], i, _card_num);
                 if (pos == Vector3.zero)
                     continue;
-
+                
                 var tf = this.card_tf_list[card_id];
                 if (tf == null)
                     continue;

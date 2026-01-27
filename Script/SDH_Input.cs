@@ -177,20 +177,6 @@ namespace HopeSDH
             hugf.TriggerReEventWithData(nameof(SDH_OutCartFsm.ToggleEvn_TipsButCall), idx);
         }
 
-        public void ToggleEvn_OutBut_0() { ToggleEvn_OutBut(0); }
-        public void ToggleEvn_OutBut_1() { ToggleEvn_OutBut(1); }
-        public void ToggleEvn_OutBut_2() { ToggleEvn_OutBut(2); }
-        public void ToggleEvn_OutBut_3() { ToggleEvn_OutBut(3); }
-
-        public void ToggleEvn_MaiDi_0() { ToggleEvn_MaiDi(0); }
-        public void ToggleEvn_MaiDi_1() { ToggleEvn_MaiDi(1); }
-        public void ToggleEvn_MaiDi_2() { ToggleEvn_MaiDi(2); }
-        public void ToggleEvn_MaiDi_3() { ToggleEvn_MaiDi(3); }
-
-        public void ToggleEvn_TipsBut_0() { ToggleEvn_TipsBut(0); }
-        public void ToggleEvn_TipsBut_1() { ToggleEvn_TipsBut(1); }
-        public void ToggleEvn_TipsBut_2() { ToggleEvn_TipsBut(2); }
-        public void ToggleEvn_TipsBut_3() { ToggleEvn_TipsBut(3); }
 
         public void ToggleEvn_UnselecCard(int card_id)
         {
@@ -207,27 +193,53 @@ namespace HopeSDH
 
         public void ToggleEvn_ZhuMei(int p)
         {
-            hugf.TriggerReEventWithData(nameof(SDH_Tips.SetZhuIconShowCall), 0);
+            ToggleEvn_ZhuChoose(p, SDH_GameManager.CONST_ICON_HEI);
         }
 
         public void ToggleEvn_ZhuFang(int p)
         {
-            hugf.TriggerReEventWithData(nameof(SDH_Tips.SetZhuIconShowCall), 1);
+            ToggleEvn_ZhuChoose(p, SDH_GameManager.CONST_ICON_FANG);
         }
         public void ToggleEvn_ZhuHong(int p)
         {
-            hugf.TriggerReEventWithData(nameof(SDH_Tips.SetZhuIconShowCall), 2);
+            ToggleEvn_ZhuChoose(p, SDH_GameManager.CONST_ICON_HONG);
         }
 
         public void ToggleEvn_ZhuHei(int p)
         {
-            hugf.TriggerReEventWithData(nameof(SDH_Tips.SetZhuIconShowCall), 3);
+            ToggleEvn_ZhuChoose(p, SDH_GameManager.CONST_ICON_HEI);
         }
 
         public void ToggleEvn_ZhuJoker(int p)
         {
-            hugf.TriggerReEventWithData(nameof(SDH_Tips.SetZhuIconShowCall), 4);
+            ToggleEvn_ZhuChoose(p, SDH_GameManager.CONST_ICON_JOKER);
         }
+
+        public void ToggleEvn_ZhuChoose(int p, int icon)
+        {
+            hugf.TriggerReEventWith2Data(nameof(SDH_OutCartFsm.ToggleEvn_ZhuChooseCall), p, icon);
+        }
+
+        public void ToggleEvn_MaiDiFinish(int p)
+        {
+            hugf.TriggerReEventWithData(nameof(SDH_OutCartFsm.ToggleEvn_MaidiFinishCall), p);
+        }
+
+        public void ToggleEvn_OutBut_0() { ToggleEvn_OutBut(0); }
+        public void ToggleEvn_OutBut_1() { ToggleEvn_OutBut(1); }
+        public void ToggleEvn_OutBut_2() { ToggleEvn_OutBut(2); }
+        public void ToggleEvn_OutBut_3() { ToggleEvn_OutBut(3); }
+
+        public void ToggleEvn_MaiDi_0() { ToggleEvn_MaiDi(0); }
+        public void ToggleEvn_MaiDi_1() { ToggleEvn_MaiDi(1); }
+        public void ToggleEvn_MaiDi_2() { ToggleEvn_MaiDi(2); }
+        public void ToggleEvn_MaiDi_3() { ToggleEvn_MaiDi(3); }
+
+        public void ToggleEvn_TipsBut_0() { ToggleEvn_TipsBut(0); }
+        public void ToggleEvn_TipsBut_1() { ToggleEvn_TipsBut(1); }
+        public void ToggleEvn_TipsBut_2() { ToggleEvn_TipsBut(2); }
+        public void ToggleEvn_TipsBut_3() { ToggleEvn_TipsBut(3); }
+
 
         public void ToggleEvn_ZhuMei_0() { ToggleEvn_ZhuMei(0); }
         public void ToggleEvn_ZhuFang_0() { ToggleEvn_ZhuFang(0); }
@@ -249,7 +261,11 @@ namespace HopeSDH
         public void ToggleEvn_ZhuJoker_1() { ToggleEvn_ZhuJoker(1); }
         public void ToggleEvn_ZhuJoker_2() { ToggleEvn_ZhuJoker(2); }
         public void ToggleEvn_ZhuJoker_3() { ToggleEvn_ZhuJoker(3); }
-        // end method
+        public void ToggleEvn_MaiDiFinish_0() { ToggleEvn_MaiDiFinish(0); }
+		public void ToggleEvn_MaiDiFinish_1() { ToggleEvn_MaiDiFinish(1); }
+		public void ToggleEvn_MaiDiFinish_2() { ToggleEvn_MaiDiFinish(2); }
+		public void ToggleEvn_MaiDiFinish_3() { ToggleEvn_MaiDiFinish(3); }
+		// end method
     }
 }
 

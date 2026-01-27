@@ -1,4 +1,5 @@
 ﻿
+using System;
 using UdonSharp;
 using UnityEngine;
 using UnityEngine.UI;
@@ -159,6 +160,8 @@ namespace HopeSDH
                 _tf_game_info[i].Find("Text_DeFen").GetComponent<Text>().text = "得分 "+ x;
             }
         }
+
+
 
         #endregion end init code
 
