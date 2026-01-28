@@ -386,6 +386,9 @@ namespace HopeSDH
                 hugf.TriggerEventWith2Data(nameof(SDH_FaPaiJi.SetCardTileDisCall), this._p2_out_list, this._pre_round_card_show_num);
                 hugf.TriggerEventWith2Data(nameof(SDH_FaPaiJi.SetCardTileDisCall), this._p3_out_list, this._pre_round_card_show_num);
 
+                {
+                    hugf.TriggerEventWith2Data(nameof(SDH_DiPaiManager.SetFenCardPositionCall), this._feng_card_list, this._feng_card_num);
+                }
                 _pre_round_card_show_num = 0;
             }
 
@@ -400,17 +403,21 @@ namespace HopeSDH
                 this.first_out_card_num = this._select_card_num;
             }
 
+
+            
             for (int i = 0; i < this._select_card_num; i++)
             {
                 var _id = this._select_card_id_list[i];
                 this.out_card_id_list[i] = _id;
-                var _list = GetPlayerHandList(_current_player);
-                _list[i] = _id;
+                if (_current_player == SDH_GameManager.CONST_PLAYER_P0) this._p0_out_list[i] = _id;
+                else if (_current_player == SDH_GameManager.CONST_PLAYER_P1) this._p1_out_list[i] = _id;
+                else if (_current_player == SDH_GameManager.CONST_PLAYER_P2) this._p2_out_list[i] = _id;
+                else if (_current_player == SDH_GameManager.CONST_PLAYER_P3) this._p3_out_list[i] = _id;
             }
 
             this.out_card_num = this._select_card_num;
-
-            hugf.TriggerEventWith2Data(nameof(SDH_FaPaiJi.DisCardTileClickCall), this.out_card_id_list, this.out_card_num);
+            TrigPlayerOutCardShow(this._current_player, this.out_card_num);
+            hugf.TriggerEventWith2Data(nameof(SDH_FaPaiJi.DisCardTileClickCall), this.out_card_id_list, this.out_card_num);            
 
             this._current_player++;
             this._current_player %= 4;
@@ -421,7 +428,7 @@ namespace HopeSDH
                 _pre_round_card_show_num = this.first_out_card_num;
                 DelHandOutCard();
                 var _max_p = CheckOutMaxPlayer();
-                JianFen(_max_p, _max_p + 1);
+                JianFen(sDH_GameManager.config_zhuang_player, _max_p);
                 StartNewRound(_max_p);
             }
             else
@@ -560,12 +567,16 @@ namespace HopeSDH
 
         private bool CheckFirstOutEn()
         {
-            if (_select_card_num == 1)
+            if(_select_card_num ==  0)
+            {
+                return false;
+            }
+            else if (_select_card_num == 1)
             {
                 return true;
             }
 
-            if (_select_card_num == 2)
+            else if (_select_card_num == 2)
             {
                 var x = _select_card_id_list[0] / 2;
                 var y = _select_card_id_list[1] / 2;
@@ -754,21 +765,22 @@ namespace HopeSDH
 
         [HideInInspector] public int[] _feng_card_list;
         private int _feng_card_num;
-        private bool[] _feng_fast_list;
+        private int _de_fen = 0;
+        private int[] _feng_fast_list;
+
         public void PushToFengListIf(int card_id)
         {
-
             if (_feng_fast_list == null)
             {
-                _feng_fast_list = new bool[0x1f];
+                _feng_fast_list = new int[0x1f];
                 _feng_card_list = new int[0x1f];
-                _feng_fast_list[SDH_GameManager.CONST_TYPE_Zheng5] = true;
-                _feng_fast_list[SDH_GameManager.CONST_TYPE_Zheng10] = true;
-                _feng_fast_list[SDH_GameManager.CONST_TYPE_ZhengK] = true;
+                _feng_fast_list[SDH_GameManager.CONST_TYPE_Zheng5] = 5;
+                _feng_fast_list[SDH_GameManager.CONST_TYPE_Zheng10] = 10;
+                _feng_fast_list[SDH_GameManager.CONST_TYPE_ZhengK] = 10;
 
-                _feng_fast_list[SDH_GameManager.CONST_TYPE_Fu5] = true;
-                _feng_fast_list[SDH_GameManager.CONST_TYPE_Fu10] = true;
-                _feng_fast_list[SDH_GameManager.CONST_TYPE_FuK] = true;
+                _feng_fast_list[SDH_GameManager.CONST_TYPE_Fu5] = 5;
+                _feng_fast_list[SDH_GameManager.CONST_TYPE_Fu10] = 10;
+                _feng_fast_list[SDH_GameManager.CONST_TYPE_FuK] = 10;
             }
 
             var typ = sDH_GameManager.GetTypeById(card_id) & SDH_GameManager.CONST_ID_TYP_MASK;
@@ -777,11 +789,34 @@ namespace HopeSDH
             if (typ == SDH_GameManager.CONST_TYPE_UNKNOWN)
                 return;
 
-            Debug.Log($"PushToFengListIf: card_id: {card_id}, typ: {typ}");
-            if (_feng_fast_list[typ])
+            if (_feng_fast_list[typ] > 0)
             {
                 _feng_card_list[_feng_card_num++] = card_id;
             }
+        }
+
+
+        public int GetListFen(int[] _list, int num)
+        {
+            if (_feng_fast_list == null)
+            {
+                _feng_fast_list = new int[0x1f];
+                _feng_card_list = new int[0x1f];
+                _feng_fast_list[SDH_GameManager.CONST_TYPE_Zheng5] = 5;
+                _feng_fast_list[SDH_GameManager.CONST_TYPE_Zheng10] = 10;
+                _feng_fast_list[SDH_GameManager.CONST_TYPE_ZhengK] = 10;
+
+                _feng_fast_list[SDH_GameManager.CONST_TYPE_Fu5] = 5;
+                _feng_fast_list[SDH_GameManager.CONST_TYPE_Fu10] = 10;
+                _feng_fast_list[SDH_GameManager.CONST_TYPE_FuK] = 10;
+            }
+            int _fen = 0;
+            for(int i = 0; i < num; i++)
+            {
+                var typ = sDH_GameManager.GetTypeById(_list[i]) & SDH_GameManager.CONST_ID_TYP_MASK;
+                _fen += _feng_fast_list[typ];
+            }
+            return _fen;
         }
 
         public void JianFen(int zhuang, int max_p)
@@ -799,9 +834,13 @@ namespace HopeSDH
                 PushToFengListIf(this._p2_out_list[i]);
                 PushToFengListIf(this._p3_out_list[i]);
             }
+
+            this._de_fen = GetListFen(this._feng_card_list, _feng_card_num);
+
+            hugf.TriggerEventWithData(nameof(SDH_Tips.SetDeFenShowCall), this._de_fen);
             if (this._feng_card_num != _num)
             {
-                hugf.TriggerEventWith2Data(nameof(SDH_DiPaiManager.SetFenCardPositionCall), this._feng_card_list, this._feng_card_num);
+                //hugf.TriggerEventWith2Data(nameof(SDH_DiPaiManager.SetFenCardPositionCall), this._feng_card_list, this._feng_card_num);
             }
         }
 
