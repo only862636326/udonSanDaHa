@@ -2,12 +2,15 @@
 using System;
 using UdonSharp;
 using UnityEngine;
+using UnityEngine.UIElements;
+using VRC.SDK3.UdonNetworkCalling;
 using VRC.SDKBase;
 using VRC.Udon;
+using VRC.Udon.Common.Interfaces;
 
 namespace HopeSDH
 {
-    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
+    [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
     public class SDH_Input : UdonSharpBehaviour
     {
         [HideInInspector] public HopeTools.HopeUdonFramework hugf;
@@ -35,10 +38,10 @@ namespace HopeSDH
             //    hugf.TriggerReEvent(nameof(SDH_JiaoZhuang.StartJiaoCall));
             //}
             //if (Input.GetKeyUp(KeyCode.P))
-            if (Input.GetKeyUp(KeyCode.L))
-            {
-                hugf.TriggerReEvent(nameof(SDH_GameManager.SDH_GameResetCall));
-            }
+            //if (Input.GetKeyUp(KeyCode.L))
+            //{
+            //    this.TriggerReEvent(nameof(SDH_GameManager.SDH_GameResetCall));
+            //}
         }
 
         public HopeTools.HopeUdonEvnRe udonEvnRe;
@@ -55,25 +58,58 @@ namespace HopeSDH
             }
         }
 
-        public void TriggerReEvent(string eventName)
+        [NetworkCallable]
+        public void NetWordEvn(string eventName)
         {
             hugf.TriggerReEvent(eventName);
             if(udonEvnRe != null)
-            udonEvnRe.AddEvn(eventName);
+                udonEvnRe.AddEvn(eventName);
         }
 
-        public void TriggerReEventWithData(string eventName, object data)
+        [NetworkCallable]
+        public void NetWorkEvnDat(string eventName, int data)
         {
-            hugf.TriggerReEventWithData(eventName, data);
+            hugf.TriggerEventWithData(eventName, data);
             if(udonEvnRe != null)
-            udonEvnRe.AddEvnWithDat(eventName, data);
+                udonEvnRe.AddEvnWithDat(eventName, data);
         }
 
-        public void TriggerReEventWith2Data(string eventName, object data1, object data2)
+        [NetworkCallable]
+        public void NetWorkEvn2Dat(string eventName, int data1, int data2)
         {
-            hugf.TriggerReEventWith2Data(eventName, data1, data2);
+            hugf.TriggerEventWith2Data(eventName, data1, data2);
             if (udonEvnRe != null)
                 udonEvnRe.AddEvnWith2Dat(eventName, data1, data2);
+        }
+
+        public void TriggerReEvent(string eventName)
+        {
+            this.SendCustomNetworkEvent(NetworkEventTarget.All, nameof(NetWordEvn), eventName);
+            //hugf.TriggerReEvent(eventName);
+            //if(udonEvnRe != null)
+            //udonEvnRe.AddEvn(eventName);
+        }
+
+        public void TriggerReEventWithData(string eventName, int data)
+        {
+            this.SendCustomNetworkEvent(NetworkEventTarget.All, nameof(NetWorkEvnDat), eventName, data);
+            //hugf.TriggerReEventWithData(eventName, data);
+            //if(udonEvnRe != null)
+            //    udonEvnRe.AddEvnWithDat(eventName, data);
+        }
+
+        public void TriggerReEventWith2Data(string eventName, int data1, int data2)
+        {
+            this.SendCustomNetworkEvent(NetworkEventTarget.All, nameof(NetWorkEvn2Dat), eventName, data1, data2);
+
+            //hugf.TriggerReEventWith2Data(eventName, data1, data2);
+            //if (udonEvnRe != null)
+            //    udonEvnRe.AddEvnWith2Dat(eventName, data1, data2);
+        }
+        
+        public void ToggleEvn_SDH_GameResetCall()
+        {
+            this.TriggerReEvent(nameof(SDH_GameManager.SDH_GameResetCall));
         }
 
         public void ToggleEvn_StartFaPai()
@@ -173,12 +209,12 @@ namespace HopeSDH
 
         public void ToggleEvn_JoinBut(int idx)
         {
-            TriggerReEventWithData(nameof(SDH_JoinExit.ToggleEvn_JoinButCall), idx);
+            hugf.TriggerEventWithData(nameof(SDH_JoinExit.ToggleEvn_JoinButCall), idx);
         }
 
         public void ToggleEvn_ExitBut(int idx)
         {
-            TriggerReEventWithData(nameof(SDH_JoinExit.ToggleEvn_ExitButCall), idx);    
+            hugf.TriggerEventWithData(nameof(SDH_JoinExit.ToggleEvn_ExitButCall), idx);    
         }
 
         public void ToggleEvn_JoinBut_0() { ToggleEvn_JoinBut(0); }
@@ -222,7 +258,7 @@ namespace HopeSDH
 
         public void ToggleEvn_ZhuMei(int p)
         {
-            ToggleEvn_ZhuChoose(p, SDH_GameManager.CONST_ICON_HEI);
+            ToggleEvn_ZhuChoose(p, SDH_GameManager.CONST_ICON_MEI);
         }
 
         public void ToggleEvn_ZhuFang(int p)

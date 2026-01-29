@@ -9,7 +9,7 @@ using VRC.Udon;
 
 namespace HopeSDH
 {
-    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
+    [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
     public class SDH_GameManager : UdonSharpBehaviour
     {
 

@@ -293,8 +293,8 @@ namespace HopeSDH
         /// </summary>
         public void FisherYatesShuffle(int seed)
         {
-            InitCardIdList();
-            return;
+            //InitCardIdList();
+            //return;
             // 设置随机数种子
             Random.InitState(seed);
             // Fisher-Yates 洗牌算法

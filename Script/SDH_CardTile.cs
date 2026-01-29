@@ -70,7 +70,7 @@ namespace HopeSDH
             sdh_input = (SDH_Input)hugf.udonIoc.GetServiceUdon(nameof(SDH_Input));
         }
 
-        private void OnMouseDown()
+        private void TrgCard()
         {
             if (!IsSelectable)
                 return;
@@ -86,6 +86,27 @@ namespace HopeSDH
                 //    _card_p1 = 2;
             }
         }
+
+        private void EnterCard()
+        {
+            if (!IsSelectable)
+                return;
+
+            if (_card_p1 == CARD_POS_UNSELEC)
+            {
+                UpdateCardPosition(CARD_POS_HOVER);
+            }
+            ;
+        }
+
+        private void ExitCard()
+        {
+            if (!IsSelectable)
+                return;
+            UpdateCardPosition(_card_p1);
+        }
+
+
 
         public const int CARD_POS_UNSELEC = 0;
         public const int CARD_POS_HOVER = 1;
@@ -105,21 +126,39 @@ namespace HopeSDH
             }
         }
 
+
+        private void OnMouseDown()
+        {
+            TrgCard();
+        }
+
         private void OnMouseEnter()
         {
-            if (!IsSelectable)
-                return;
-
-            if (_card_p1 == CARD_POS_UNSELEC)
-            {
-                UpdateCardPosition(CARD_POS_HOVER);
-            }
+            EnterCard();
         }
         public void OnMouseExit()
         {
-            if (!IsSelectable)
-                return;
-            UpdateCardPosition(_card_p1);
+            ExitCard();
+        }
+
+        public void VrInputEnter()
+        {
+            EnterCard();
+        }
+
+        public void VrInputExit()
+        {
+            ExitCard();
+        }
+
+        public void VrInputTrg()
+        {
+            TrgCard();
         }
     }
 }
+
+
+
+
+
