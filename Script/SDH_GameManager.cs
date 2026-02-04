@@ -660,7 +660,7 @@ namespace HopeSDH
                 }
 
                 //card[i] , card[i+1], typ, base_typ, _is_pair 打印
-                hugf.udondebug.LogUdonMsg(this, card_id[i].ToString() + " typ: 0x" + typ.ToString("X2") + ", base_typ: 0x" + base_typ.ToString("X2") + ", _is_pair: " + _is_pair);
+                //hugf.udondebug.LogUdonMsg(this, card_id[i].ToString() + " typ: 0x" + typ.ToString("X2") + ", base_typ: 0x" + base_typ.ToString("X2") + ", _is_pair: " + _is_pair);
             }
 
             pair_list[pair_num] = -1;

@@ -62,7 +62,11 @@ v260128
 	- 单机版可正常游玩，大概
 v260129
 	- 使用udon SendCustomNetworkEvent同步
-	
+v260203
+	- 制作vrInput
+v260204
+    - 添加Vr控制辅助
+	- 修复出牌判定Bug
 	
 	
 	

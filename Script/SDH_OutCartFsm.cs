@@ -694,12 +694,21 @@ namespace HopeSDH
                     return select_tuo >= 2;
                 }
 
-                if (select_pair_num < player_pair_num && player_pair_num >= 2) // 出对子数不能大于出牌数
+                if (player_pair_num == 0)
                 {
-                    return false;
+                    return true;
+                }
+                else if (player_pair_num == 1)
+                {
+                    return select_pair_num == 1;
+                }
+                else if (player_pair_num >= 2)
+                {
+                    return select_pair_num == 2;
                 }
                 return true;
             }
+
             // 处理三连拖情况
             if (this.first_out_card_num == 6)
             {
@@ -716,9 +725,21 @@ namespace HopeSDH
                     return false;
                 }
 
-                if (select_pair_num < player_pair_num && player_pair_num >= 3) // 出对子数不能大于出牌数
+                if (player_pair_num == 0)
                 {
-                    return false;
+                    return true;
+                }
+                else if (player_pair_num == 1)
+                {
+                    return select_pair_num == 1;
+                }
+                else if (player_pair_num == 2)
+                {
+                    return select_pair_num == 2;
+                }
+                else if (player_pair_num >= 3)
+                {
+                    return select_pair_num == 3;
                 }
                 return true;
             }
