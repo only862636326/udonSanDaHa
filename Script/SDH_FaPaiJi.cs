@@ -41,14 +41,14 @@ namespace HopeSDH
             {
                 this.card_tf_list[i] = this.transform.GetChild(i);
             }
+            this.card_id_list = new int[SDH_GameManager.CONST_SDH_TOTAL_CARD_NUM];
 
-            InitCardIdList();
+            ResetCardIdList();
         }
 
 
-        private void InitCardIdList()
+        private void ResetCardIdList()
         {
-            this.card_id_list = new int[SDH_GameManager.CONST_SDH_TOTAL_CARD_NUM];
             int _idx = 0;
             int card_id = 0;
 
@@ -127,7 +127,6 @@ namespace HopeSDH
 
         public void WanMeiXiPai()
         {
-            InitCardIdList();
             var temp = new int[84];
             for (int i = 0; i < temp.Length; i++)
             {
@@ -148,6 +147,8 @@ namespace HopeSDH
         public void StartShuffleCall()
         {
             int seed = (int)this.eventData;
+            ResetCardIdList();
+
             FisherYatesShuffle(seed);
             //WanMeiXiPai();
 
