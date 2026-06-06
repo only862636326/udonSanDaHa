@@ -82,29 +82,32 @@ namespace HopeSDH
                 udonEvnRe.AddEvnWith2Dat(eventName, data1, data2);
         }
 
+        private void EnsureOwnership()
+        {
+#if !UNITY_EDITOR
+            if (!Networking.IsOwner(this.gameObject))
+            {
+                Networking.SetOwner(Networking.LocalPlayer, this.gameObject);
+            }
+#endif
+        }
+
         public void TriggerReEvent(string eventName)
         {
+            EnsureOwnership();
             this.SendCustomNetworkEvent(NetworkEventTarget.All, nameof(NetWordEvn), eventName);
-            //hugf.TriggerReEvent(eventName);
-            //if(udonEvnRe != null)
-            //udonEvnRe.AddEvn(eventName);
         }
 
         public void TriggerReEventWithData(string eventName, int data)
         {
+            EnsureOwnership();
             this.SendCustomNetworkEvent(NetworkEventTarget.All, nameof(NetWorkEvnDat), eventName, data);
-            //hugf.TriggerReEventWithData(eventName, data);
-            //if(udonEvnRe != null)
-            //    udonEvnRe.AddEvnWithDat(eventName, data);
         }
 
         public void TriggerReEventWith2Data(string eventName, int data1, int data2)
         {
+            EnsureOwnership();
             this.SendCustomNetworkEvent(NetworkEventTarget.All, nameof(NetWorkEvn2Dat), eventName, data1, data2);
-
-            //hugf.TriggerReEventWith2Data(eventName, data1, data2);
-            //if (udonEvnRe != null)
-            //    udonEvnRe.AddEvnWith2Dat(eventName, data1, data2);
         }
         
         public void ToggleEvn_SDH_GameResetCall()
@@ -290,6 +293,12 @@ namespace HopeSDH
             TriggerReEventWithData(nameof(SDH_OutCartFsm.ToggleEvn_MaidiFinishCall), p);
         }
 
+
+        public void ToggleEvn_ShowDiPai(int p)
+        {
+            //TriggerReEventWithData(nameof(SDH_OutCartFsm.ToggleEvn_MaidiFinishCall), p);
+        }
+
         public void ToggleEvn_OutBut_0() { ToggleEvn_OutBut(0); }
         public void ToggleEvn_OutBut_1() { ToggleEvn_OutBut(1); }
         public void ToggleEvn_OutBut_2() { ToggleEvn_OutBut(2); }
@@ -330,6 +339,11 @@ namespace HopeSDH
 		public void ToggleEvn_MaiDiFinish_1() { ToggleEvn_MaiDiFinish(1); }
 		public void ToggleEvn_MaiDiFinish_2() { ToggleEvn_MaiDiFinish(2); }
 		public void ToggleEvn_MaiDiFinish_3() { ToggleEvn_MaiDiFinish(3); }
+
+		public void ToggleEvn_ShowDiPai_0() { ToggleEvn_ShowDiPai(0); }
+		public void ToggleEvn_ShowDiPai_1() { ToggleEvn_ShowDiPai(1); }
+		public void ToggleEvn_ShowDiPai_2() { ToggleEvn_ShowDiPai(2); }
+		public void ToggleEvn_ShowDiPai_3() { ToggleEvn_ShowDiPai(3); }
 		// end method
     }
 }

@@ -139,7 +139,7 @@ namespace HopeSDH
             {
                 _jiao_zhuang_idx_list[i] = i;
             }
-            _active_player = 0;
+            _active_player = -1;
             _current_score = 80;
             _select_score = 0;
             _zhung_player = -1;
@@ -148,7 +148,7 @@ namespace HopeSDH
 
         private void StartJiaoShow()
         {
-            hugf.TriggerEventWithData(nameof(SDH_Tips.SetActivePlayerCall), this._active_player);
+            hugf.TriggerEventWithData(nameof(SDH_Tips.SetActivePlayerCall), -1);
 
             foreach (Transform tf in this.transform)
             {
@@ -166,7 +166,7 @@ namespace HopeSDH
 
             for (int i = 0; i < PLAYER_NUM; i++)
             {
-                _obj_jiao_zhuang_list[i].SetActive(i == _active_player);
+                _obj_jiao_zhuang_list[i].SetActive(true);
                 _obj_bu_jiao_li_list[i].SetActive(false);
                 _tf_score_prt_list[i].gameObject.SetActive(true);
                 this._text_tips[i].text = _current_score.ToString();
@@ -232,7 +232,7 @@ namespace HopeSDH
         public void ToggleEvn_JiaoZhuang(int idx)
         {
             //Debug.Log($"ToggleEvn_JiaoZhuang called with idx: {idx}");
-            if (idx != _active_player)
+            if (idx != _active_player && _active_player != -1)
             {
                 return;
             }
@@ -254,8 +254,14 @@ namespace HopeSDH
 
             do
             {
+                if (this._active_player == -1)
+                {
+                    this._active_player = idx;
+                }
+ 
                 this._active_player++;
                 this._active_player %= this.PLAYER_NUM;
+                
             } while (this._jiao_zhuang_idx_list[this._active_player] < 0);
             NextPlayerShow();
         }

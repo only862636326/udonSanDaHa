@@ -93,6 +93,8 @@ namespace HopeSDH
             this.out_card_num = 0;
             this._select_card_num = 0;
             this._current_player = -1;
+            this._feng_card_num = 0;
+            this._de_fen = 0;
         }
 
         public void ToggleEvn_OutBut(int x)
@@ -205,9 +207,8 @@ namespace HopeSDH
                 }
             }
 
-            if (this._select_card_num >= this._select_card_id_list.Length)
+            if (foundIndex == -1)
             {
-                hugf.udondebug.LogWarning($"UnselecCardCall: {_id}, select_card_num: {this._select_card_num}");
                 return;
             }
             this._select_card_num--;
@@ -440,19 +441,19 @@ namespace HopeSDH
 
         private void TrigPlayerOutCardShow(int idx, int num)
         {
-            if (_current_player == SDH_GameManager.CONST_PLAYER_P0 || idx == 255)
+            if (idx == SDH_GameManager.CONST_PLAYER_P0 || idx == 255)
             {
                 hugf.TriggerEventWith2Data(nameof(SDH_OutCartP.SetOutCardP0Call), this._p0_out_list, num);
             }
-            else if (_current_player == SDH_GameManager.CONST_PLAYER_P1 || idx == 255)
+            if (idx == SDH_GameManager.CONST_PLAYER_P1 || idx == 255)
             {
                 hugf.TriggerEventWith2Data(nameof(SDH_OutCartP.SetOutCardP1Call), this._p1_out_list, num);
             }
-            else if (_current_player == SDH_GameManager.CONST_PLAYER_P2 || idx == 255)
+            if (idx == SDH_GameManager.CONST_PLAYER_P2 || idx == 255)
             {
                 hugf.TriggerEventWith2Data(nameof(SDH_OutCartP.SetOutCardP2Call), this._p2_out_list, num);
             }
-            else if (_current_player == SDH_GameManager.CONST_PLAYER_P3 || idx == 255)
+            if (idx == SDH_GameManager.CONST_PLAYER_P3 || idx == 255)
             {
                 hugf.TriggerEventWith2Data(nameof(SDH_OutCartP.SetOutCardP3Call), this._p3_out_list, num);
             }
@@ -494,12 +495,11 @@ namespace HopeSDH
             var _num = this._pre_round_card_show_num;
             if (_num <= 0 || _current_hand_card_num <= 0) return;
 
-            // 使用通用的DelListCard方法删除手牌
-            sDH_GameManager.DelListCard(_p0_hand_list, _p0_out_list, _current_hand_card_num, _num);
-            sDH_GameManager.DelListCard(_p1_hand_list, _p1_out_list, _current_hand_card_num, _num);
-            sDH_GameManager.DelListCard(_p2_hand_list, _p2_out_list, _current_hand_card_num, _num);
-            sDH_GameManager.DelListCard(_p3_hand_list, _p3_out_list, _current_hand_card_num, _num);
-            _current_hand_card_num -= _num;
+            var old_count = _current_hand_card_num;
+            _current_hand_card_num = sDH_GameManager.DelListCard(_p0_hand_list, _p0_out_list, _current_hand_card_num, _num);
+            sDH_GameManager.DelListCard(_p1_hand_list, _p1_out_list, old_count, _num);
+            sDH_GameManager.DelListCard(_p2_hand_list, _p2_out_list, old_count, _num);
+            sDH_GameManager.DelListCard(_p3_hand_list, _p3_out_list, old_count, _num);
 
             TrigPlayerHandCardShow(255, this._current_hand_card_num);
         }
@@ -534,7 +534,6 @@ namespace HopeSDH
 
             int _tuo = sDH_GameManager.GetCardTuoLaJi(_list_1, num, sDH_GameManager.GetTypeById(_list_1[0]));
             return _tuo * 2 == num;
-            return false;
         }
 
         public int CheckOutMaxPlayer()
@@ -580,7 +579,10 @@ namespace HopeSDH
             {
                 var x = _select_card_id_list[0] / 2;
                 var y = _select_card_id_list[1] / 2;
-                return x == y;
+                if (x != y) return false;
+                var typ0 = sDH_GameManager.GetTypeById(_select_card_id_list[0]);
+                var typ1 = sDH_GameManager.GetTypeById(_select_card_id_list[1]);
+                return sDH_GameManager.CheckSameIconType(typ0, typ1);
             }
 
             // 单数， 暂时不支持甩牌, err
@@ -598,17 +600,15 @@ namespace HopeSDH
             }
 
 
-            var tuo_la_ji = sDH_GameManager.GetCardTuoLaJi(this._select_card_id_list, this._select_card_num, _typ);
-            // hugf.udondebug.LogUdonMsg(this, "tuo_la_ji: " + tuo_la_ji);
-            return tuo_la_ji * 2 == this._select_card_num;
-
             // 最高到五连拖
             if (_select_card_num > 10)
             {
                 return false;
             }
 
-            return false;
+            var tuo_la_ji = sDH_GameManager.GetCardTuoLaJi(this._select_card_id_list, this._select_card_num, _typ);
+            hugf.udondebug.LogUdonMsg(this, "tuo_la_ji: " + tuo_la_ji);
+            return tuo_la_ji * 2 == this._select_card_num;
         }
 
         private int GetPlayerIconNum(int p, int typ)
@@ -756,6 +756,24 @@ namespace HopeSDH
                 }
 
                 if (select_pair_num < player_pair_num && player_pair_num >= 4) // 出对子数不能大于出牌数
+                {
+                    return false;
+                }
+                return true;
+            }
+
+            // tuolaji 5
+            if (this.first_out_card_num == 10)
+            {
+                int select_tuo = sDH_GameManager.GetCardTuoLaJi(this._select_card_id_list, this._select_card_num, _first_typ);
+                int player_tuo = GetPlayerTuoLaJi(this._current_player, _first_typ);
+
+                if (player_tuo >= 5)
+                {
+                    return select_tuo >= 5;
+                }
+
+                if (select_pair_num < player_pair_num && player_pair_num >= 5)
                 {
                     return false;
                 }

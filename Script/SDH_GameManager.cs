@@ -105,6 +105,7 @@ namespace HopeSDH
         //{
         //    this.eventData = data;
         //}
+
         #endregion end init code
 
         public void SetZhuangInfoCall()
@@ -659,8 +660,8 @@ namespace HopeSDH
                     }
                 }
 
-                //card[i] , card[i+1], typ, base_typ, _is_pair 打印
-                //hugf.udondebug.LogUdonMsg(this, card_id[i].ToString() + " typ: 0x" + typ.ToString("X2") + ", base_typ: 0x" + base_typ.ToString("X2") + ", _is_pair: " + _is_pair);
+                // card[i] , card[i+1], typ, base_typ, _is_pair 打印
+                hugf.udondebug.LogUdonMsg(this, card_id[i].ToString() + " typ: 0x" + typ.ToString("X2") + ", base_typ: 0x" + base_typ.ToString("X2") + ", _is_pair: " + _is_pair);
             }
 
             pair_list[pair_num] = -1;
@@ -675,7 +676,7 @@ namespace HopeSDH
 
             for(int i = 0;i < num;i++)
             {
-                pair_list[i] = GetTypeById(pair_list[i]);
+                pair_list[i] = GetTypeById(pair_list[i]) & 0xff;
             }
 
             // 当前连续下降1的序列长度
@@ -725,8 +726,7 @@ namespace HopeSDH
 
         public int GetCardTuoLaJi(int[] card_id, int num, int base_typ)
         {
-            int _num = GetTypePairList(card_id, num, base_typ, _sort_temp_list);
-            
+            int _num = GetTypePairList(card_id, num, base_typ, _sort_temp_list);            
             hugf.udondebug.LogUdonMsg(this, "pair num --- _num:" + _num.ToString());
             return GetPairTuoLaJi(_sort_temp_list, _num);
         }
@@ -762,7 +762,7 @@ namespace HopeSDH
                 }
             }
 
-            if ((base_typ & CONST_ID_TYP_MASK) >= 0x0f)
+            if ((base_typ & CONST_ID_TYP_MASK) >= 0x10)
             {
                 return zhu;
             }
@@ -780,8 +780,5 @@ namespace HopeSDH
 
 
         #endregion function for others
-
-
-
     }
 }
